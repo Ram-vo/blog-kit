@@ -1,0 +1,12 @@
+{
+  "name": "blog-kit-starter",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "echo 'starter app not scaffolded yet'",
+    "typecheck": "echo 'starter app not scaffolded yet'",
+    "lint": "echo 'starter app not scaffolded yet'",
+    "test": "echo 'starter app not scaffolded yet'"
+  }
+}
