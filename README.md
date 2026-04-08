@@ -150,6 +150,9 @@ The current adapter expects these relationships:
 The starter currently reads published content, so real records should
 have `is_draft = false` to appear in the public routes.
 
+For the current minimum schema and starter SQL, see
+[docs/supabase-schema.md](./docs/supabase-schema.md).
+
 ## Recommended Next Step
 
 Stabilize the public package APIs further, document the required

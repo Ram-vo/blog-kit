@@ -74,6 +74,9 @@ Required relationship shape:
 
 Posts must have `is_draft = false` to appear in public routes.
 
+For starter SQL and the current minimum schema, see
+[`docs/supabase-schema.md`](../../docs/supabase-schema.md).
+
 ## Fallback Behavior
 
 If the required environment variables are missing, or if the Supabase
