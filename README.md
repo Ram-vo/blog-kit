@@ -1,6 +1,8 @@
 # blog-kit
 
-`blog-kit` is an open source project to extract e-Lab's lightweight blog/CMS into a modular architecture that is easy for other teams to adopt.
+`blog-kit` is an open source toolkit for building modular blogs and
+lightweight publishing systems with clear package boundaries and a
+reference starter app.
 
 ## Name
 
@@ -23,7 +25,8 @@ Split the current blog into three layers:
 
 ## Principles
 
-- The core must not know about branding, business routes, or e-Lab-specific copy.
+- The core must not know about branding, business routes, or app-
+  specific copy.
 - Adapters contain provider-specific integrations.
 - The starter app demonstrates the recommended implementation, but does not define the core.
 - Site configuration should live in explicit objects, not hardcoded constants.
@@ -53,14 +56,18 @@ This scaffold currently includes:
 - repository contracts
 - reusable pure utilities
 - architecture and roadmap documentation
+- a working Supabase adapter layer
+- a minimal Next.js starter app
 
 It does not include yet:
 
-- migrated code from `elab-frontend`
-- a working Next.js app
-- a real Supabase integration
+- adapter tests
+- a real Supabase client wired into the starter app
+- richer Next.js adapter helpers
 - an editor/dashboard
+- release and publishing automation
 
 ## Recommended Next Step
 
-Extract into `core` the shared types and use cases that are currently split across `src/modules/blog` and `src/lib/blog.ts` in `elab-frontend`.
+Stabilize the public package APIs, add adapter tests, and expand the
+starter app from sample content to a real data-backed integration.

@@ -53,8 +53,8 @@ Responsibilities:
 
 ## Initial extraction strategy
 
-1. Copy the stable domain model from `elab-frontend`.
-2. Remove e-Lab defaults from the public model.
-3. Move Supabase access into a dedicated adapter.
+1. Start from a stable domain model and normalize it for public use.
+2. Remove deployment-specific defaults from the public model.
+3. Move provider access into dedicated adapters.
 4. Redefine the UI layer around composition and configuration.
-5. Only then migrate blog components and the starter app.
+5. Add a starter app that consumes only public package APIs.

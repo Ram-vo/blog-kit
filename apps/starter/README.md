@@ -1,13 +1,14 @@
 # Starter App
 
-This app will be the integration reference for project users.
+This app is the integration reference for project users.
 
-Starter goals:
+Current scope:
 
-- fast installation
-- minimal configuration
-- neutral visual theme
-- blog and article routes
-- environment variable documentation
+- minimal Next.js App Router setup
+- sample site configuration
+- sample post data
+- blog index and article routes
+- direct consumption of workspace packages
 
-It is not implemented yet; for now it serves as an architecture placeholder.
+This is intentionally small. Its job is to prove the package boundaries
+and demonstrate the expected integration shape.

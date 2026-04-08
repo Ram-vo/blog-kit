@@ -4,9 +4,23 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "echo 'starter app not scaffolded yet'",
-    "typecheck": "echo 'starter app not scaffolded yet'",
-    "lint": "echo 'starter app not scaffolded yet'",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "echo 'lint not configured yet'",
     "test": "echo 'starter app not scaffolded yet'"
+  },
+  "dependencies": {
+    "blog-kit-core": "workspace:*",
+    "blog-kit-next": "workspace:*",
+    "next": "^14.2.35",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.30",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1"
   }
 }
