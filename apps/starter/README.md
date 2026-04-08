@@ -20,6 +20,12 @@ and demonstrate the expected integration shape.
 By default the starter uses in-repo sample content. This keeps the app
 bootable even when no external services are configured.
 
+Start it with:
+
+```bash
+pnpm --dir apps/starter dev
+```
+
 Routes to verify in this mode:
 
 - `/`
@@ -40,6 +46,18 @@ Supabase client through `blog-kit-supabase`:
 Create `apps/starter/.env.local` from `.env.example` and restart the
 dev server after editing it.
 
+Minimal setup:
+
+```bash
+cp apps/starter/.env.example apps/starter/.env.local
+```
+
+Then fill in the values and restart:
+
+```bash
+pnpm --dir apps/starter dev
+```
+
 ## Supabase Schema Expectations
 
 The current starter and adapter expect:
@@ -55,3 +73,9 @@ Required relationship shape:
 - many-to-many between `posts` and `categories`
 
 Posts must have `is_draft = false` to appear in public routes.
+
+## Fallback Behavior
+
+If the required environment variables are missing, or if the Supabase
+request fails, the starter falls back to in-repo sample content. This
+keeps the app useful for local exploration even without a live backend.
