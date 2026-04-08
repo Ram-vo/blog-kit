@@ -33,6 +33,7 @@ Responsibilities:
 - post, author, and category persistence
 - mapping between Supabase tables and domain types
 - provider-specific access policies
+- injected client contract for runtime flexibility
 
 ### `blog-kit-next`
 
@@ -41,6 +42,7 @@ Responsibilities:
 - metadata helpers
 - sitemap and RSS serialization
 - optional App Router integration
+- publishing-oriented utilities that reduce app-level duplication
 
 ### `starter`
 
@@ -50,6 +52,25 @@ Responsibilities:
 - neutral visual theme
 - site configuration
 - onboarding reference
+- fallback sample content for zero-config local development
+- optional Supabase-backed runtime mode
+
+## Runtime Modes
+
+### Starter Local Mode
+
+The starter can run with no external services. In this mode it reads
+sample posts from the repository and still exposes article, RSS, and
+sitemap routes.
+
+### Starter Supabase Mode
+
+When the required public environment variables are present, the starter
+creates a real Supabase client and uses `blog-kit-supabase` to fetch
+published posts.
+
+This mode is intentionally additive. Missing variables or fetch errors
+should not break local development.
 
 ## Initial extraction strategy
 

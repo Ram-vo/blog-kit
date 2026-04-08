@@ -1,15 +1,20 @@
 import Link from "next/link";
 import { toBlogPostSummary } from "blog-kit-core";
 import { toArticleMetadata } from "blog-kit-next";
-import { samplePosts } from "../src/sample-posts";
+import { getBlogPostSummaries, getPublishedPosts } from "../src/blog-data";
 import { siteConfig } from "../src/site-config";
 
-const featuredPost = samplePosts[0];
-const featuredSummary = toBlogPostSummary(featuredPost, siteConfig);
-const featuredMetadata = toArticleMetadata(featuredPost, siteConfig);
-const posts = samplePosts.map((post) => toBlogPostSummary(post, siteConfig));
+export default async function HomePage() {
+  const publishedPosts = await getPublishedPosts();
+  const posts = await getBlogPostSummaries();
+  const featuredPost = publishedPosts[0];
+  const featuredSummary = featuredPost
+    ? toBlogPostSummary(featuredPost, siteConfig)
+    : null;
+  const featuredMetadata = featuredPost
+    ? toArticleMetadata(featuredPost, siteConfig)
+    : null;
 
-export default function HomePage() {
   return (
     <main style={{ minHeight: "100vh" }}>
       <section
@@ -64,35 +69,37 @@ export default function HomePage() {
 
       <section style={{ padding: "32px 24px 0" }}>
         <div style={{ maxWidth: 1080, margin: "0 auto" }}>
-          <div
-            style={{
-              padding: 24,
-              borderRadius: 24,
-              background: "#101010",
-              color: "#f8f4e8"
-            }}
-          >
-            <p style={{ margin: "0 0 8px", fontSize: 12, textTransform: "uppercase" }}>
-              Featured post
-            </p>
-            <h2 style={{ margin: 0, fontSize: 34, lineHeight: 1.05 }}>
-              {featuredSummary.title}
-            </h2>
-            <p style={{ margin: "14px 0 0", maxWidth: 720, color: "#c8c1ae" }}>
-              {featuredSummary.excerpt}
-            </p>
-            <p style={{ margin: "14px 0 0", fontSize: 14, color: "#c8c1ae" }}>
-              Canonical URL: {featuredMetadata.alternates.canonical}
-            </p>
-            <div style={{ marginTop: 18 }}>
-              <Link
-                href={`/blog/${featuredSummary.slug}`}
-                style={{ color: "#f8f4e8", fontWeight: 700, textDecoration: "none" }}
-              >
-                Read featured article
-              </Link>
+          {featuredSummary && featuredMetadata && (
+            <div
+              style={{
+                padding: 24,
+                borderRadius: 24,
+                background: "#101010",
+                color: "#f8f4e8"
+              }}
+            >
+              <p style={{ margin: "0 0 8px", fontSize: 12, textTransform: "uppercase" }}>
+                Featured post
+              </p>
+              <h2 style={{ margin: 0, fontSize: 34, lineHeight: 1.05 }}>
+                {featuredSummary.title}
+              </h2>
+              <p style={{ margin: "14px 0 0", maxWidth: 720, color: "#c8c1ae" }}>
+                {featuredSummary.excerpt}
+              </p>
+              <p style={{ margin: "14px 0 0", fontSize: 14, color: "#c8c1ae" }}>
+                Canonical URL: {featuredMetadata.alternates.canonical}
+              </p>
+              <div style={{ marginTop: 18 }}>
+                <Link
+                  href={`/blog/${featuredSummary.slug}`}
+                  style={{ color: "#f8f4e8", fontWeight: 700, textDecoration: "none" }}
+                >
+                  Read featured article
+                </Link>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </section>
 

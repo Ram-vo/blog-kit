@@ -1,20 +1,24 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { toBlogPost } from "blog-kit-core";
 import { toArticleMetadata } from "blog-kit-next";
-import { samplePosts } from "../../../src/sample-posts";
+import {
+  getBlogPostBySlug,
+  getPublishedPosts,
+  getRenderableBlogPost
+} from "../../../src/blog-data";
 import { siteConfig } from "../../../src/site-config";
 
-export function generateStaticParams() {
-  return samplePosts.map((post) => ({ slug: post.slug }));
+export async function generateStaticParams() {
+  const posts = await getPublishedPosts();
+  return posts.map((post) => ({ slug: post.slug }));
 }
 
-export function generateMetadata({
+export async function generateMetadata({
   params
 }: {
   params: { slug: string };
-}): Metadata {
-  const post = samplePosts.find((entry) => entry.slug === params.slug);
+}): Promise<Metadata> {
+  const post = await getBlogPostBySlug(params.slug);
 
   if (!post) {
     return {};
@@ -23,18 +27,16 @@ export function generateMetadata({
   return toArticleMetadata(post, siteConfig);
 }
 
-export default function BlogPostPage({
+export default async function BlogPostPage({
   params
 }: {
   params: { slug: string };
 }) {
-  const match = samplePosts.find((entry) => entry.slug === params.slug);
+  const article = await getRenderableBlogPost(params.slug);
 
-  if (!match) {
+  if (!article) {
     notFound();
   }
-
-  const article = toBlogPost(match, siteConfig);
 
   return (
     <main style={{ padding: "88px 24px 72px" }}>
