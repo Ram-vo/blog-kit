@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { toBlogPostSummary } from "blog-kit-core";
+import { paginateItems, toBlogPostSummary } from "blog-kit-core";
 import { toArticleMetadata, toBlogStructuredData } from "blog-kit-next";
 import { getBlogPostSummaries, getPublishedPosts } from "../src/blog-data";
 import { siteConfig } from "../src/site-config";
@@ -18,6 +18,10 @@ export default async function HomePage() {
     publishedPosts.slice(0, 10),
     siteConfig
   );
+  const paginatedPosts = paginateItems(posts, {
+    page: 1,
+    pageSize: 6
+  });
 
   return (
     <main style={{ minHeight: "100vh" }}>
@@ -117,12 +121,30 @@ export default async function HomePage() {
         <div style={{ maxWidth: 1080, margin: "0 auto" }}>
           <div
             style={{
+              marginBottom: 18,
+              display: "flex",
+              justifyContent: "space-between",
+              gap: 12,
+              flexWrap: "wrap",
+              color: "#6f685b",
+              fontSize: 13
+            }}
+          >
+            <span>
+              Showing {paginatedPosts.items.length} of {paginatedPosts.meta.totalItems} posts
+            </span>
+            <span>
+              Page {paginatedPosts.meta.page} of {paginatedPosts.meta.totalPages}
+            </span>
+          </div>
+          <div
+            style={{
               display: "grid",
               gap: 20,
               gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))"
             }}
           >
-            {posts.map((post) => (
+            {paginatedPosts.items.map((post) => (
               <article
                 key={post.slug}
                 style={{

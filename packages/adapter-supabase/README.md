@@ -1,0 +1,35 @@
+# blog-kit-supabase
+
+Supabase adapter package for `blog-kit`.
+
+This package contains repository implementations and mapping logic for a
+Supabase-backed blog.
+
+## Scope
+
+Use `blog-kit-supabase` when you need:
+
+- a post repository backed by Supabase
+- author and category repositories backed by Supabase
+- a typed adapter contract around the injected Supabase client
+- mapping from Supabase rows into `blog-kit-core` domain types
+
+## Main Exports
+
+- `createSupabaseAdapter`
+- `SupabasePostRepository`
+- `SupabaseAuthorRepository`
+- `SupabaseCategoryRepository`
+- `SupabaseAdapterError`
+- table row types for the current adapter contract
+
+## Design Notes
+
+- the adapter accepts an injected client rather than constructing one
+- repository behavior is covered by fixture-based tests
+- errors are classified with `SupabaseAdapterError`
+
+## Related Docs
+
+- `../../docs/supabase-schema.md`
+- `../../docs/supabase-ops.md`

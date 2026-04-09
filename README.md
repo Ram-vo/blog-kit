@@ -30,6 +30,12 @@ Split the current blog into three layers:
 - `blog-kit-next`: metadata, RSS, sitemap, and publishing helpers
 - `apps/starter`: runnable reference app for local and data-backed modes
 
+Package-level documentation:
+
+- [`packages/core/README.md`](./packages/core/README.md)
+- [`packages/adapter-next/README.md`](./packages/adapter-next/README.md)
+- [`packages/adapter-supabase/README.md`](./packages/adapter-supabase/README.md)
+
 ## Principles
 
 - The core must not know about branding, business routes, or app-
