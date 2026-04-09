@@ -11,6 +11,11 @@ import {
   getRenderableBlogPost
 } from "../../../src/blog-data";
 import { siteConfig } from "../../../src/site-config";
+import {
+  PrimaryLink,
+  StarterContainer,
+  SurfacePanel
+} from "../../components/starter-ui";
 
 export async function generateStaticParams() {
   const posts = await getPublishedPosts();
@@ -56,7 +61,7 @@ export default async function BlogPostPage({
   );
 
   return (
-    <main style={{ padding: "88px 24px 72px" }}>
+    <StarterContainer className="pt-2">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -69,44 +74,37 @@ export default async function BlogPostPage({
           __html: JSON.stringify(breadcrumbStructuredData)
         }}
       />
-      <article style={{ maxWidth: 760, margin: "0 auto" }}>
-        <p
-          style={{
-            margin: 0,
-            fontSize: 12,
-            textTransform: "uppercase",
-            letterSpacing: "0.08em",
-            color: "#6f685b"
-          }}
-        >
-          {article.categories[0]?.name ?? "Uncategorized"} · {article.readingTime} min
-        </p>
-        <h1
-          style={{
-            margin: "16px 0 12px",
-            fontSize: "clamp(2.6rem, 7vw, 4.5rem)",
-            lineHeight: 0.95,
-            letterSpacing: "-0.05em"
-          }}
-        >
-          {article.title}
-        </h1>
-        <p style={{ margin: "0 0 32px", fontSize: 20, lineHeight: 1.5, color: "#4f4a3f" }}>
-          {article.excerpt}
-        </p>
-        <div
-          style={{
-            padding: 24,
-            borderRadius: 20,
-            border: "1px solid #ddd8cb",
-            background: "#fffdf8",
-            whiteSpace: "pre-wrap",
-            lineHeight: 1.7
-          }}
-        >
+      <div
+        className="mb-[18px] flex flex-wrap gap-2.5 font-sans text-[0.78rem] uppercase tracking-[0.08em] text-starter-soft"
+        aria-label="Breadcrumb"
+      >
+        <PrimaryLink href="/">
+          Home
+        </PrimaryLink>
+        <span>/</span>
+        <PrimaryLink href="/">
+          Blog
+        </PrimaryLink>
+        <span>/</span>
+        <span>{article.slug}</span>
+      </div>
+      <SurfacePanel className="overflow-hidden">
+        <div className="border-b border-[var(--surface-border)] bg-[linear-gradient(135deg,rgba(255,248,236,0.92),rgba(247,238,221,0.84))] px-6 py-8 sm:px-8">
+          <p className="font-sans text-[0.78rem] uppercase tracking-[0.08em] text-starter-soft">
+            {article.categories[0]?.name ?? "Uncategorized"} ·{" "}
+            {article.readingTime} min read
+          </p>
+          <h1 className="mt-4 max-w-[15ch] text-[clamp(2.6rem,5.4vw,4.4rem)] leading-[0.94] font-semibold tracking-[-0.055em]">
+            {article.title}
+          </h1>
+          <p className="mt-3 max-w-[40rem] text-[1.18rem] leading-[1.75] text-starter-muted">
+            {article.excerpt}
+          </p>
+        </div>
+        <div className="bg-starter-cream px-6 py-8 text-[1.05rem] leading-[1.9] whitespace-pre-wrap text-starter-ink sm:px-8">
           {article.content}
         </div>
-      </article>
-    </main>
+      </SurfacePanel>
+    </StarterContainer>
   );
 }

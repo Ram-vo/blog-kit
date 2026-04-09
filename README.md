@@ -71,6 +71,7 @@ This scaffold currently includes:
 - architecture and roadmap documentation
 - a tested Supabase adapter layer
 - a minimal Next.js starter app
+- a Tailwind CSS v4 styling baseline in the starter app
 - RSS and sitemap helpers in the Next.js adapter
 - RSS and sitemap routes in the starter app
 - structured metadata helpers in the Next.js adapter
@@ -141,6 +142,12 @@ The starter app supports two modes:
 
 - local sample content mode
 - Supabase-backed mode
+
+The starter uses Tailwind CSS v4 as its styling baseline so it can be
+adapted more easily to an existing design system.
+
+For the recommended theming and design system integration model, see
+[docs/starter-theming.md](./docs/starter-theming.md).
 
 ### Local Sample Mode
 

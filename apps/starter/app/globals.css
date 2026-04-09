@@ -1,0 +1,90 @@
+@import "tailwindcss";
+
+@theme {
+  --color-starter-ink: #1b1813;
+  --color-starter-muted: #655b4b;
+  --color-starter-soft: #8a7d6a;
+  --color-starter-cream: #fffdf7;
+  --color-starter-paper: rgba(255, 251, 244, 0.88);
+  --color-starter-dark: #13261f;
+  --color-starter-accent: #d35b2d;
+  --color-starter-green: #0d6f51;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  --font-serif: "Iowan Old Style", "Palatino Linotype", "Book Antiqua",
+    Georgia, serif;
+}
+
+:root {
+  --page-background:
+    radial-gradient(circle at top, rgba(224, 94, 46, 0.18), transparent 28%),
+    radial-gradient(circle at 85% 20%, rgba(13, 111, 81, 0.12), transparent 22%),
+    linear-gradient(180deg, #fff9ee 0%, #f3ecde 100%);
+  --surface-border: rgba(43, 36, 25, 0.12);
+  --shadow-soft: 0 24px 64px rgba(44, 33, 16, 0.12);
+  --shadow-card: 0 18px 42px rgba(22, 20, 12, 0.08);
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    background: #f3ecde;
+  }
+
+  body {
+    min-height: 100vh;
+    background: var(--page-background);
+    color: var(--color-starter-ink);
+    font-family: var(--font-serif);
+  }
+
+  a {
+    color: inherit;
+  }
+
+  code {
+    font-family: var(--font-sans);
+  }
+}
+
+@layer utilities {
+  .starter-panel {
+    border: 1px solid var(--surface-border);
+    background: var(--color-starter-paper);
+    box-shadow: var(--shadow-soft);
+    backdrop-filter: blur(14px);
+  }
+
+  .starter-card {
+    border: 1px solid var(--surface-border);
+    background: var(--color-starter-cream);
+    box-shadow: var(--shadow-card);
+  }
+
+  .starter-pill {
+    @apply inline-flex items-center gap-2 rounded-full font-sans text-[0.78rem] uppercase tracking-[0.1em];
+  }
+
+  .starter-link {
+    @apply font-sans font-semibold no-underline transition-opacity duration-150 hover:opacity-80;
+  }
+
+  .starter-shimmer {
+    background: linear-gradient(90deg, #f1e7d6, #e6dac6, #f1e7d6);
+    background-size: 180% 100%;
+    animation: starter-shimmer 1.4s linear infinite;
+  }
+}
+
+@keyframes starter-shimmer {
+  0% {
+    background-position: 180% 0;
+  }
+
+  100% {
+    background-position: -180% 0;
+  }
+}

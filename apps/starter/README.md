@@ -5,6 +5,7 @@ This app is the integration reference for project users.
 Current scope:
 
 - minimal Next.js App Router setup
+- Tailwind CSS v4 styling baseline
 - sample site configuration
 - sample post data
 - blog index and article routes
@@ -14,6 +15,36 @@ Current scope:
 
 This is intentionally small. Its job is to prove the package boundaries
 and demonstrate the expected integration shape.
+
+## Styling Baseline
+
+The starter uses Tailwind CSS v4 as its styling layer.
+
+This is intentional:
+
+- most Next.js users already expect Tailwind in starter projects
+- the starter is easier to adapt to an existing design system
+- design tokens can be replaced in `app/globals.css` without rewriting
+  the page structure
+
+The current global file contains only:
+
+- Tailwind import and theme tokens
+- a small set of base styles
+- a few semantic utility helpers for panels, cards, and shimmer states
+
+The recommended extension points are:
+
+- `src/starter-theme.ts` for theme tokens and CSS variable values
+- `app/components/starter-ui.tsx` for reusable presentational primitives
+- route files for app-specific composition and copy
+
+This keeps the starter visually opinionated without coupling it to any
+single downstream design system.
+
+For a full guide to retheming the starter or wiring it into an existing
+design system, see
+[`docs/starter-theming.md`](../../docs/starter-theming.md).
 
 ## Local Data Mode
 
