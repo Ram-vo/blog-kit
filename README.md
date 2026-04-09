@@ -30,6 +30,12 @@ Split the current blog into three layers:
 - `blog-kit-next`: metadata, RSS, sitemap, and publishing helpers
 - `apps/starter`: runnable reference app for local and data-backed modes
 
+Package-level documentation:
+
+- [`packages/core/README.md`](./packages/core/README.md)
+- [`packages/adapter-next/README.md`](./packages/adapter-next/README.md)
+- [`packages/adapter-supabase/README.md`](./packages/adapter-supabase/README.md)
+
 ## Principles
 
 - The core must not know about branding, business routes, or app-
@@ -65,13 +71,16 @@ This scaffold currently includes:
 - architecture and roadmap documentation
 - a tested Supabase adapter layer
 - a minimal Next.js starter app
+- a Tailwind CSS v4 styling baseline in the starter app
 - RSS and sitemap helpers in the Next.js adapter
 - RSS and sitemap routes in the starter app
+- structured metadata helpers in the Next.js adapter
+- CI for typecheck, lint, and tests
+- Release Please versioning for publishable packages
 
 It does not include yet:
 
 - an editor/dashboard
-- release and publishing automation
 - package publishing configuration
 
 ## Installation
@@ -87,6 +96,21 @@ pnpm typecheck
 pnpm test
 pnpm build
 ```
+
+## CI
+
+GitHub Actions runs a minimal validation workflow for:
+
+- `push` to `main`
+- `push` to `develop`
+- pull requests
+
+Current CI scope:
+
+- install dependencies
+- run `pnpm typecheck`
+- run `pnpm lint`
+- run `pnpm test`
 
 ## Versioning
 
@@ -105,6 +129,9 @@ Configuration files:
 - `.release-please-manifest.json`
 - `.github/workflows/release-please.yml`
 
+For the current branching model, commit expectations, and release flow,
+see [docs/releases.md](./docs/releases.md).
+
 ## Running the Starter
 
 ```bash
@@ -115,6 +142,12 @@ The starter app supports two modes:
 
 - local sample content mode
 - Supabase-backed mode
+
+The starter uses Tailwind CSS v4 as its styling baseline so it can be
+adapted more easily to an existing design system.
+
+For the recommended theming and design system integration model, see
+[docs/starter-theming.md](./docs/starter-theming.md).
 
 ### Local Sample Mode
 
@@ -175,5 +208,5 @@ For auth, RLS, and migration guidance, see
 
 ## Recommended Next Step
 
-Stabilize the public package APIs further, document the required
-Supabase schema, and expand the starter app beyond the minimal demo UI.
+Complete the remaining starter polish work in Phase 3, then decide the
+editorial scope for public packages before adding more surface area.
