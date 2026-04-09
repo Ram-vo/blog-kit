@@ -94,6 +94,21 @@ pnpm test
 pnpm build
 ```
 
+## CI
+
+GitHub Actions runs a minimal validation workflow for:
+
+- `push` to `main`
+- `push` to `develop`
+- pull requests
+
+Current CI scope:
+
+- install dependencies
+- run `pnpm typecheck`
+- run `pnpm lint`
+- run `pnpm test`
+
 ## Versioning
 
 The repository uses Release Please for versioning and release PR
