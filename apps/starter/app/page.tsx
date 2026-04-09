@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { toBlogPostSummary } from "blog-kit-core";
-import { toArticleMetadata } from "blog-kit-next";
+import { toArticleMetadata, toBlogStructuredData } from "blog-kit-next";
 import { getBlogPostSummaries, getPublishedPosts } from "../src/blog-data";
 import { siteConfig } from "../src/site-config";
 
@@ -14,9 +14,19 @@ export default async function HomePage() {
   const featuredMetadata = featuredPost
     ? toArticleMetadata(featuredPost, siteConfig)
     : null;
+  const blogStructuredData = toBlogStructuredData(
+    publishedPosts.slice(0, 10),
+    siteConfig
+  );
 
   return (
     <main style={{ minHeight: "100vh" }}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(blogStructuredData)
+        }}
+      />
       <section
         style={{
           padding: "96px 24px 56px",

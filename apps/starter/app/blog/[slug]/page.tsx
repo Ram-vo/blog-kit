@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { toArticleMetadata } from "blog-kit-next";
+import {
+  toArticleMetadata,
+  toBlogPostingStructuredData,
+  toBreadcrumbStructuredData
+} from "blog-kit-next";
 import {
   getBlogPostBySlug,
   getPublishedPosts,
@@ -38,8 +42,33 @@ export default async function BlogPostPage({
     notFound();
   }
 
+  const articleStructuredData = toBlogPostingStructuredData(
+    article,
+    siteConfig
+  );
+  const breadcrumbStructuredData = toBreadcrumbStructuredData(
+    [
+      { name: "Home", path: "/" },
+      { name: "Blog", path: "/" },
+      { name: article.title, path: `/blog/${article.slug}` }
+    ],
+    siteConfig
+  );
+
   return (
     <main style={{ padding: "88px 24px 72px" }}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(articleStructuredData)
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbStructuredData)
+        }}
+      />
       <article style={{ maxWidth: 760, margin: "0 auto" }}>
         <p
           style={{
