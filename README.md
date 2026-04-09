@@ -73,11 +73,13 @@ This scaffold currently includes:
 - a minimal Next.js starter app
 - RSS and sitemap helpers in the Next.js adapter
 - RSS and sitemap routes in the starter app
+- structured metadata helpers in the Next.js adapter
+- CI for typecheck, lint, and tests
+- Release Please versioning for publishable packages
 
 It does not include yet:
 
 - an editor/dashboard
-- release and publishing automation
 - package publishing configuration
 
 ## Installation
@@ -125,6 +127,9 @@ Configuration files:
 - `release-please-config.json`
 - `.release-please-manifest.json`
 - `.github/workflows/release-please.yml`
+
+For the current branching model, commit expectations, and release flow,
+see [docs/releases.md](./docs/releases.md).
 
 ## Running the Starter
 
@@ -196,5 +201,5 @@ For auth, RLS, and migration guidance, see
 
 ## Recommended Next Step
 
-Stabilize the public package APIs further, document the required
-Supabase schema, and expand the starter app beyond the minimal demo UI.
+Complete the remaining starter polish work in Phase 3, then decide the
+editorial scope for public packages before adding more surface area.
