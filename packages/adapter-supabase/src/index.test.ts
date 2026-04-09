@@ -1,14 +1,26 @@
 import { describe, expect, it } from "vitest";
 import type { Post } from "blog-kit-core";
 import {
+  type AuthorRow,
+  type CategoryRow,
+  type PostCategoryRow,
+  type PostRow,
+  SupabaseAdapterError,
   SupabaseAuthorRepository,
   SupabaseCategoryRepository,
   SupabasePostRepository,
-  type SupabaseClientLike
+  type SupabaseClientLike,
+  type SupabaseTableRowMap
 } from "./index";
 
 type TableRecord = Record<string, unknown>;
-type Store = Record<string, TableRecord[]>;
+type TableName = keyof SupabaseTableRowMap;
+type Store = {
+  posts: PostRow[];
+  authors: AuthorRow[];
+  categories: CategoryRow[];
+  post_categories: PostCategoryRow[];
+};
 
 function clone<T>(value: T): T {
   return JSON.parse(JSON.stringify(value)) as T;
@@ -105,10 +117,10 @@ function createPostStore(): Store {
   };
 }
 
-class FakeMutationBuilder {
+class FakeMutationBuilder<T extends TableName> {
   constructor(
     private readonly store: Store,
-    private readonly table: string,
+    private readonly table: T,
     private readonly action: "insert" | "update" | "delete",
     private readonly payload?: unknown,
     private readonly filters: Array<{ column: string; value: unknown }> = [],
@@ -116,7 +128,7 @@ class FakeMutationBuilder {
   ) {}
 
   eq(column: string, value: unknown) {
-    return new FakeMutationBuilder(
+    return new FakeMutationBuilder<T>(
       this.store,
       this.table,
       this.action,
@@ -127,7 +139,7 @@ class FakeMutationBuilder {
   }
 
   select() {
-    return new FakeMutationBuilder(
+    return new FakeMutationBuilder<T>(
       this.store,
       this.table,
       this.action,
@@ -153,12 +165,12 @@ class FakeMutationBuilder {
   }
 
   private async run() {
-    const table = this.store[this.table] ?? [];
+    const table = this.store[this.table] as SupabaseTableRowMap[T][];
 
     if (this.action === "insert") {
       const inserted = Array.isArray(this.payload)
-        ? (this.payload as TableRecord[])
-        : [this.payload as TableRecord];
+        ? (this.payload as SupabaseTableRowMap[T][])
+        : [this.payload as SupabaseTableRowMap[T]];
 
       table.push(...clone(inserted));
 
@@ -171,7 +183,7 @@ class FakeMutationBuilder {
     if (this.action === "update") {
       const target = this.filterRows(table);
       for (const row of target) {
-        Object.assign(row, clone(this.payload as TableRecord));
+        Object.assign(row, clone(this.payload as Partial<SupabaseTableRowMap[T]>));
       }
 
       return {
@@ -181,7 +193,7 @@ class FakeMutationBuilder {
     }
 
     const remaining = table.filter((row) => !this.matches(row));
-    this.store[this.table] = remaining;
+    this.store[this.table] = remaining as Store[T];
 
     return {
       data: null,
@@ -189,19 +201,20 @@ class FakeMutationBuilder {
     };
   }
 
-  private filterRows(rows: TableRecord[]) {
+  private filterRows(rows: SupabaseTableRowMap[T][]) {
     return rows.filter((row) => this.matches(row));
   }
 
-  private matches(row: TableRecord) {
-    return this.filters.every((filter) => row[filter.column] === filter.value);
+  private matches(row: SupabaseTableRowMap[T]) {
+    const record = row as unknown as TableRecord;
+    return this.filters.every((filter) => record[filter.column] === filter.value);
   }
 }
 
-class FakeQueryBuilder {
+class FakeQueryBuilder<T extends TableName> {
   constructor(
     private readonly store: Store,
-    private readonly table: string,
+    private readonly table: T,
     private readonly filters: Array<{ kind: "eq" | "contains"; column: string; value: unknown }> = [],
     private readonly orderBy?: { column: string; ascending?: boolean }
   ) {}
@@ -211,21 +224,21 @@ class FakeQueryBuilder {
   }
 
   eq(column: string, value: unknown) {
-    return new FakeQueryBuilder(this.store, this.table, [
+    return new FakeQueryBuilder<T>(this.store, this.table, [
       ...this.filters,
       { kind: "eq", column, value }
     ], this.orderBy);
   }
 
   contains(column: string, value: unknown) {
-    return new FakeQueryBuilder(this.store, this.table, [
+    return new FakeQueryBuilder<T>(this.store, this.table, [
       ...this.filters,
       { kind: "contains", column, value }
     ], this.orderBy);
   }
 
   order(column: string, options?: { ascending?: boolean }) {
-    return new FakeQueryBuilder(this.store, this.table, this.filters, {
+    return new FakeQueryBuilder<T>(this.store, this.table, this.filters, {
       column,
       ascending: options?.ascending
     });
@@ -249,15 +262,15 @@ class FakeQueryBuilder {
   }
 
   insert(value: unknown) {
-    return new FakeMutationBuilder(this.store, this.table, "insert", value);
+    return new FakeMutationBuilder<T>(this.store, this.table, "insert", value);
   }
 
   update(value: unknown) {
-    return new FakeMutationBuilder(this.store, this.table, "update", value);
+    return new FakeMutationBuilder<T>(this.store, this.table, "update", value);
   }
 
   delete() {
-    return new FakeMutationBuilder(this.store, this.table, "delete");
+    return new FakeMutationBuilder<T>(this.store, this.table, "delete");
   }
 
   then<TResult1 = unknown, TResult2 = never>(
@@ -273,7 +286,7 @@ class FakeQueryBuilder {
   }
 
   private apply() {
-    let rows = clone(this.store[this.table] ?? []);
+    let rows = clone(this.store[this.table] as SupabaseTableRowMap[T][]);
 
     rows = rows.filter((row) =>
       this.filters.every((filter) => {
@@ -330,8 +343,58 @@ function createFakeClient(initialStore?: Store): SupabaseClientLike {
   const store = initialStore ?? createPostStore();
 
   return {
-    from(table: string) {
-      return new FakeQueryBuilder(store, table) as never;
+    from<T extends TableName>(table: T) {
+      return new FakeQueryBuilder<T>(store, table) as never;
+    }
+  };
+}
+
+function createErrorClient(message: string): SupabaseClientLike {
+  return {
+    from<T extends TableName>(_table: T) {
+      return {
+        select() {
+          return this;
+        },
+        eq() {
+          return this;
+        },
+        contains() {
+          return this;
+        },
+        order() {
+          return this;
+        },
+        async range() {
+          return {
+            data: [],
+            error: { message },
+            count: 0
+          };
+        },
+        async single() {
+          return {
+            data: null,
+            error: { message }
+          };
+        },
+        insert() {
+          return this;
+        },
+        update() {
+          return this;
+        },
+        delete() {
+          return this;
+        },
+        then(onfulfilled?: ((value: { data: never[]; error: { message: string }; count?: number | null }) => unknown) | null) {
+          return Promise.resolve({
+            data: [],
+            error: { message },
+            count: 0
+          }).then(onfulfilled ?? undefined);
+        }
+      } as never;
     }
   };
 }
@@ -375,6 +438,17 @@ describe("SupabasePostRepository", () => {
 
     expect(created.slug).toBe("new-post");
     expect(created.tags).toEqual(["new"]);
+  });
+
+  it("classifies read failures with a typed adapter error", async () => {
+    const repository = new SupabasePostRepository(
+      createErrorClient("permission denied")
+    );
+
+    await expect(repository.getPosts(1, 10)).rejects.toMatchObject({
+      name: "SupabaseAdapterError",
+      code: "READ_FAILED"
+    } satisfies Partial<SupabaseAdapterError>);
   });
 });
 

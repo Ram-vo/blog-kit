@@ -153,6 +153,9 @@ have `is_draft = false` to appear in the public routes.
 For the current minimum schema and starter SQL, see
 [docs/supabase-schema.md](./docs/supabase-schema.md).
 
+For auth, RLS, and migration guidance, see
+[docs/supabase-ops.md](./docs/supabase-ops.md).
+
 ## Recommended Next Step
 
 Stabilize the public package APIs further, document the required

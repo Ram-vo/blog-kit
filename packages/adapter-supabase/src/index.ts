@@ -9,31 +9,9 @@ import type {
   PostRepository
 } from "blog-kit-core";
 
-export interface SupabaseQueryBuilderLike {
-  select(query: string, options?: { count?: "exact" | "planned" | "estimated" }): SupabaseQueryBuilderLike;
-  eq(column: string, value: unknown): SupabaseQueryBuilderLike;
-  contains(column: string, value: unknown): SupabaseQueryBuilderLike;
-  order(column: string, options?: { ascending?: boolean }): SupabaseQueryBuilderLike;
-  range(from: number, to: number): Promise<{ data: unknown[]; error: { message: string } | null; count: number | null }>;
-  single(): Promise<{ data: unknown; error: { message: string } | null }>;
-  insert(value: unknown): SupabaseMutationBuilderLike;
-  update(value: unknown): SupabaseMutationBuilderLike;
-  delete(): SupabaseMutationBuilderLike;
-}
-
-export interface SupabaseMutationBuilderLike {
-  eq(column: string, value: unknown): SupabaseMutationBuilderLike;
-  select(query?: string): SupabaseMutationBuilderLike;
-  single(): Promise<{ data: unknown; error: { message: string } | null }>;
-}
-
-export interface SupabaseClientLike {
-  from(table: string): SupabaseQueryBuilderLike;
-}
-
 type SocialLinksRecord = Partial<Record<"linkedin" | "x" | "facebook" | "instagram" | "github", string>>;
 
-type AuthorRow = {
+export type AuthorRow = {
   id: string;
   full_name: string | null;
   bio: string | null;
@@ -43,13 +21,13 @@ type AuthorRow = {
   updated_at: string;
 };
 
-type CategoryRow = {
+export type CategoryRow = {
   id: string;
   name: string;
   slug: string;
 };
 
-type PostRow = {
+export type PostRow = {
   id: string;
   slug: string;
   title: string;
@@ -67,31 +45,112 @@ type PostRow = {
   categories?: CategoryRow[] | null;
 };
 
+export type PostCategoryRow = {
+  post_id: string;
+  category_id: string;
+};
+
+export type SupabaseTableRowMap = {
+  posts: PostRow;
+  authors: AuthorRow;
+  categories: CategoryRow;
+  post_categories: PostCategoryRow;
+};
+
+type SupabaseError = {
+  message: string;
+} | null;
+
+type CountOption = {
+  count?: "exact" | "planned" | "estimated";
+};
+
+type ListResult<T> = Promise<{
+  data: T[];
+  error: SupabaseError;
+  count?: number | null;
+}>;
+
+type SingleResult<T> = Promise<{
+  data: T | null;
+  error: SupabaseError;
+}>;
+
+type MutationResult<T> = Promise<{
+  data: T | null;
+  error: SupabaseError;
+}>;
+
+type TableName = keyof SupabaseTableRowMap;
+
+type InsertInput<T extends TableName> =
+  T extends "post_categories" ? PostCategoryRow[] | PostCategoryRow : Partial<SupabaseTableRowMap[T]>;
+
+export interface SupabaseMutationBuilderLike<T> {
+  eq(column: string, value: unknown): SupabaseMutationBuilderLike<T>;
+  select(query?: string): SupabaseMutationBuilderLike<T>;
+  single(): SingleResult<T>;
+  then<TResult1 = { data: T | null; error: SupabaseError }, TResult2 = never>(
+    onfulfilled?: ((value: { data: T | null; error: SupabaseError }) => TResult1 | PromiseLike<TResult1>) | null,
+    onrejected?: ((reason: unknown) => TResult2 | PromiseLike<TResult2>) | null
+  ): Promise<TResult1 | TResult2>;
+}
+
+export interface SupabaseQueryBuilderLike<T> {
+  select(query: string, options?: CountOption): SupabaseQueryBuilderLike<T>;
+  eq(column: string, value: unknown): SupabaseQueryBuilderLike<T>;
+  contains(column: string, value: unknown): SupabaseQueryBuilderLike<T>;
+  order(column: string, options?: { ascending?: boolean }): SupabaseQueryBuilderLike<T>;
+  range(from: number, to: number): ListResult<T>;
+  single(): SingleResult<T>;
+  insert(value: InsertInput<TableName>): SupabaseMutationBuilderLike<T>;
+  update(value: Partial<T>): SupabaseMutationBuilderLike<T>;
+  delete(): SupabaseMutationBuilderLike<T>;
+  then<TResult1 = { data: T[]; error: SupabaseError; count?: number | null }, TResult2 = never>(
+    onfulfilled?: ((value: { data: T[]; error: SupabaseError; count?: number | null }) => TResult1 | PromiseLike<TResult1>) | null,
+    onrejected?: ((reason: unknown) => TResult2 | PromiseLike<TResult2>) | null
+  ): Promise<TResult1 | TResult2>;
+}
+
+export interface SupabaseClientLike {
+  from<T extends TableName>(table: T): SupabaseQueryBuilderLike<SupabaseTableRowMap[T]>;
+}
+
 export interface SupabaseAdapterOptions {
   client: SupabaseClientLike;
 }
 
-type ListResult = {
-  data: unknown[];
-  error: { message: string } | null;
-  count?: number | null;
-};
+export type SupabaseAdapterErrorCode =
+  | "NOT_FOUND"
+  | "READ_FAILED"
+  | "WRITE_FAILED"
+  | "RELATION_WRITE_FAILED";
 
-type MutationResult = {
-  data: unknown;
-  error: { message: string } | null;
-};
+export class SupabaseAdapterError extends Error {
+  constructor(
+    public readonly code: SupabaseAdapterErrorCode,
+    message: string,
+    public readonly causeDetail?: string
+  ) {
+    super(message);
+    this.name = "SupabaseAdapterError";
+  }
+}
 
-function toErrorMessage(error: { message: string } | null | undefined, fallback: string): string {
+function toErrorMessage(error: SupabaseError | undefined, fallback: string): string {
   return error?.message ?? fallback;
 }
 
-async function runListQuery(builder: unknown): Promise<ListResult> {
-  return builder as Promise<ListResult>;
-}
-
-async function runMutation(builder: unknown): Promise<MutationResult> {
-  return builder as Promise<MutationResult>;
+function createAdapterError(
+  code: SupabaseAdapterErrorCode,
+  message: string,
+  error?: SupabaseError
+) {
+  return new SupabaseAdapterError(
+    code,
+    message,
+    toErrorMessage(error, message)
+  );
 }
 
 function mapAuthor(row: AuthorRow): Author {
@@ -135,8 +194,10 @@ function mapPost(row: PostRow): Post {
   };
 }
 
-function mapPostInput(post: Partial<Omit<Post, "id" | "createdAt" | "updatedAt">>): Record<string, unknown> {
-  const payload: Record<string, unknown> = {};
+function mapPostInput(
+  post: Partial<Omit<Post, "id" | "createdAt" | "updatedAt">>
+): Partial<PostRow> {
+  const payload: Partial<PostRow> = {};
 
   if (post.slug !== undefined) payload.slug = post.slug;
   if (post.title !== undefined) payload.title = post.title;
@@ -161,11 +222,15 @@ export class SupabasePostRepository implements PostRepository {
       .eq("slug", slug)
       .single();
 
-    if (error || !data) {
+    if (error?.message === "Not found" || !data) {
       return null;
     }
 
-    return mapPost(data as PostRow);
+    if (error) {
+      throw createAdapterError("READ_FAILED", "Failed to fetch post by slug", error);
+    }
+
+    return mapPost(data);
   }
 
   async getPostById(id: string): Promise<Post | null> {
@@ -175,11 +240,15 @@ export class SupabasePostRepository implements PostRepository {
       .eq("id", id)
       .single();
 
-    if (error || !data) {
+    if (error?.message === "Not found" || !data) {
       return null;
     }
 
-    return mapPost(data as PostRow);
+    if (error) {
+      throw createAdapterError("READ_FAILED", "Failed to fetch post by id", error);
+    }
+
+    return mapPost(data);
   }
 
   async getPosts(page: number, pageSize: number, filters?: PostFilters): Promise<PaginatedPosts> {
@@ -215,11 +284,11 @@ export class SupabasePostRepository implements PostRepository {
       .range(start, end);
 
     if (error) {
-      throw new Error(`Supabase fetch failed: ${toErrorMessage(error, "Unknown error")}`);
+      throw createAdapterError("READ_FAILED", "Failed to fetch posts", error);
     }
 
     return {
-      posts: (data as PostRow[]).map(mapPost),
+      posts: data.map(mapPost),
       total: count ?? 0,
       page,
       pageSize
@@ -227,24 +296,22 @@ export class SupabasePostRepository implements PostRepository {
   }
 
   async listAllPublishedPosts(): Promise<Post[]> {
-    const { data, error } = await runListQuery(
-      this.client
-        .from("posts")
-        .select("*, author:authors(*), categories(*)")
-        .eq("is_draft", false)
-        .order("published_at", { ascending: false })
-    );
+    const { data, error } = await this.client
+      .from("posts")
+      .select("*, author:authors(*), categories(*)")
+      .eq("is_draft", false)
+      .order("published_at", { ascending: false });
 
     if (error) {
-      throw new Error(`Supabase fetch failed: ${toErrorMessage(error, "Unknown error")}`);
+      throw createAdapterError("READ_FAILED", "Failed to fetch published posts", error);
     }
 
-    return (data as PostRow[]).map(mapPost);
+    return data.map(mapPost);
   }
 
   async createPost(post: Omit<Post, "id" | "createdAt" | "updatedAt">): Promise<Post> {
     const timestamp = new Date().toISOString();
-    const insertPayload = {
+    const insertPayload: Partial<PostRow> = {
       ...mapPostInput(post),
       created_at: timestamp,
       updated_at: timestamp
@@ -257,71 +324,79 @@ export class SupabasePostRepository implements PostRepository {
       .single();
 
     if (error || !data) {
-      throw new Error(`Post creation failed: ${toErrorMessage(error, "Unknown error")}`);
+      throw createAdapterError("WRITE_FAILED", "Failed to create post", error);
     }
 
     if (post.categories.length > 0) {
-      const links = post.categories.map((category) => ({
-        post_id: (data as PostRow).id,
+      const links: PostCategoryRow[] = post.categories.map((category) => ({
+        post_id: data.id,
         category_id: category.id
       }));
 
-      const { error: linkError } = await runMutation(
-        this.client.from("post_categories").insert(links)
-      );
+      const { error: linkError } = await this.client
+        .from("post_categories")
+        .insert(links);
 
       if (linkError) {
-        throw new Error(`Post category linking failed: ${toErrorMessage(linkError, "Unknown error")}`);
+        throw createAdapterError(
+          "RELATION_WRITE_FAILED",
+          "Failed to link post categories",
+          linkError
+        );
       }
     }
 
-    return (await this.getPostById((data as PostRow).id)) as Post;
+    return (await this.getPostById(data.id)) as Post;
   }
 
   async updatePost(
     id: string,
     post: Partial<Omit<Post, "id" | "createdAt" | "updatedAt">>
   ): Promise<Post> {
-    const updatePayload = {
+    const updatePayload: Partial<PostRow> = {
       ...mapPostInput(post),
       updated_at: new Date().toISOString()
     };
 
-    const { error } = await runMutation(
-      this.client
-        .from("posts")
-        .update(updatePayload)
-        .eq("id", id)
-    );
+    const { error } = await this.client
+      .from("posts")
+      .update(updatePayload)
+      .eq("id", id);
 
     if (error) {
-      throw new Error(`Post update failed: ${toErrorMessage(error, "Unknown error")}`);
+      throw createAdapterError("WRITE_FAILED", "Failed to update post", error);
     }
 
     if (post.categories !== undefined) {
-      const { error: deleteError } = await runMutation(
-        this.client
-          .from("post_categories")
-          .delete()
-          .eq("post_id", id)
-      );
+      const { error: deleteError } = await this.client
+        .from("post_categories")
+        .delete()
+        .eq("post_id", id);
 
       if (deleteError) {
-        throw new Error(`Category unlink failed: ${toErrorMessage(deleteError, "Unknown error")}`);
+        throw createAdapterError(
+          "RELATION_WRITE_FAILED",
+          "Failed to unlink post categories",
+          deleteError
+        );
       }
 
       if (post.categories.length > 0) {
-        const links = post.categories.map((category) => ({
+        const links: PostCategoryRow[] = post.categories.map((category) => ({
           post_id: id,
           category_id: category.id
         }));
 
-        const { error: linkError } = await runMutation(
-          this.client.from("post_categories").insert(links)
-        );
+        const { error: linkError } = await this.client
+          .from("post_categories")
+          .insert(links);
 
         if (linkError) {
-          throw new Error(`Category linking failed: ${toErrorMessage(linkError, "Unknown error")}`);
+          throw createAdapterError(
+            "RELATION_WRITE_FAILED",
+            "Failed to relink post categories",
+            linkError
+          );
         }
       }
     }
@@ -330,15 +405,13 @@ export class SupabasePostRepository implements PostRepository {
   }
 
   async deletePost(id: string): Promise<void> {
-    const { error } = await runMutation(
-      this.client
-        .from("posts")
-        .delete()
-        .eq("id", id)
-    );
+    const { error } = await this.client
+      .from("posts")
+      .delete()
+      .eq("id", id);
 
     if (error) {
-      throw new Error(`Post deletion failed: ${toErrorMessage(error, "Unknown error")}`);
+      throw createAdapterError("WRITE_FAILED", "Failed to delete post", error);
     }
   }
 }
@@ -353,25 +426,27 @@ export class SupabaseAuthorRepository implements AuthorRepository {
       .eq("id", id)
       .single();
 
-    if (error || !data) {
+    if (error?.message === "Not found" || !data) {
       return null;
     }
 
-    return mapAuthor(data as AuthorRow);
+    if (error) {
+      throw createAdapterError("READ_FAILED", "Failed to fetch author by id", error);
+    }
+
+    return mapAuthor(data);
   }
 
   async listAuthors(): Promise<Author[]> {
-    const { data, error } = await runListQuery(
-      this.client
-        .from("authors")
-        .select("*")
-    );
+    const { data, error } = await this.client
+      .from("authors")
+      .select("*");
 
     if (error) {
-      throw new Error(`Supabase fetch failed: ${toErrorMessage(error, "Unknown error")}`);
+      throw createAdapterError("READ_FAILED", "Failed to list authors", error);
     }
 
-    return (data as AuthorRow[]).map(mapAuthor);
+    return data.map(mapAuthor);
   }
 }
 
@@ -379,17 +454,15 @@ export class SupabaseCategoryRepository implements CategoryRepository {
   constructor(private readonly client: SupabaseClientLike) {}
 
   async listCategories(): Promise<Category[]> {
-    const { data, error } = await runListQuery(
-      this.client
-        .from("categories")
-        .select("*")
-    );
+    const { data, error } = await this.client
+      .from("categories")
+      .select("*");
 
     if (error) {
-      throw new Error(`Supabase fetch failed: ${toErrorMessage(error, "Unknown error")}`);
+      throw createAdapterError("READ_FAILED", "Failed to list categories", error);
     }
 
-    return (data as CategoryRow[]).map(mapCategory);
+    return data.map(mapCategory);
   }
 
   async getCategoryBySlug(slug: string): Promise<Category | null> {
@@ -399,11 +472,15 @@ export class SupabaseCategoryRepository implements CategoryRepository {
       .eq("slug", slug)
       .single();
 
-    if (error || !data) {
+    if (error?.message === "Not found" || !data) {
       return null;
     }
 
-    return mapCategory(data as CategoryRow);
+    if (error) {
+      throw createAdapterError("READ_FAILED", "Failed to fetch category by slug", error);
+    }
+
+    return mapCategory(data);
   }
 }
 

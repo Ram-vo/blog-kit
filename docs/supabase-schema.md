@@ -189,3 +189,6 @@ Also confirm:
   local sample content.
 - This guide documents the current minimum contract, not the final
   public schema of the project.
+
+For RLS, auth, and migration guidance, see
+[supabase-ops.md](./supabase-ops.md).
