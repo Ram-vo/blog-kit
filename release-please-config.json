@@ -1,0 +1,19 @@
+{
+  "packages": {
+    "packages/core": {
+      "release-type": "node",
+      "package-name": "blog-kit-core",
+      "component": "blog-kit-core"
+    },
+    "packages/adapter-next": {
+      "release-type": "node",
+      "package-name": "blog-kit-next",
+      "component": "blog-kit-next"
+    },
+    "packages/adapter-supabase": {
+      "release-type": "node",
+      "package-name": "blog-kit-supabase",
+      "component": "blog-kit-supabase"
+    }
+  }
+}

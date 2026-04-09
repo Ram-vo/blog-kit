@@ -88,6 +88,23 @@ pnpm test
 pnpm build
 ```
 
+## Versioning
+
+The repository uses Release Please for versioning and release PR
+automation.
+
+Current scope:
+
+- `blog-kit-core`
+- `blog-kit-next`
+- `blog-kit-supabase`
+
+Configuration files:
+
+- `release-please-config.json`
+- `.release-please-manifest.json`
+- `.github/workflows/release-please.yml`
+
 ## Running the Starter
 
 ```bash
