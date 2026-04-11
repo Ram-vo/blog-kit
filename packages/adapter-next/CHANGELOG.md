@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/Ram-vo/blog-kit/compare/blog-kit-next-v0.3.0...blog-kit-next-v0.4.0) (2026-04-11)
+
+
+### Features
+
+* **core:** add reusable pagination helpers ([93ef3ca](https://github.com/Ram-vo/blog-kit/commit/93ef3ca6accb7f20eb24094c92bc12c693e81e65))
+
 ## [0.3.0](https://github.com/Ram-vo/blog-kit/compare/blog-kit-next-v0.2.0...blog-kit-next-v0.3.0) (2026-04-09)
 
 
