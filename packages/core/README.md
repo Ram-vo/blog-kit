@@ -83,3 +83,20 @@ The returned object always includes:
 
 This package is meant to be consumed by adapters and apps. It should be
 the lowest-level dependency in the `blog-kit` package graph.
+
+## Example
+
+```ts
+import {
+  filterPostsByTag,
+  paginateItems,
+  toBlogPostSummary
+} from "blog-kit-core";
+
+const summaries = posts.map((post) => toBlogPostSummary(post, siteConfig));
+const taggedPosts = filterPostsByTag(posts, "nextjs");
+const pageOne = paginateItems(summaries, { page: 1, pageSize: 6 });
+```
+
+Use the core package when you want stable domain modeling and pure
+helpers without taking a dependency on Next.js or Supabase.
