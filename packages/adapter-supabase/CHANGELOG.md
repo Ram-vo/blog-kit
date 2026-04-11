@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/Ram-vo/blog-kit/compare/blog-kit-supabase-v0.3.0...blog-kit-supabase-v0.4.0) (2026-04-11)
+
+
+### Features
+
+* **packages:** complete package maturity documentation and test coverage ([#8](https://github.com/Ram-vo/blog-kit/issues/8)) ([3d56379](https://github.com/Ram-vo/blog-kit/commit/3d5637960c9cac34f8b5d08cac73e10355dac333))
+
 ## [0.3.0](https://github.com/Ram-vo/blog-kit/compare/blog-kit-supabase-v0.2.0...blog-kit-supabase-v0.3.0) (2026-04-11)
 
 
