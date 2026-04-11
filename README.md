@@ -206,7 +206,13 @@ For the current minimum schema and starter SQL, see
 For auth, RLS, and migration guidance, see
 [docs/supabase-ops.md](./docs/supabase-ops.md).
 
+## Editorial Scope
+
+For the current decision on what belongs in public editorial scope,
+what should remain example-only, and what is explicitly out of scope,
+see [docs/editorial-scope.md](./docs/editorial-scope.md).
+
 ## Recommended Next Step
 
-Complete the remaining starter polish work in Phase 3, then decide the
-editorial scope for public packages before adding more surface area.
+Define package publishing setup beyond versioning and keep expanding
+package-facing documentation and examples.
