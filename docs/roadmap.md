@@ -96,7 +96,7 @@ Exit criteria:
 
 ## Phase 4: Package Maturity
 
-Status: in progress
+Status: completed
 
 Goals:
 
@@ -111,6 +111,15 @@ Planned work:
 - package-level examples
 - API usage documentation
 - stronger package-level test coverage
+- package-level README files
+
+Delivered:
+
+- structured metadata helpers
+- pagination helpers
+- package-level examples in README files
+- API usage documentation across package READMEs
+- package-level tests for `blog-kit-core` and `blog-kit-next`
 - package-level README files
 
 Exit criteria:
@@ -148,7 +157,7 @@ Exit criteria:
 
 ## Phase 6: Release Readiness
 
-Status: in progress
+Status: completed
 
 Goals:
 
@@ -169,6 +178,9 @@ Delivered:
 - Release Please configuration for package versioning
 - CI for dependency install, typecheck, and tests
 - publishing and versioning workflow documentation
+- manual publishing strategy and maintainer checklist
+- contributor guidance for multi-package changes
+- publish-ready package metadata for the reusable packages
 
 Exit criteria:
 
@@ -188,6 +200,6 @@ Exit criteria:
 
 This is the current recommended order of work for the next iterations:
 
-1. define package publishing setup beyond versioning
-2. add stronger package-level examples and API usage documentation
-3. expand package-level test coverage for public APIs
+1. prepare the first intentional publishable package release flow
+2. decide whether a top-level `blog-kit` metapackage is needed
+3. evaluate npm publish automation after the first manual release

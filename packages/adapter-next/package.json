@@ -1,10 +1,15 @@
 {
   "name": "blog-kit-next",
   "version": "0.3.0",
-  "private": true,
+  "private": false,
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -19,5 +24,8 @@
   },
   "dependencies": {
     "blog-kit-core": "workspace:*"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
