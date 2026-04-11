@@ -215,4 +215,4 @@ see [docs/editorial-scope.md](./docs/editorial-scope.md).
 ## Recommended Next Step
 
 Define package publishing setup beyond versioning and keep expanding
-package-facing documentation and examples.
+package-level test coverage ahead of the first publishable release.
