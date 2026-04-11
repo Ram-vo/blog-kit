@@ -55,6 +55,18 @@ Responsibilities:
 - fallback sample content for zero-config local development
 - optional Supabase-backed runtime mode
 
+## Editorial Boundary
+
+The current project stance is:
+
+- generic editorial domain features may live in public packages
+- dashboard UI should remain example-only
+- auth wiring should remain example-only
+- media management UI should remain example-only
+
+For the current detailed decision model, see
+[`docs/editorial-scope.md`](./editorial-scope.md).
+
 ## Runtime Modes
 
 ### Starter Local Mode
