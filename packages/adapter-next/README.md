@@ -36,3 +36,20 @@ components.
 
 It is designed to reduce app-level duplication around metadata,
 structured data, and publishing outputs.
+
+## Example
+
+```ts
+import {
+  toArticleMetadata,
+  toBlogPostingStructuredData,
+  toRssFeedFromSummaries
+} from "blog-kit-next";
+
+const metadata = toArticleMetadata(post, siteConfig);
+const structuredData = toBlogPostingStructuredData(post, siteConfig);
+const rss = toRssFeedFromSummaries(postSummaries, siteConfig);
+```
+
+Use this package when your Next.js app needs a reusable publishing layer
+for metadata, feeds, sitemaps, and structured data.

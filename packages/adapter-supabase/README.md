@@ -33,3 +33,17 @@ Use `blog-kit-supabase` when you need:
 
 - `../../docs/supabase-schema.md`
 - `../../docs/supabase-ops.md`
+
+## Example
+
+```ts
+import { createSupabaseAdapter } from "blog-kit-supabase";
+
+const adapter = createSupabaseAdapter({ client });
+const posts = await adapter.posts.listAllPublishedPosts();
+const post = await adapter.posts.getPostBySlug("modular-publishing");
+```
+
+Use this adapter when your content model already lives in Supabase and
+you want repository behavior that maps cleanly into `blog-kit-core`
+types.
