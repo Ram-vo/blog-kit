@@ -81,7 +81,7 @@ This scaffold currently includes:
 It does not include yet:
 
 - an editor/dashboard
-- package publishing configuration
+- automated npm publishing
 
 ## Installation
 
@@ -131,6 +131,9 @@ Configuration files:
 
 For the current branching model, commit expectations, and release flow,
 see [docs/releases.md](./docs/releases.md).
+
+For the current publishing strategy and maintainer checklist, see
+[docs/publishing.md](./docs/publishing.md).
 
 ## Running the Starter
 
@@ -214,5 +217,5 @@ see [docs/editorial-scope.md](./docs/editorial-scope.md).
 
 ## Recommended Next Step
 
-Define package publishing setup beyond versioning and keep expanding
-package-level test coverage ahead of the first publishable release.
+Prepare the first intentional publishable package release flow and
+decide whether a top-level `blog-kit` metapackage is needed.
