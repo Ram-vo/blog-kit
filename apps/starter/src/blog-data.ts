@@ -1,6 +1,7 @@
 import type { BlogPostSummary, Post } from "blog-kit-core";
 import { toBlogPost, toBlogPostSummary } from "blog-kit-core";
 import { samplePosts } from "./sample-posts";
+import { shouldUseSampleContent } from "./runtime-config";
 import { siteConfig } from "./site-config";
 import { createStarterAdapter, hasSupabaseConfig } from "./supabase";
 
@@ -9,6 +10,10 @@ function sampleSummaries(): BlogPostSummary[] {
 }
 
 export async function getBlogPostSummaries(): Promise<BlogPostSummary[]> {
+  if (shouldUseSampleContent()) {
+    return sampleSummaries();
+  }
+
   const adapter = createStarterAdapter();
 
   if (!adapter || !hasSupabaseConfig()) {
@@ -24,6 +29,10 @@ export async function getBlogPostSummaries(): Promise<BlogPostSummary[]> {
 }
 
 export async function getBlogPostBySlug(slug: string): Promise<Post | null> {
+  if (shouldUseSampleContent()) {
+    return samplePosts.find((post) => post.slug === slug) ?? null;
+  }
+
   const adapter = createStarterAdapter();
 
   if (!adapter || !hasSupabaseConfig()) {
@@ -43,6 +52,10 @@ export async function getRenderableBlogPost(slug: string) {
 }
 
 export async function getPublishedPosts(): Promise<Post[]> {
+  if (shouldUseSampleContent()) {
+    return samplePosts;
+  }
+
   const adapter = createStarterAdapter();
 
   if (!adapter || !hasSupabaseConfig()) {
