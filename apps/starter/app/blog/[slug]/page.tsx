@@ -25,9 +25,10 @@ export async function generateStaticParams() {
 export async function generateMetadata({
   params
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
-  const post = await getBlogPostBySlug(params.slug);
+  const { slug } = await params;
+  const post = await getBlogPostBySlug(slug);
 
   if (!post) {
     return {};
@@ -39,9 +40,10 @@ export async function generateMetadata({
 export default async function BlogPostPage({
   params
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const article = await getRenderableBlogPost(params.slug);
+  const { slug } = await params;
+  const article = await getRenderableBlogPost(slug);
 
   if (!article) {
     notFound();
