@@ -140,51 +140,20 @@ see [docs/releases.md](./docs/releases.md).
 For the current publishing strategy and maintainer checklist, see
 [docs/publishing.md](./docs/publishing.md).
 
+For install and adoption examples by scenario, see
+[docs/getting-started.md](./docs/getting-started.md).
+
 ## Adoption Paths
 
-Choose the package surface based on how much control you want.
+Choose the package surface based on how much control you want:
 
-### Use `blog-kit`
+- `blog-kit` for the default convenience entrypoint
+- `blog-kit/supabase` for the adapter path
+- package-specific modules for stricter dependency control
+- `apps/starter` for a runnable reference implementation
 
-Use the metapackage when you want a simple default install surface:
-
-- core blog types and pure helpers
-- publishing helpers for metadata, RSS, sitemap, and structured data
-- optional Supabase access from `blog-kit/supabase`
-
-### Use `blog-kit-core`
-
-Use `blog-kit-core` when you want only:
-
-- framework-agnostic domain types
-- repository contracts
-- pure filtering, pagination, and transformation helpers
-
-### Use `blog-kit-next`
-
-Use `blog-kit-next` when you already have your own domain layer and want:
-
-- article metadata helpers
-- RSS output
-- sitemap entries
-- structured data generation
-
-### Use `blog-kit-supabase`
-
-Use `blog-kit-supabase` when your content already lives in Supabase and
-you want:
-
-- repository implementations
-- row-to-domain mapping
-- typed adapter error handling
-
-### Use `apps/starter`
-
-Use the starter when you want:
-
-- a runnable reference app
-- a public static demo for GitHub Pages
-- a starting point for integrating your own design system
+For concrete install commands and code samples, see
+[docs/getting-started.md](./docs/getting-started.md).
 
 ## Running the Starter
 

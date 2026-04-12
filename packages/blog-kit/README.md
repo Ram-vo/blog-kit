@@ -35,3 +35,6 @@ const adapter = createSupabaseAdapter({ client });
 Use the metapackage when you want a more ergonomic default entrypoint.
 Use the package-specific modules when you want explicit control over
 dependencies and import boundaries.
+
+For install paths and adoption examples, see
+[`../../docs/getting-started.md`](../../docs/getting-started.md).
