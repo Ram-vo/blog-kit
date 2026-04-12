@@ -1,0 +1,37 @@
+{
+  "name": "blog-kit",
+  "version": "0.1.0",
+  "private": false,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./supabase": {
+      "types": "./dist/supabase.d.ts",
+      "default": "./dist/supabase.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "echo 'lint not configured yet'",
+    "test": "echo 'metapackage exports are validated by workspace builds'"
+  },
+  "dependencies": {
+    "blog-kit-core": "workspace:*",
+    "blog-kit-next": "workspace:*",
+    "blog-kit-supabase": "workspace:*"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

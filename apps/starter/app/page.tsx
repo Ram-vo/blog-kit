@@ -13,6 +13,39 @@ import {
   SurfacePanel
 } from "./components/starter-ui";
 
+const packageCards = [
+  {
+    name: "blog-kit-core",
+    eyebrow: "Core layer",
+    copy: "Domain types, repository contracts, pagination, and pure content helpers."
+  },
+  {
+    name: "blog-kit-next",
+    eyebrow: "App integration",
+    copy: "Metadata, RSS, sitemap, and structured data helpers for App Router projects."
+  },
+  {
+    name: "blog-kit-supabase",
+    eyebrow: "Provider adapter",
+    copy: "Provider-specific repositories and mapping logic for a Supabase-backed blog."
+  }
+];
+
+const deploymentModes = [
+  {
+    title: "Local sample mode",
+    copy: "Boot the starter with in-repo content and validate package boundaries without credentials."
+  },
+  {
+    title: "Supabase-backed mode",
+    copy: "Point the app at a compatible schema and validate the adapter path with real published rows."
+  },
+  {
+    title: "Static demo mode",
+    copy: "Export the starter for GitHub Pages and use it as a public package website and live preview."
+  }
+];
+
 export default async function HomePage() {
   const publishedPosts = await getPublishedPosts();
   const posts = await getBlogPostSummaries();
@@ -42,22 +75,49 @@ export default async function HomePage() {
       />
       <SurfacePanel className="relative overflow-hidden px-6 py-8 sm:px-8">
         <div className="pointer-events-none absolute -bottom-28 -right-[12%] h-60 w-60 rounded-full bg-[radial-gradient(circle,rgba(211,91,45,0.2),transparent_68%)]" />
-        <div className="grid gap-6">
-          <Eyebrow>Starter app</Eyebrow>
-          <h1 className="max-w-[16ch] text-[clamp(2.9rem,6.2vw,5.1rem)] leading-[0.92] font-semibold tracking-[-0.06em] sm:max-w-[14ch]">
-            Ship a blog around reusable domain and adapter packages.
-          </h1>
-          <p className="max-w-[42rem] text-[1.2rem] leading-[1.7] text-starter-muted">
-            This starter shows how a site can consume{" "}
-            <strong>blog-kit-core</strong> and{" "}
-            <strong>blog-kit-next</strong> while keeping brand and UI
-            decisions inside the app layer.
-          </p>
-          <p className="max-w-[38rem] font-sans text-[0.95rem] leading-[1.6] text-starter-soft">
-            Use it with local sample content for zero-setup development,
-            or point it at a compatible Supabase project to validate the
-            adapter path with real data.
-          </p>
+        <div className="pointer-events-none absolute -top-16 left-[48%] h-44 w-44 rounded-full bg-[radial-gradient(circle,rgba(13,111,81,0.16),transparent_70%)]" />
+        <div className="grid gap-8 lg:grid-cols-[minmax(0,1.25fr)_minmax(300px,0.75fr)] lg:items-end">
+          <div className="grid gap-6">
+            <Eyebrow>Public starter demo</Eyebrow>
+            <h1 className="max-w-[11ch] text-[clamp(3.2rem,7vw,5.9rem)] leading-[0.9] font-semibold tracking-[-0.07em] sm:max-w-[12ch]">
+              Ship a reusable blog without coupling it to one app.
+            </h1>
+            <p className="max-w-[42rem] text-[1.16rem] leading-[1.75] text-starter-muted">
+              <strong>blog-kit</strong> splits content logic, provider
+              adapters, and app shell composition so you can swap brand,
+              CMS, or routes without rewriting the whole blog layer.
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <PrimaryLink
+                href="/blog/building-a-modular-blog-toolkit"
+                className="inline-flex rounded-full bg-starter-dark px-5 py-3 text-[#fff7ea]"
+              >
+                Explore the starter
+              </PrimaryLink>
+              <a
+                href="https://github.com/Ram-vo/blog-kit"
+                className="starter-link inline-flex rounded-full border border-[var(--surface-border)] bg-[rgba(255,255,255,0.58)] px-5 py-3 font-sans text-[0.92rem] text-starter-ink"
+              >
+                View repository
+              </a>
+            </div>
+          </div>
+
+          <div className="rounded-[28px] border border-[rgba(16,33,27,0.14)] bg-[linear-gradient(180deg,rgba(21,39,31,0.98),rgba(15,31,25,0.96))] px-5 py-5 text-[#fff7ea] shadow-[var(--shadow-card)]">
+            <p className="font-sans text-[0.76rem] uppercase tracking-[0.1em] text-[rgba(255,247,234,0.72)]">
+              Quick start
+            </p>
+            <pre className="mt-4 overflow-x-auto rounded-[20px] border border-white/8 bg-[rgba(255,255,255,0.08)] p-4 font-sans text-[0.92rem] leading-[1.8] text-[#fff8ed] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
+              <code>{`pnpm install
+pnpm --dir apps/starter dev
+pnpm --dir apps/starter build:static`}</code>
+            </pre>
+            <p className="mt-4 text-[0.96rem] leading-[1.7] text-[rgba(255,247,234,0.84)]">
+              Use sample content locally, switch to Supabase when the
+              schema is ready, and export the same app as a public GitHub
+              Pages demo.
+            </p>
+          </div>
         </div>
       </SurfacePanel>
 
@@ -83,6 +143,74 @@ export default async function HomePage() {
               </div>
             </div>
           )}
+      </section>
+
+      <section className="mt-7 grid gap-5 lg:grid-cols-[minmax(0,1.05fr)_minmax(340px,0.95fr)]">
+        <SurfacePanel className="px-6 py-6 sm:px-7">
+          <SectionHeading
+            title="Package boundaries"
+            meta="Reusable pieces"
+          />
+          <div className="grid gap-4">
+            <div className="grid gap-3 rounded-[24px] border border-[var(--surface-border)] bg-[linear-gradient(135deg,rgba(255,250,243,0.95),rgba(248,240,225,0.92))] px-5 py-5">
+              <p className="font-sans text-[0.76rem] uppercase tracking-[0.1em] text-starter-soft">
+                System design
+              </p>
+              <h3 className="max-w-[24ch] text-[1.28rem] leading-[1.05] font-semibold tracking-[-0.04em]">
+                Keep content rules, provider code, and app composition in separate layers.
+              </h3>
+              <p className="max-w-[56ch] text-[0.97rem] leading-[1.7] text-starter-muted">
+                The starter is intentionally wired against public package
+                APIs so teams can replace the shell, theme, and data
+                source without reimplementing the blog domain.
+              </p>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-3">
+            {packageCards.map((pkg) => (
+              <SurfaceCard
+                key={pkg.name}
+                className="grid gap-3 px-5 py-5"
+              >
+                <p className="font-sans text-[0.72rem] uppercase tracking-[0.1em] text-starter-soft">
+                  {pkg.eyebrow}
+                </p>
+                <h3 className="text-[1.08rem] leading-[1.04] font-semibold tracking-[-0.04em] text-starter-ink">
+                  {pkg.name}
+                </h3>
+                <p className="text-[0.94rem] leading-[1.65] text-starter-muted">
+                  {pkg.copy}
+                </p>
+              </SurfaceCard>
+            ))}
+            </div>
+          </div>
+        </SurfacePanel>
+
+        <SurfacePanel className="px-6 py-6 sm:px-7">
+          <SectionHeading
+            title="Adoption path"
+            meta="Three ways in"
+          />
+          <div className="grid gap-3">
+            {deploymentModes.map((mode, index) => (
+              <div
+                key={mode.title}
+                className="grid gap-2 rounded-[22px] border border-[var(--surface-border)] bg-[rgba(255,255,255,0.52)] px-4 py-4"
+              >
+                <p className="font-sans text-[0.72rem] uppercase tracking-[0.1em] text-starter-soft">
+                  0{index + 1}
+                </p>
+                <h3 className="text-[1.1rem] leading-[1.04] font-semibold tracking-[-0.04em]">
+                  {mode.title}
+                </h3>
+                <p className="max-w-[34ch] text-[0.95rem] leading-[1.65] text-starter-muted">
+                  {mode.copy}
+                </p>
+              </div>
+            ))}
+          </div>
+        </SurfacePanel>
       </section>
 
       <section className="mt-7">
@@ -147,6 +275,37 @@ export default async function HomePage() {
             }
           />
         )}
+      </section>
+
+      <section className="mt-7">
+        <SurfacePanel className="grid gap-6 px-6 py-6 sm:px-7 lg:grid-cols-[minmax(0,1fr)_minmax(280px,0.8fr)] lg:items-end">
+          <div className="grid gap-3">
+            <Eyebrow>Deployable reference</Eyebrow>
+            <h2 className="max-w-[15ch] text-[clamp(2.2rem,4.8vw,3.6rem)] leading-[0.94] font-semibold tracking-[-0.055em]">
+              One starter, three validation paths.
+            </h2>
+            <p className="max-w-[44rem] text-[1.05rem] leading-[1.75] text-starter-muted">
+              Run the app locally with sample data, connect it to
+              Supabase for integration work, or publish the exported
+              version to GitHub Pages so people can inspect the product
+              without cloning the repo.
+            </p>
+          </div>
+          <div className="grid gap-3 font-sans text-[0.95rem] leading-[1.7] text-starter-soft">
+            <PrimaryLink href="/blog/rss.xml">
+              Check the RSS output
+            </PrimaryLink>
+            <PrimaryLink href="/sitemap.xml">
+              Check the sitemap output
+            </PrimaryLink>
+            <a
+              href="https://github.com/Ram-vo/blog-kit/blob/main/docs/starter-deploy.md"
+              className="starter-link"
+            >
+              Read the deployment guide
+            </a>
+          </div>
+        </SurfacePanel>
       </section>
     </StarterContainer>
   );
