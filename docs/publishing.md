@@ -11,6 +11,7 @@ workflow.
 
 The repository currently treats these packages as publishable targets:
 
+- `blog-kit`
 - `blog-kit-core`
 - `blog-kit-next`
 - `blog-kit-supabase`
@@ -115,12 +116,13 @@ When a change affects one publishable package materially:
 
 For the first intentional npm release, keep the process conservative:
 
-1. publish only the three reusable packages
-2. do not publish a top-level `blog-kit` metapackage yet
+1. publish `blog-kit` alongside the three package-specific modules
+2. keep `blog-kit/supabase` as the explicit adapter entrypoint
 3. treat the starter app as documentation and a migration target
 4. prefer a manual publish after validating package contents
 
-This keeps the first release reversible and easy to reason about.
+This keeps the first release ergonomic without hiding the package
+boundaries from advanced adopters.
 
 ## Future Automation
 

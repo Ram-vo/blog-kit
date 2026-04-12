@@ -18,6 +18,7 @@ Other reasonable alternatives if we ever want a different brand:
 
 Split the current blog into three layers:
 
+- `blog-kit`: convenience metapackage for the default public surface.
 - `blog-kit-core`: domain, contracts, and pure utilities.
 - `blog-kit-supabase`: persistence and editorial/auth integration for Supabase.
 - `blog-kit-next`: integration helpers and components for Next.js.
@@ -25,6 +26,7 @@ Split the current blog into three layers:
 
 ## Packages
 
+- `blog-kit`: convenience entrypoint for core helpers, publishing helpers, and the `blog-kit/supabase` subpath
 - `blog-kit-core`: domain types, repository contracts, and pure helpers
 - `blog-kit-supabase`: repositories and mapping logic for Supabase
 - `blog-kit-next`: metadata, RSS, sitemap, and publishing helpers
@@ -32,6 +34,7 @@ Split the current blog into three layers:
 
 Package-level documentation:
 
+- [`packages/blog-kit/README.md`](./packages/blog-kit/README.md)
 - [`packages/core/README.md`](./packages/core/README.md)
 - [`packages/adapter-next/README.md`](./packages/adapter-next/README.md)
 - [`packages/adapter-supabase/README.md`](./packages/adapter-supabase/README.md)
@@ -73,6 +76,7 @@ This scaffold currently includes:
 - a minimal Next.js starter app
 - a Tailwind CSS v4 styling baseline in the starter app
 - a static export path for a public starter demo
+- a publishable `blog-kit` metapackage
 - RSS and sitemap helpers in the Next.js adapter
 - RSS and sitemap routes in the starter app
 - structured metadata helpers in the Next.js adapter
@@ -103,7 +107,6 @@ pnpm build
 GitHub Actions runs a minimal validation workflow for:
 
 - `push` to `main`
-- `push` to `develop`
 - pull requests
 
 Current CI scope:
@@ -120,6 +123,7 @@ automation.
 
 Current scope:
 
+- `blog-kit`
 - `blog-kit-core`
 - `blog-kit-next`
 - `blog-kit-supabase`
@@ -135,6 +139,52 @@ see [docs/releases.md](./docs/releases.md).
 
 For the current publishing strategy and maintainer checklist, see
 [docs/publishing.md](./docs/publishing.md).
+
+## Adoption Paths
+
+Choose the package surface based on how much control you want.
+
+### Use `blog-kit`
+
+Use the metapackage when you want a simple default install surface:
+
+- core blog types and pure helpers
+- publishing helpers for metadata, RSS, sitemap, and structured data
+- optional Supabase access from `blog-kit/supabase`
+
+### Use `blog-kit-core`
+
+Use `blog-kit-core` when you want only:
+
+- framework-agnostic domain types
+- repository contracts
+- pure filtering, pagination, and transformation helpers
+
+### Use `blog-kit-next`
+
+Use `blog-kit-next` when you already have your own domain layer and want:
+
+- article metadata helpers
+- RSS output
+- sitemap entries
+- structured data generation
+
+### Use `blog-kit-supabase`
+
+Use `blog-kit-supabase` when your content already lives in Supabase and
+you want:
+
+- repository implementations
+- row-to-domain mapping
+- typed adapter error handling
+
+### Use `apps/starter`
+
+Use the starter when you want:
+
+- a runnable reference app
+- a public static demo for GitHub Pages
+- a starting point for integrating your own design system
 
 ## Running the Starter
 
@@ -233,5 +283,5 @@ see [docs/editorial-scope.md](./docs/editorial-scope.md).
 
 ## Recommended Next Step
 
-Validate the GitHub Pages demo deployment, then decide whether a
-top-level `blog-kit` metapackage is needed.
+Validate the first metapackage release flow and decide what the initial
+npm publish set should be.

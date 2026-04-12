@@ -7,6 +7,7 @@ release pull requests for the publishable packages in the monorepo.
 
 Release Please currently tracks these packages:
 
+- `blog-kit`
 - `blog-kit-core`
 - `blog-kit-next`
 - `blog-kit-supabase`
@@ -19,21 +20,19 @@ The current configuration lives in:
 
 ## Branch Strategy
 
-The repository currently uses a simple two-branch flow:
-
-- `develop` is the active integration branch for ongoing work
-- `main` is the release branch observed by Release Please
+The repository uses `main` as the only permanent branch.
 
 Recommended flow:
 
-1. open feature branches from `develop`
-2. merge completed work into `develop`
-3. merge reviewed batches from `develop` into `main`
-4. let Release Please open or update the release pull request from
+1. create a short-lived branch from `main`
+2. use `feature/*`, `fix/*`, or `chore/*` based on the change type
+3. open a pull request back into `main`
+4. prefer `squash and merge` for the final integration commit
+5. let Release Please open or update the release pull request from
    changes merged into `main`
 
-This keeps `main` focused on releasable history while allowing `develop`
-to absorb ongoing changes more freely.
+This keeps `main` stable, releasable, and easy to roll back with
+`git revert`.
 
 ## Commit Expectations
 

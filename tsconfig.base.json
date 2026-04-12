@@ -5,6 +5,8 @@
     "moduleResolution": "Bundler",
     "baseUrl": ".",
     "paths": {
+      "blog-kit": ["packages/blog-kit/src/index.ts"],
+      "blog-kit/supabase": ["packages/blog-kit/src/supabase.ts"],
       "blog-kit-core": ["packages/core/src/index.ts"],
       "blog-kit-next": ["packages/adapter-next/src/index.ts"],
       "blog-kit-supabase": ["packages/adapter-supabase/src/index.ts"]

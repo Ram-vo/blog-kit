@@ -1,5 +1,5 @@
 {
-  "name": "blog-kit",
+  "name": "blog-kit-workspace",
   "version": "0.1.0",
   "private": true,
   "description": "Modular open source blog toolkit for Next.js and Supabase.",
