@@ -73,6 +73,18 @@ importers:
         specifier: workspace:*
         version: link:../core
 
+  packages/blog-kit:
+    dependencies:
+      blog-kit-core:
+        specifier: workspace:*
+        version: link:../core
+      blog-kit-next:
+        specifier: workspace:*
+        version: link:../adapter-next
+      blog-kit-supabase:
+        specifier: workspace:*
+        version: link:../adapter-supabase
+
   packages/core: {}
 
 packages:
