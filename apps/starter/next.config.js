@@ -10,9 +10,7 @@ const nextConfig = {
   images: {
     unoptimized: isStaticExport
   },
-  experimental: {
-    typedRoutes: true
-  }
+  typedRoutes: !isStaticExport
 };
 
 export default nextConfig;

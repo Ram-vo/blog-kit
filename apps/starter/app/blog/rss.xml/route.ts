@@ -2,6 +2,8 @@ import { toRssFeed } from "blog-kit-next";
 import { getPublishedPosts } from "../../../src/blog-data";
 import { siteConfig } from "../../../src/site-config";
 
+export const dynamic = "force-static";
+
 export async function GET() {
   const posts = await getPublishedPosts();
   const xml = toRssFeed(posts, siteConfig);
