@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import type { Route } from "next";
 import Link from "next/link";
 import { cn } from "../../src/classnames";
+import { withStarterBasePath } from "../../src/runtime-config";
 
 export function StarterContainer({
   children,
@@ -105,7 +106,7 @@ export function PrimaryLink({
   }
 
   return (
-    <a href={href} className={cn("starter-link", className)}>
+    <a href={withStarterBasePath(href)} className={cn("starter-link", className)}>
       {children}
     </a>
   );

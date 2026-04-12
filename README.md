@@ -72,6 +72,7 @@ This scaffold currently includes:
 - a tested Supabase adapter layer
 - a minimal Next.js starter app
 - a Tailwind CSS v4 styling baseline in the starter app
+- a static export path for a public starter demo
 - RSS and sitemap helpers in the Next.js adapter
 - RSS and sitemap routes in the starter app
 - structured metadata helpers in the Next.js adapter
@@ -152,10 +153,25 @@ adapted more easily to an existing design system.
 For the recommended theming and design system integration model, see
 [docs/starter-theming.md](./docs/starter-theming.md).
 
+For static demo deployment and GitHub Pages guidance, see
+[docs/starter-deploy.md](./docs/starter-deploy.md).
+
 ### Local Sample Mode
 
 No environment variables are required. The starter will use the sample
 content defined in `apps/starter/src/sample-posts.ts`.
+
+### Static Demo Mode
+
+The starter can also be exported as a static site for GitHub Pages.
+
+```bash
+pnpm --dir apps/starter build:static
+```
+
+The GitHub Pages workflow builds the starter with sample content and a
+repository-scoped base path so the public demo can act as both project
+website and runnable reference.
 
 ### Supabase Mode
 
@@ -217,5 +233,5 @@ see [docs/editorial-scope.md](./docs/editorial-scope.md).
 
 ## Recommended Next Step
 
-Prepare the first intentional publishable package release flow and
-decide whether a top-level `blog-kit` metapackage is needed.
+Validate the GitHub Pages demo deployment, then decide whether a
+top-level `blog-kit` metapackage is needed.

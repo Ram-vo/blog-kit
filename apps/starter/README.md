@@ -12,6 +12,7 @@ Current scope:
 - direct consumption of workspace packages
 - optional Supabase-backed data loading
 - RSS and sitemap routes powered by package helpers
+- static export support for a public demo deployment
 
 This is intentionally small. Its job is to prove the package boundaries
 and demonstrate the expected integration shape.
@@ -65,6 +66,30 @@ Routes to verify in this mode:
 - `/blog/starter-apps-as-documentation`
 - `/blog/rss.xml`
 - `/sitemap.xml`
+
+## Static Demo Mode
+
+The starter also supports a static export path for GitHub Pages and
+other static hosts.
+
+Run the export build with:
+
+```bash
+pnpm --dir apps/starter build:static
+```
+
+This mode always uses in-repo sample content. It is intended for a
+public demo, package website, or design reference that does not depend
+on runtime credentials.
+
+Optional arguments:
+
+```bash
+pnpm --dir apps/starter build:static --base-path=/blog-kit --site-url=https://ram-vo.github.io/blog-kit
+```
+
+For deployment details and tradeoffs, see
+[`docs/starter-deploy.md`](../../docs/starter-deploy.md).
 
 ## Supabase Mode
 
