@@ -28,7 +28,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
                     {siteConfig.name}
                   </span>
                   <span className="font-sans text-[0.76rem] text-starter-soft">
-                    Starter reference app
+                    Project website and reference app
                   </span>
                 </span>
               </PrimaryLink>
@@ -54,11 +54,17 @@ export default function RootLayout({ children }: { children: ReactNode }) {
                 >
                   Sitemap
                 </PrimaryLink>
+                <a
+                  href="https://github.com/Ram-vo/blog-kit"
+                  className="starter-link font-sans text-[0.9rem] text-starter-muted"
+                >
+                  GitHub
+                </a>
                 <PrimaryLink
-                  href="/"
+                  href="/blog/building-a-modular-blog-toolkit"
                   className="starter-link rounded-full bg-starter-dark px-4 py-3 font-sans text-[0.9rem] text-[#fff7ea]"
                 >
-                  View starter
+                  Open demo
                 </PrimaryLink>
               </nav>
             </div>
