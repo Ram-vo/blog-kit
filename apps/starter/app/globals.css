@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@source "../../../packages/editor/src";
 
 @theme {
   --color-starter-ink: #1b1813;
@@ -77,6 +78,146 @@
     background-size: 180% 100%;
     animation: starter-shimmer 1.4s linear infinite;
   }
+}
+
+.starter-editor-content,
+.starter-article-content {
+  color: var(--color-starter-ink);
+  font-size: 1.04rem;
+  line-height: 1.85;
+}
+
+.starter-editor-content > * + *,
+.starter-article-content > * + * {
+  margin-top: 1rem;
+}
+
+.starter-editor-content :is(h1, h2, h3, h4, h5, h6),
+.starter-article-content :is(h1, h2, h3, h4, h5, h6) {
+  color: var(--color-starter-ink);
+  font-family: var(--font-serif);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 0.98;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+.starter-editor-content h1,
+.starter-article-content h1 {
+  font-size: clamp(2.4rem, 5vw, 4.4rem);
+}
+
+.starter-editor-content h2,
+.starter-article-content h2 {
+  font-size: clamp(1.9rem, 3.5vw, 3rem);
+}
+
+.starter-editor-content h3,
+.starter-article-content h3 {
+  font-size: clamp(1.45rem, 2.5vw, 2rem);
+}
+
+.starter-editor-content h4,
+.starter-article-content h4 {
+  font-size: 1.2rem;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: var(--color-starter-soft);
+}
+
+.starter-editor-content h5,
+.starter-article-content h5 {
+  font-size: 1rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--color-starter-soft);
+}
+
+.starter-editor-content h6,
+.starter-article-content h6 {
+  font-size: 0.88rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-starter-soft);
+}
+
+.starter-editor-content p,
+.starter-article-content p {
+  margin: 0;
+}
+
+.starter-editor-content a,
+.starter-article-content a {
+  color: var(--color-starter-green);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--color-starter-green) 45%, transparent);
+  text-underline-offset: 0.18em;
+}
+
+.starter-editor-content strong,
+.starter-article-content strong {
+  font-weight: 700;
+}
+
+.starter-editor-content em,
+.starter-article-content em {
+  font-style: italic;
+}
+
+.starter-editor-content :is(ul, ol),
+.starter-article-content :is(ul, ol) {
+  padding-left: 1.35rem;
+}
+
+.starter-editor-content li + li,
+.starter-article-content li + li {
+  margin-top: 0.35rem;
+}
+
+.starter-editor-content blockquote,
+.starter-article-content blockquote {
+  margin: 1.5rem 0;
+  border-left: 3px solid color-mix(in srgb, var(--color-starter-accent) 50%, white);
+  padding-left: 1rem;
+  color: var(--color-starter-muted);
+  font-size: 1.08rem;
+  font-style: italic;
+}
+
+.starter-editor-content hr,
+.starter-article-content hr {
+  margin: 2rem 0;
+  border: 0;
+  border-top: 1px solid var(--surface-border);
+}
+
+.starter-editor-content code,
+.starter-article-content code {
+  border: 1px solid rgba(20, 18, 12, 0.08);
+  background: rgba(34, 29, 21, 0.06);
+  border-radius: 0.55rem;
+  padding: 0.14rem 0.38rem;
+  font-size: 0.92em;
+}
+
+.starter-editor-content pre,
+.starter-article-content pre {
+  overflow-x: auto;
+  border: 1px solid rgba(20, 18, 12, 0.08);
+  background: rgba(20, 18, 12, 0.92);
+  color: #f8efe0;
+  border-radius: 1.2rem;
+  padding: 1rem 1.1rem;
+  line-height: 1.65;
+}
+
+.starter-editor-content pre code,
+.starter-article-content pre code {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  padding: 0;
 }
 
 @keyframes starter-shimmer {

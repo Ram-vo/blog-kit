@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import {
   toArticleMetadata,
   toBlogPostingStructuredData,
@@ -10,6 +12,7 @@ import {
   getPublishedPosts,
   getRenderableBlogPost
 } from "../../../src/blog-data";
+import { isStaticExportMode } from "../../../src/runtime-config";
 import { siteConfig } from "../../../src/site-config";
 import {
   PrimaryLink,
@@ -18,6 +21,10 @@ import {
 } from "../../components/starter-ui";
 
 export async function generateStaticParams() {
+  if (!isStaticExportMode()) {
+    return [];
+  }
+
   const posts = await getPublishedPosts();
   return posts.map((post) => ({ slug: post.slug }));
 }
@@ -103,8 +110,12 @@ export default async function BlogPostPage({
             {article.excerpt}
           </p>
         </div>
-        <div className="bg-starter-cream px-6 py-8 text-[1.05rem] leading-[1.9] whitespace-pre-wrap text-starter-ink sm:px-8">
-          {article.content}
+        <div className="bg-starter-cream px-6 py-8 sm:px-8">
+          <div className="starter-article-content">
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {article.content}
+            </ReactMarkdown>
+          </div>
         </div>
       </SurfacePanel>
     </StarterContainer>

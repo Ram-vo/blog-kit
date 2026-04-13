@@ -13,13 +13,17 @@
     "test": "echo 'starter app not scaffolded yet'"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.49.8",
     "blog-kit-core": "workspace:*",
+    "blog-kit-editor": "workspace:*",
+    "blog-kit-local": "workspace:*",
     "blog-kit-next": "workspace:*",
     "blog-kit-supabase": "workspace:*",
-    "@supabase/supabase-js": "^2.49.8",
     "next": "^15.5.15",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "react-dom": "^19.2.0",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.4",

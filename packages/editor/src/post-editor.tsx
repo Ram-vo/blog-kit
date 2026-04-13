@@ -136,7 +136,7 @@ export function BlogPostEditor({
             markdown={value.content}
             onChange={(content) => onChange(updateValue(value, { content }))}
             readOnly={disabled}
-            contentEditableClassName="min-h-[420px] p-4 lg:p-8"
+            contentEditableClassName="starter-editor-content min-h-[420px] p-4 lg:p-8"
             plugins={[
               headingsPlugin(),
               listsPlugin(),
@@ -190,17 +190,37 @@ export function BlogPostEditor({
         {footer}
       </div>
 
-      <aside className="space-y-6">
-        <section className="rounded-3xl border border-zinc-200 bg-white p-5 shadow-sm">
-          <h2 className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-zinc-500">
-            Publishing
-          </h2>
-          <div className="space-y-3">
+      <aside className="space-y-5 lg:sticky lg:top-24 lg:self-start">
+        <section className="rounded-3xl border border-zinc-200/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.96),rgba(250,247,240,0.94))] p-5 shadow-sm">
+          <div className="mb-4 grid gap-1 border-b border-zinc-200/80 pb-4">
+            <p className="font-sans text-[0.72rem] font-semibold uppercase tracking-[0.16em] text-zinc-500">
+              Post status
+            </p>
+            <div className="flex items-center justify-between gap-3">
+              <h2 className="text-[1.05rem] font-semibold tracking-[-0.03em] text-zinc-950">
+                Publishing
+              </h2>
+              <span
+                className={[
+                  "rounded-full px-2.5 py-1 font-sans text-[0.72rem] font-semibold uppercase tracking-[0.08em]",
+                  value.isDraft
+                    ? "bg-amber-100 text-amber-800"
+                    : "bg-emerald-100 text-emerald-800"
+                ].join(" ")}
+              >
+                {value.isDraft ? "Draft" : "Published"}
+              </span>
+            </div>
+          </div>
+          <p className="mb-4 text-[0.92rem] leading-[1.6] text-zinc-600">
+            Save incremental changes, publish the current post, or remove it from the local content store.
+          </p>
+          <div className="grid gap-2.5">
             <button
               type="button"
               disabled={disabled || saving || !onSaveDraft}
               onClick={() => onSaveDraft?.(updateValue(value, { isDraft: true }))}
-              className="w-full rounded-full border border-zinc-200 px-4 py-3 text-sm font-medium text-zinc-900 transition hover:border-zinc-300 disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex min-h-11 w-full items-center justify-center rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm font-semibold text-zinc-900 transition hover:border-zinc-400 hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {saving ? "Saving..." : "Save draft"}
             </button>
@@ -215,7 +235,7 @@ export function BlogPostEditor({
                   })
                 )
               }
-              className="w-full rounded-full bg-zinc-950 px-4 py-3 text-sm font-medium text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex min-h-11 w-full items-center justify-center rounded-2xl bg-zinc-950 px-4 py-3 text-sm font-semibold text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
             >
               Publish
             </button>
@@ -224,7 +244,7 @@ export function BlogPostEditor({
                 type="button"
                 disabled={disabled || saving}
                 onClick={() => onDelete()}
-                className="w-full rounded-full border border-red-200 px-4 py-3 text-sm font-medium text-red-700 transition hover:border-red-300 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
+                className="inline-flex min-h-11 w-full items-center justify-center rounded-2xl border border-red-200 bg-red-50/50 px-4 py-3 text-sm font-semibold text-red-700 transition hover:border-red-300 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 Delete post
               </button>
@@ -232,36 +252,47 @@ export function BlogPostEditor({
           </div>
         </section>
 
-        <section className="rounded-3xl border border-zinc-200 bg-white p-5 shadow-sm">
-          <h2 className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-zinc-500">
-            Metadata
-          </h2>
+        <section className="rounded-3xl border border-zinc-200/80 bg-white p-5 shadow-sm">
+          <div className="mb-4 grid gap-1 border-b border-zinc-200/80 pb-4">
+            <p className="font-sans text-[0.72rem] font-semibold uppercase tracking-[0.16em] text-zinc-500">
+              Metadata
+            </p>
+            <h2 className="text-[1.05rem] font-semibold tracking-[-0.03em] text-zinc-950">
+              Search and social fields
+            </h2>
+          </div>
           <div className="space-y-4">
-            <label className="block space-y-1">
-              <span className="text-sm font-medium text-zinc-700">Slug</span>
+            <label className="grid gap-1.5">
+              <span className="text-[0.82rem] font-semibold uppercase tracking-[0.08em] text-zinc-500">
+                Slug
+              </span>
               <input
                 type="text"
                 value={value.slug}
                 disabled={disabled}
                 onChange={(event) => onChange(updateValue(value, { slug: event.target.value }))}
-                className="w-full rounded-2xl border border-zinc-200 px-3 py-2 text-sm outline-none transition focus:border-zinc-400"
+                className="w-full rounded-2xl border border-zinc-200 bg-zinc-50/60 px-3.5 py-2.5 text-sm text-zinc-900 outline-none transition focus:border-zinc-400 focus:bg-white"
               />
             </label>
 
-            <label className="block space-y-1">
-              <span className="text-sm font-medium text-zinc-700">Excerpt</span>
+            <label className="grid gap-1.5">
+              <span className="text-[0.82rem] font-semibold uppercase tracking-[0.08em] text-zinc-500">
+                Excerpt
+              </span>
               <textarea
                 value={value.excerpt ?? ""}
                 disabled={disabled}
                 rows={4}
                 placeholder={excerptPlaceholder}
                 onChange={(event) => onChange(updateValue(value, { excerpt: event.target.value }))}
-                className="w-full rounded-2xl border border-zinc-200 px-3 py-2 text-sm outline-none transition focus:border-zinc-400"
+                className="w-full rounded-2xl border border-zinc-200 bg-zinc-50/60 px-3.5 py-2.5 text-sm text-zinc-900 outline-none transition focus:border-zinc-400 focus:bg-white"
               />
             </label>
 
-            <label className="block space-y-1">
-              <span className="text-sm font-medium text-zinc-700">Tags</span>
+            <label className="grid gap-1.5">
+              <span className="text-[0.82rem] font-semibold uppercase tracking-[0.08em] text-zinc-500">
+                Tags
+              </span>
               <input
                 type="text"
                 value={formatTagsInput(value.tags)}
@@ -269,12 +300,14 @@ export function BlogPostEditor({
                 onChange={(event) =>
                   onChange(updateValue(value, { tags: parseTagsInput(event.target.value) }))
                 }
-                className="w-full rounded-2xl border border-zinc-200 px-3 py-2 text-sm outline-none transition focus:border-zinc-400"
+                className="w-full rounded-2xl border border-zinc-200 bg-zinc-50/60 px-3.5 py-2.5 text-sm text-zinc-900 outline-none transition focus:border-zinc-400 focus:bg-white"
               />
             </label>
 
-            <label className="block space-y-1">
-              <span className="text-sm font-medium text-zinc-700">Cover image URL</span>
+            <label className="grid gap-1.5">
+              <span className="text-[0.82rem] font-semibold uppercase tracking-[0.08em] text-zinc-500">
+                Cover image URL
+              </span>
               <input
                 type="text"
                 value={value.coverImageUrl ?? ""}
@@ -282,19 +315,24 @@ export function BlogPostEditor({
                 onChange={(event) =>
                   onChange(updateValue(value, { coverImageUrl: event.target.value || undefined }))
                 }
-                className="w-full rounded-2xl border border-zinc-200 px-3 py-2 text-sm outline-none transition focus:border-zinc-400"
+                className="w-full rounded-2xl border border-zinc-200 bg-zinc-50/60 px-3.5 py-2.5 text-sm text-zinc-900 outline-none transition focus:border-zinc-400 focus:bg-white"
               />
             </label>
           </div>
         </section>
 
-        <section className="rounded-3xl border border-zinc-200 bg-white p-5 shadow-sm">
-          <h2 className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-zinc-500">
-            Categories
-          </h2>
+        <section className="rounded-3xl border border-zinc-200/80 bg-white p-5 shadow-sm">
+          <div className="mb-4 grid gap-1 border-b border-zinc-200/80 pb-4">
+            <p className="font-sans text-[0.72rem] font-semibold uppercase tracking-[0.16em] text-zinc-500">
+              Taxonomy
+            </p>
+            <h2 className="text-[1.05rem] font-semibold tracking-[-0.03em] text-zinc-950">
+              Categories
+            </h2>
+          </div>
           <div className="flex flex-wrap gap-2">
             {categories.length === 0 ? (
-              <p className="text-sm text-zinc-500">No categories have been provided yet.</p>
+              <p className="text-sm leading-[1.6] text-zinc-500">No categories have been provided yet.</p>
             ) : null}
 
             {categories.map((category) => {
@@ -313,10 +351,10 @@ export function BlogPostEditor({
                     )
                   }
                   className={[
-                    "rounded-full border px-3 py-1 text-xs font-medium transition",
+                    "rounded-full border px-3 py-1.5 text-xs font-semibold transition",
                     selected
                       ? "border-zinc-950 bg-zinc-950 text-white"
-                      : "border-zinc-200 text-zinc-700 hover:border-zinc-300 hover:bg-zinc-50",
+                      : "border-zinc-200 bg-zinc-50 text-zinc-700 hover:border-zinc-300 hover:bg-zinc-100",
                     disabled ? "cursor-not-allowed opacity-50" : ""
                   ].join(" ")}
                 >

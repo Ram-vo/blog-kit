@@ -11,6 +11,7 @@ Current scope:
 - blog index and article routes
 - direct consumption of workspace packages
 - optional Supabase-backed data loading
+- a local editorial demo powered by `blog-kit-editor` and `blog-kit-local`
 - RSS and sitemap routes powered by package helpers
 - static export support for a public demo deployment
 
@@ -61,11 +62,16 @@ pnpm --dir apps/starter dev
 Routes to verify in this mode:
 
 - `/`
+- `/editor`
+- `/editor/new`
 - `/blog/building-a-modular-blog-toolkit`
 - `/blog/why-adapters-matter`
 - `/blog/starter-apps-as-documentation`
 - `/blog/rss.xml`
 - `/sitemap.xml`
+
+The editor routes use local filesystem persistence. They are available
+in runtime mode and are intentionally excluded from the static export.
 
 ## Static Demo Mode
 
@@ -81,6 +87,14 @@ pnpm --dir apps/starter build:static
 This mode always uses in-repo sample content. It is intended for a
 public demo, package website, or design reference that does not depend
 on runtime credentials.
+
+The static export intentionally excludes:
+
+- editor routes
+- editor API routes
+
+This keeps the GitHub Pages demo compatible with static hosting while
+the runtime starter still exposes the editable local blog flow.
 
 Optional arguments:
 

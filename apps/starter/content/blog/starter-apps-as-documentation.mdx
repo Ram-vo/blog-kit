@@ -1,0 +1,106 @@
+---
+id: starter-apps-as-documentation
+title: Starter apps as documentation
+slug: starter-apps-as-documentation
+excerpt: A runnable app is often the clearest package documentation you can publish.
+categoryIds:
+  - implementation
+  - publishing
+tags:
+  - starter
+  - docs
+isDraft: false
+authorId: starter-team
+publishedAt: '2026-04-05T10:00:00.000Z'
+createdAt: '2026-04-05T10:00:00.000Z'
+updatedAt: '2026-04-13T20:42:06.793Z'
+---
+A reference app is the fastest way to prove that a package is actually usable. It turns architecture into something you can click, edit, save, and inspect instead of a diagram that only exists in the README.
+
+This post is also the simplest way to test the local editorial flow in `blog-kit`.
+
+## What this editor is proving
+
+The starter editor is intentionally small, but it already proves the important package boundaries:
+
+* `blog-kit-editor` owns the reusable MDX editing UI
+* `blog-kit-local` owns local filesystem persistence
+* `blog-kit-core` owns the editorial contracts and shared types
+* the starter app only wires those pieces together
+
+That separation matters because the same editor surface can later be connected to Supabase or another backend without rewriting the editing experience.
+
+## How to try it
+
+Open the local editor index:
+
+* `/editor`
+
+From there you can:
+
+1. Open an existing post
+2. Change the title, excerpt, tags, or content
+3. Save it as a draft
+4. Publish it again
+5. Delete it if you want to test removal
+
+You can also create a new post from:
+
+* `/editor/new`
+
+## What happens when you save
+
+In local mode, posts are written to the starter content directory as `.mdx` files with frontmatter.
+
+That means the editor is not storing state in memory only. It is writing real content that can be reopened and edited later.
+
+The local adapter currently manages:
+
+* post content
+* frontmatter metadata
+* draft and published state
+* category references
+* category storage in a companion JSON file
+
+## Why this matters for the open source package
+
+If the editor only worked inside one app, it would not be reusable.
+
+What we want instead is a model where:
+
+* the editor package stays UI-focused
+* auth stays host-controlled
+* persistence stays adapter-controlled
+* the app decides whether content is local or remote
+
+That gives teams two useful paths:
+
+* start locally and iterate on content architecture fast
+* switch to a provider-backed workflow later without replacing the editor
+
+## What comes next
+
+The next step is to connect this same editor flow to `blog-kit-supabase`.
+
+At that point the project will support the same editorial surface in two modes:
+
+* local filesystem-backed editing
+* Supabase-backed editing
+
+After that, authentication can stay flexible:
+
+* bring your own auth and role system
+* or use a Supabase-based role model similar to the current e-lab setup
+
+## Suggested test changes
+
+If you are validating the editor right now, try these edits:
+
+* change the title and confirm the slug still makes sense
+* add a new tag
+* update the excerpt
+* save as draft and reopen the post
+* publish again and confirm the published state changes
+* create a new post and verify it appears in `/editor`
+
+That is enough to prove the full local edit loop works end to end.

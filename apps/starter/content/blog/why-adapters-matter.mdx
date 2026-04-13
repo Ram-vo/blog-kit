@@ -1,0 +1,20 @@
+---
+id: why-adapters-matter
+title: Why adapters matter
+slug: why-adapters-matter
+excerpt: Adapters keep providers isolated so product changes do not leak into the domain.
+categoryIds:
+  - architecture
+tags:
+  - adapters
+  - supabase
+isDraft: false
+authorId: starter-team
+publishedAt: 2026-04-03T10:00:00.000Z
+createdAt: 2026-04-03T10:00:00.000Z
+updatedAt: 2026-04-03T10:00:00.000Z
+---
+
+The adapter layer should own provider-specific mapping, error handling, and relationship traversal.
+
+That keeps the rest of the system portable even if the storage backend changes later.

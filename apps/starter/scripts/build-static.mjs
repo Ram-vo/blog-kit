@@ -1,4 +1,7 @@
+import { rename } from "node:fs/promises";
+import { join } from "node:path";
 import { spawn } from "node:child_process";
+import { fileURLToPath } from "node:url";
 
 const args = process.argv.slice(2);
 const env = {
@@ -17,13 +20,28 @@ for (const arg of args) {
   }
 }
 
+const starterRoot = fileURLToPath(new URL("..", import.meta.url));
+const hiddenRoutes = [
+  ["app/editor", "app/__editor-disabled-for-export"],
+  ["app/api/editor", "app/api/__editor-disabled-for-export"]
+];
+
+async function moveRoutes(targets) {
+  for (const [from, to] of targets) {
+    await rename(join(starterRoot, from), join(starterRoot, to));
+  }
+}
+
+await moveRoutes(hiddenRoutes);
+
 const child = spawn("next", ["build"], {
-  cwd: new URL("..", import.meta.url),
+  cwd: starterRoot,
   env,
   stdio: "inherit",
   shell: process.platform === "win32"
 });
 
-child.on("exit", (code) => {
+child.on("exit", async (code) => {
+  await moveRoutes(hiddenRoutes.map(([from, to]) => [to, from]));
   process.exit(code ?? 1);
 });
