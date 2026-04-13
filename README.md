@@ -20,6 +20,7 @@ Split the current blog into three layers:
 
 - `blog-kit`: convenience metapackage for the default public surface.
 - `blog-kit-core`: domain, contracts, and pure utilities.
+- `blog-kit-editor`: reusable editor UI and post editing flows.
 - `blog-kit-supabase`: persistence and editorial/auth integration for Supabase.
 - `blog-kit-next`: integration helpers and components for Next.js.
 - `starter`: a neutral runnable example for fast adoption.
@@ -28,6 +29,7 @@ Split the current blog into three layers:
 
 - `blog-kit`: convenience entrypoint for core helpers, publishing helpers, and the `blog-kit/supabase` subpath
 - `blog-kit-core`: domain types, repository contracts, and pure helpers
+- `blog-kit-editor`: provider-agnostic editor UI built on `mdxeditor`
 - `blog-kit-supabase`: repositories and mapping logic for Supabase
 - `blog-kit-next`: metadata, RSS, sitemap, and publishing helpers
 - `apps/starter`: runnable reference app for local and data-backed modes
@@ -36,6 +38,7 @@ Package-level documentation:
 
 - [`packages/blog-kit/README.md`](./packages/blog-kit/README.md)
 - [`packages/core/README.md`](./packages/core/README.md)
+- [`packages/editor/README.md`](./packages/editor/README.md)
 - [`packages/adapter-next/README.md`](./packages/adapter-next/README.md)
 - [`packages/adapter-supabase/README.md`](./packages/adapter-supabase/README.md)
 
@@ -77,6 +80,7 @@ This scaffold currently includes:
 - a Tailwind CSS v4 styling baseline in the starter app
 - a static export path for a public starter demo
 - a publishable `blog-kit` metapackage
+- a publishable `blog-kit-editor` package
 - RSS and sitemap helpers in the Next.js adapter
 - RSS and sitemap routes in the starter app
 - structured metadata helpers in the Next.js adapter
@@ -85,7 +89,8 @@ This scaffold currently includes:
 
 It does not include yet:
 
-- an editor/dashboard
+- a dashboard shell
+- local filesystem persistence for post editing
 - automated npm publishing
 
 ## Installation
@@ -125,6 +130,7 @@ Current scope:
 
 - `blog-kit`
 - `blog-kit-core`
+- `blog-kit-editor`
 - `blog-kit-next`
 - `blog-kit-supabase`
 

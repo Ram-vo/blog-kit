@@ -5,6 +5,16 @@
       "package-name": "blog-kit",
       "component": "blog-kit"
     },
+    "packages/editor": {
+      "release-type": "node",
+      "package-name": "blog-kit-editor",
+      "component": "blog-kit-editor"
+    },
+    "packages/local": {
+      "release-type": "node",
+      "package-name": "blog-kit-local",
+      "component": "blog-kit-local"
+    },
     "packages/core": {
       "release-type": "node",
       "package-name": "blog-kit-core",

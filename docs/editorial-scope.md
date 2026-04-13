@@ -81,6 +81,20 @@ Why this is in scope:
 - many teams need a shared vocabulary for editorial access
 - abstractions can stay generic if they do not encode one auth vendor
 
+### Reusable Editor UI
+
+Allowed examples:
+
+- an MDX editor package built around generic save and publish handlers
+- editor state models for post metadata and content
+- pluggable image upload hooks
+- editor components that accept host-provided auth and repository wiring
+
+Why this is in scope:
+
+- teams often need a reusable writing surface more than a full dashboard
+- the editor can stay generic if it does not fetch auth or data directly
+
 ## Example-Only Scope
 
 These features may appear in the starter or future example apps, but
@@ -184,6 +198,22 @@ Bad fit:
 - editorial dashboard policy logic
 - product-specific admin components
 
+### `blog-kit-editor`
+
+Good fit:
+
+- reusable editor components
+- provider-agnostic MDX editing UI
+- host-driven save and publish flows
+- pluggable upload hooks
+
+Bad fit:
+
+- auth provider wiring
+- storage SDK calls
+- dashboard navigation and layout
+- product-specific editorial workflow rules
+
 ### `apps/starter`
 
 Good fit:
@@ -210,6 +240,7 @@ For the current roadmap, the project stance is:
 
 - public packages may include generic editorial domain concepts
 - public packages may include generic permission abstractions
+- public packages may include a generic editor UI package
 - dashboard UI stays out of package scope
 - auth wiring stays example-only
 - media management UI stays example-only
