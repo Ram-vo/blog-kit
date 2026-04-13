@@ -15,6 +15,14 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
+    "./editor": {
+      "types": "./dist/editor.d.ts",
+      "default": "./dist/editor.js"
+    },
+    "./local": {
+      "types": "./dist/local.d.ts",
+      "default": "./dist/local.js"
+    },
     "./supabase": {
       "types": "./dist/supabase.d.ts",
       "default": "./dist/supabase.js"
@@ -28,6 +36,8 @@
   },
   "dependencies": {
     "blog-kit-core": "workspace:*",
+    "blog-kit-editor": "workspace:*",
+    "blog-kit-local": "workspace:*",
     "blog-kit-next": "workspace:*",
     "blog-kit-supabase": "workspace:*"
   },

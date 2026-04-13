@@ -1,4 +1,10 @@
-import type { Author, Category, PaginatedPosts, Post, PostFilters } from "./entities";
+import type { Category, PaginatedPosts, Post, PostFilters, Author } from "./entities";
+import type {
+  EditorialCategoryInput,
+  EditorialCategoryOption,
+  EditorialPost,
+  EditorialPostInput
+} from "./editorial";
 
 export interface PostRepository {
   getPostBySlug(slug: string): Promise<Post | null>;
@@ -18,4 +24,14 @@ export interface AuthorRepository {
 export interface CategoryRepository {
   listCategories(): Promise<Category[]>;
   getCategoryBySlug(slug: string): Promise<Category | null>;
+}
+
+export interface EditorialRepository {
+  getPostById(id: string): Promise<EditorialPost | null>;
+  getPostBySlug(slug: string): Promise<EditorialPost | null>;
+  createPost(post: EditorialPostInput): Promise<EditorialPost>;
+  updatePost(id: string, post: Partial<EditorialPostInput>): Promise<EditorialPost>;
+  deletePost(id: string): Promise<void>;
+  listCategories(): Promise<EditorialCategoryOption[]>;
+  createCategory?(category: EditorialCategoryInput): Promise<EditorialCategoryOption>;
 }

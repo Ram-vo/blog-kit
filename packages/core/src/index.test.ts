@@ -1,9 +1,13 @@
 import { describe, expect, it } from "vitest";
 import {
+  canDeletePost,
+  canEditPost,
+  canPublishPost,
   createPaginationMeta,
   estimateReadingTime,
   filterPostsByCategory,
   filterPostsByTag,
+  hasEditorPermission,
   listRelatedPosts,
   paginateItems,
   toBlogPostSummary
@@ -126,5 +130,20 @@ describe("blog-kit-core public helpers", () => {
     expect(summary.authorDetails?.name).toBe("Ramon Valdes");
     expect(summary.readingTime).toBeGreaterThan(0);
     expect(estimateReadingTime(posts[0].content ?? "")).toBe(summary.readingTime);
+  });
+
+  it("evaluates editorial permissions independently from auth vendors", () => {
+    const editorSession = {
+      userId: "author-1",
+      isAuthenticated: true,
+      roles: ["editor"] as const,
+      permissions: ["posts:edit:own", "posts:publish"] as const
+    };
+
+    expect(hasEditorPermission(editorSession, "posts:publish")).toBe(true);
+    expect(canEditPost(editorSession, { authorId: "author-1" })).toBe(true);
+    expect(canEditPost(editorSession, { authorId: "author-2" })).toBe(false);
+    expect(canPublishPost(editorSession)).toBe(true);
+    expect(canDeletePost(editorSession, { authorId: "author-1" })).toBe(false);
   });
 });

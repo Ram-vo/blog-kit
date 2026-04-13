@@ -44,6 +44,22 @@ Responsibilities:
 - optional App Router integration
 - publishing-oriented utilities that reduce app-level duplication
 
+### `blog-kit-editor`
+
+Responsibilities:
+
+- reusable MDX editor UI
+- post metadata editing
+- pluggable publish, draft, delete, and upload hooks
+- host-controlled state for local or provider-backed persistence
+
+It must not depend on:
+
+- Supabase auth session resolution
+- local filesystem access
+- one dashboard navigation model
+- product-specific editorial workflow assumptions
+
 ### `starter`
 
 Responsibilities:
@@ -60,6 +76,7 @@ Responsibilities:
 The current project stance is:
 
 - generic editorial domain features may live in public packages
+- a generic editor UI may live in a public package
 - dashboard UI should remain example-only
 - auth wiring should remain example-only
 - media management UI should remain example-only

@@ -1,4 +1,5 @@
 export * from "./domain/entities";
+export * from "./domain/editorial";
 export * from "./domain/pagination";
 export * from "./domain/public-types";
 export * from "./domain/repositories";
