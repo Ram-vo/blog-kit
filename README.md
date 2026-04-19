@@ -21,6 +21,7 @@ Split the current blog into three layers:
 - `blog-kit`: convenience metapackage for the default public surface.
 - `blog-kit-core`: domain, contracts, and pure utilities.
 - `blog-kit-editor`: reusable editor UI and post editing flows.
+- `blog-kit-local`: filesystem-backed editorial persistence for MDX.
 - `blog-kit-supabase`: persistence and editorial/auth integration for Supabase.
 - `blog-kit-next`: integration helpers and components for Next.js.
 - `starter`: a neutral runnable example for fast adoption.
@@ -30,6 +31,7 @@ Split the current blog into three layers:
 - `blog-kit`: convenience entrypoint for core helpers, publishing helpers, and the `blog-kit/supabase` subpath
 - `blog-kit-core`: domain types, repository contracts, and pure helpers
 - `blog-kit-editor`: provider-agnostic editor UI built on `mdxeditor`
+- `blog-kit-local`: local editorial persistence for `.mdx` files
 - `blog-kit-supabase`: repositories and mapping logic for Supabase
 - `blog-kit-next`: metadata, RSS, sitemap, and publishing helpers
 - `apps/starter`: runnable reference app for local and data-backed modes
@@ -39,6 +41,7 @@ Package-level documentation:
 - [`packages/blog-kit/README.md`](./packages/blog-kit/README.md)
 - [`packages/core/README.md`](./packages/core/README.md)
 - [`packages/editor/README.md`](./packages/editor/README.md)
+- [`packages/local/README.md`](./packages/local/README.md)
 - [`packages/adapter-next/README.md`](./packages/adapter-next/README.md)
 - [`packages/adapter-supabase/README.md`](./packages/adapter-supabase/README.md)
 
@@ -77,6 +80,7 @@ This scaffold currently includes:
 - architecture and roadmap documentation
 - a tested Supabase adapter layer
 - a minimal Next.js starter app
+- a local filesystem adapter for editable MDX content
 - a Tailwind CSS v4 styling baseline in the starter app
 - a static export path for a public starter demo
 - a publishable `blog-kit` metapackage
@@ -86,11 +90,13 @@ This scaffold currently includes:
 - structured metadata helpers in the Next.js adapter
 - CI for typecheck, lint, and tests
 - Release Please versioning for publishable packages
+- a runtime editorial flow that can switch between local and Supabase
 
 It does not include yet:
 
 - a dashboard shell
-- local filesystem persistence for post editing
+- media uploads
+- production auth enforcement in the starter
 - automated npm publishing
 
 ## Installation
@@ -131,6 +137,7 @@ Current scope:
 - `blog-kit`
 - `blog-kit-core`
 - `blog-kit-editor`
+- `blog-kit-local`
 - `blog-kit-next`
 - `blog-kit-supabase`
 
@@ -198,9 +205,10 @@ Use the starter when you want:
 pnpm --dir apps/starter dev
 ```
 
-The starter app supports two modes:
+The starter app supports three modes:
 
 - local sample content mode
+- local editable filesystem mode
 - Supabase-backed mode
 
 The starter uses Tailwind CSS v4 as its styling baseline so it can be
@@ -229,20 +237,42 @@ The GitHub Pages workflow builds the starter with sample content and a
 repository-scoped base path so the public demo can act as both project
 website and runnable reference.
 
+### Runtime Editorial Backends
+
+The runtime starter can read and edit content through one backend at a
+time.
+
+`STARTER_DATA_BACKEND=local`
+
+- public blog routes read from local `.mdx` files
+- `/editor` writes through `blog-kit-local`
+
+`STARTER_DATA_BACKEND=supabase`
+
+- public blog routes read from Supabase
+- `/editor` writes through `blog-kit-supabase`
+
+If `STARTER_DATA_BACKEND` is omitted, the starter uses:
+
+- `supabase` when Supabase credentials are present
+- `local` otherwise
+
 ### Supabase Mode
 
 Create `apps/starter/.env.local` and set:
 
 ```bash
+STARTER_DATA_BACKEND=supabase
 NEXT_PUBLIC_SUPABASE_URL=...
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY=...
 ```
 
 When these variables are present, the starter app will create a real
-Supabase client and load published posts through `blog-kit-supabase`.
+Supabase client and use `blog-kit-supabase` for both public reads and
+editorial writes.
 
 If the variables are missing or data loading fails, the starter falls
-back to local sample content.
+back to local filesystem content unless sample mode is enabled.
 
 ## Starter Routes
 
@@ -281,6 +311,25 @@ For the current minimum schema and starter SQL, see
 For auth, RLS, and migration guidance, see
 [docs/supabase-ops.md](./docs/supabase-ops.md).
 
+## Editorial Auth Model
+
+`blog-kit-editor` does not own auth or persistence.
+
+The intended production model is:
+
+- the host app resolves auth
+- the host app maps auth into `EditorSession` and permissions
+- the editor package receives host-driven save, publish, and delete
+  flows
+
+`blog-kit-supabase` now includes:
+
+- an editorial repository for Supabase-backed writes
+- a `resolveSupabaseEditorSession` helper for teams using Supabase Auth
+
+Teams that do not use Supabase Auth can bring their own auth layer and
+still reuse the editor package.
+
 ## Editorial Scope
 
 For the current decision on what belongs in public editorial scope,
@@ -289,5 +338,5 @@ see [docs/editorial-scope.md](./docs/editorial-scope.md).
 
 ## Recommended Next Step
 
-Validate the first metapackage release flow and decide what the initial
-npm publish set should be.
+Add media upload and image wiring to the editorial flow now that local
+and Supabase-backed editing share the same editor surface.

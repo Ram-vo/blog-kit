@@ -31,8 +31,9 @@ It must not depend on:
 Responsibilities:
 
 - post, author, and category persistence
+- editorial persistence for create, update, delete, and category writes
 - mapping between Supabase tables and domain types
-- provider-specific access policies
+- provider-specific access policies and session mapping helpers
 - injected client contract for runtime flexibility
 
 ### `blog-kit-next`
@@ -88,15 +89,19 @@ For the current detailed decision model, see
 
 ### Starter Local Mode
 
-The starter can run with no external services. In this mode it reads
-sample posts from the repository and still exposes article, RSS, and
-sitemap routes.
+The starter can run with no external services. In this mode it can:
+
+- read sample posts for static export
+- read editable local `.mdx` posts in runtime mode
+- expose `/editor` through the filesystem-backed adapter
 
 ### Starter Supabase Mode
 
 When the required public environment variables are present, the starter
-creates a real Supabase client and uses `blog-kit-supabase` to fetch
-published posts.
+creates a real Supabase client and uses `blog-kit-supabase` for both:
+
+- public blog reads
+- editorial create, update, and delete flows
 
 This mode is intentionally additive. Missing variables or fetch errors
 should not break local development.

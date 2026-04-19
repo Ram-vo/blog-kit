@@ -8,6 +8,7 @@ import { EditorShell } from "./editor-shell";
 
 export interface StarterEditorClientProps {
   mode: "create" | "edit";
+  source: "local" | "supabase";
   postId?: string;
   initialValue: EditorialPostInput;
   categories: readonly EditorialCategoryOption[];
@@ -24,6 +25,7 @@ async function readErrorMessage(response: Response) {
 
 export function StarterEditorClient({
   mode,
+  source,
   postId,
   initialValue,
   categories
@@ -94,10 +96,12 @@ export function StarterEditorClient({
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="grid gap-1">
           <span className="font-sans text-[0.76rem] uppercase tracking-[0.08em] text-starter-soft">
-            Starter editor
+            Starter editor · {source}
           </span>
           <h1 className="text-[clamp(2rem,4vw,3.1rem)] leading-none font-semibold tracking-[-0.05em]">
-            {mode === "create" ? "Create a local post" : "Edit local post"}
+            {mode === "create"
+              ? `Create a ${source} post`
+              : `Edit ${source} post`}
           </h1>
         </div>
         <PrimaryLink href="/editor" className="rounded-full border border-[var(--surface-border)] px-4 py-3">

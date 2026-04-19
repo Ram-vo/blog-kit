@@ -7,6 +7,10 @@ export function getStarterDataMode() {
   return getEnv("STARTER_DATA_MODE") ?? "auto";
 }
 
+export function getStarterDataBackend() {
+  return getEnv("STARTER_DATA_BACKEND") ?? "auto";
+}
+
 export function isStaticExportMode() {
   return getEnv("STARTER_OUTPUT_MODE") === "export";
 }

@@ -3,10 +3,18 @@ import type {
   AuthorRepository,
   Category,
   CategoryRepository,
+  EditorPermission,
+  EditorSession,
+  EditorialCategoryInput,
+  EditorialCategoryOption,
+  EditorialPost,
+  EditorialPostInput,
+  EditorialRepository,
   PaginatedPosts,
   Post,
   PostFilters,
-  PostRepository
+  PostRepository,
+  UserRole
 } from "blog-kit-core";
 
 type SocialLinksRecord = Partial<Record<"linkedin" | "x" | "facebook" | "instagram" | "github", string>>;
@@ -120,6 +128,33 @@ export interface SupabaseAdapterOptions {
   client: SupabaseClientLike;
 }
 
+export interface SupabaseAuthUserLike {
+  id: string;
+  email?: string | null;
+  role?: string | null;
+  app_metadata?: Record<string, unknown> | null;
+  user_metadata?: Record<string, unknown> | null;
+}
+
+export interface SupabaseAuthClientLike {
+  auth: {
+    getUser(): Promise<{
+      data: { user: SupabaseAuthUserLike | null };
+      error: SupabaseError;
+    }>;
+  };
+}
+
+export interface SupabaseEditorSessionResolverOptions {
+  client: SupabaseAuthClientLike;
+  mapRoles?: (user: SupabaseAuthUserLike) => readonly UserRole[];
+  mapPermissions?: (
+    user: SupabaseAuthUserLike,
+    roles: readonly UserRole[]
+  ) => readonly EditorPermission[];
+  getDisplayName?: (user: SupabaseAuthUserLike) => string | undefined;
+}
+
 export type SupabaseAdapterErrorCode =
   | "NOT_FOUND"
   | "READ_FAILED"
@@ -173,6 +208,16 @@ function mapCategory(row: CategoryRow): Category {
   };
 }
 
+function mapCategoryToEditorialOption(
+  category: Category
+): EditorialCategoryOption {
+  return {
+    id: category.id,
+    name: category.name,
+    slug: category.slug
+  };
+}
+
 function mapPost(row: PostRow): Post {
   const expandedAuthor = row.author ?? row.authors ?? undefined;
 
@@ -194,6 +239,24 @@ function mapPost(row: PostRow): Post {
   };
 }
 
+function mapPostToEditorial(post: Post): EditorialPost {
+  return {
+    id: post.id,
+    title: post.title,
+    slug: post.slug,
+    excerpt: post.excerpt,
+    content: post.content ?? "",
+    categoryIds: post.categories.map((category) => category.id),
+    tags: post.tags,
+    coverImageUrl: post.coverImageUrl,
+    isDraft: post.isDraft,
+    authorId: post.authorId,
+    publishedAt: post.publishedAt,
+    createdAt: post.createdAt,
+    updatedAt: post.updatedAt
+  };
+}
+
 function mapPostInput(
   post: Partial<Omit<Post, "id" | "createdAt" | "updatedAt">>
 ): Partial<PostRow> {
@@ -210,6 +273,103 @@ function mapPostInput(
   if (post.authorId !== undefined) payload.author_id = post.authorId;
 
   return payload;
+}
+
+async function listAllCategories(
+  client: SupabaseClientLike
+): Promise<Category[]> {
+  const repository = new SupabaseCategoryRepository(client);
+  return repository.listCategories();
+}
+
+async function resolveCategoriesByIds(
+  client: SupabaseClientLike,
+  categoryIds: readonly string[]
+): Promise<Category[]> {
+  if (categoryIds.length === 0) {
+    return [];
+  }
+
+  const categories = await listAllCategories(client);
+  return categories.filter((category) => categoryIds.includes(category.id));
+}
+
+function readMetadataArray(
+  metadata: Record<string, unknown> | null | undefined,
+  key: string
+): string[] {
+  const value = metadata?.[key];
+  return Array.isArray(value)
+    ? value.filter((item): item is string => typeof item === "string")
+    : [];
+}
+
+function normalizeUserRole(value: string): UserRole | null {
+  switch (value) {
+    case "admin":
+    case "editor":
+    case "contributor":
+      return value;
+    default:
+      return null;
+  }
+}
+
+function defaultRolesFromUser(
+  user: SupabaseAuthUserLike
+): readonly UserRole[] {
+  const roles = [
+    ...readMetadataArray(user.app_metadata, "roles"),
+    ...readMetadataArray(user.user_metadata, "roles"),
+    ...(user.role ? [user.role] : [])
+  ]
+    .map(normalizeUserRole)
+    .filter((role): role is UserRole => Boolean(role));
+
+  return roles.length > 0 ? Array.from(new Set(roles)) : ["contributor"];
+}
+
+function defaultPermissionsFromRoles(
+  roles: readonly UserRole[]
+): readonly EditorPermission[] {
+  const permissions = new Set<EditorPermission>();
+
+  if (roles.includes("admin")) {
+    permissions.add("posts:create");
+    permissions.add("posts:edit:any");
+    permissions.add("posts:publish");
+    permissions.add("posts:delete:any");
+    permissions.add("categories:manage");
+    permissions.add("media:upload");
+  }
+
+  if (roles.includes("editor")) {
+    permissions.add("posts:create");
+    permissions.add("posts:edit:any");
+    permissions.add("posts:publish");
+    permissions.add("categories:manage");
+    permissions.add("media:upload");
+  }
+
+  if (roles.includes("contributor")) {
+    permissions.add("posts:create");
+    permissions.add("posts:edit:own");
+  }
+
+  return Array.from(permissions);
+}
+
+function defaultDisplayName(user: SupabaseAuthUserLike) {
+  const userMetadata = user.user_metadata ?? {};
+  const candidates = [
+    userMetadata["display_name"],
+    userMetadata["full_name"],
+    user.email
+  ];
+
+  return candidates.find(
+    (value): value is string => typeof value === "string" && value.length > 0
+  );
 }
 
 export class SupabasePostRepository implements PostRepository {
@@ -484,10 +644,148 @@ export class SupabaseCategoryRepository implements CategoryRepository {
   }
 }
 
+export class SupabaseEditorialRepository implements EditorialRepository {
+  constructor(private readonly client: SupabaseClientLike) {}
+
+  async listPosts(): Promise<EditorialPost[]> {
+    const { posts } = await new SupabasePostRepository(this.client).getPosts(
+      1,
+      100
+    );
+
+    return posts.map(mapPostToEditorial);
+  }
+
+  async getPostById(id: string): Promise<EditorialPost | null> {
+    const post = await new SupabasePostRepository(this.client).getPostById(id);
+    return post ? mapPostToEditorial(post) : null;
+  }
+
+  async getPostBySlug(slug: string): Promise<EditorialPost | null> {
+    const post = await new SupabasePostRepository(this.client).getPostBySlug(
+      slug
+    );
+    return post ? mapPostToEditorial(post) : null;
+  }
+
+  async createPost(post: EditorialPostInput): Promise<EditorialPost> {
+    const categories = await resolveCategoriesByIds(
+      this.client,
+      post.categoryIds
+    );
+
+    const created = await new SupabasePostRepository(this.client).createPost({
+      slug: post.slug,
+      title: post.title,
+      excerpt: post.excerpt,
+      categories,
+      tags: post.tags,
+      content: post.content,
+      coverImageUrl: post.coverImageUrl,
+      publishedAt: post.publishedAt,
+      isDraft: post.isDraft,
+      authorId: post.authorId
+    });
+
+    return mapPostToEditorial(created);
+  }
+
+  async updatePost(
+    id: string,
+    post: Partial<EditorialPostInput>
+  ): Promise<EditorialPost> {
+    const categories = post.categoryIds
+      ? await resolveCategoriesByIds(this.client, post.categoryIds)
+      : undefined;
+
+    const updated = await new SupabasePostRepository(this.client).updatePost(
+      id,
+      {
+        slug: post.slug,
+        title: post.title,
+        excerpt: post.excerpt,
+        categories,
+        tags: post.tags,
+        content: post.content,
+        coverImageUrl: post.coverImageUrl,
+        publishedAt: post.publishedAt,
+        isDraft: post.isDraft,
+        authorId: post.authorId
+      }
+    );
+
+    return mapPostToEditorial(updated);
+  }
+
+  async deletePost(id: string): Promise<void> {
+    await new SupabasePostRepository(this.client).deletePost(id);
+  }
+
+  async listCategories(): Promise<EditorialCategoryOption[]> {
+    const categories = await listAllCategories(this.client);
+    return categories.map(mapCategoryToEditorialOption);
+  }
+
+  async createCategory(
+    category: EditorialCategoryInput
+  ): Promise<EditorialCategoryOption> {
+    const { data, error } = await this.client
+      .from("categories")
+      .insert({
+        name: category.name,
+        slug: category.slug
+      })
+      .select()
+      .single();
+
+    if (error || !data) {
+      throw createAdapterError(
+        "WRITE_FAILED",
+        "Failed to create category",
+        error
+      );
+    }
+
+    return mapCategoryToEditorialOption(mapCategory(data));
+  }
+}
+
+export async function resolveSupabaseEditorSession(
+  options: SupabaseEditorSessionResolverOptions
+): Promise<EditorSession> {
+  const { data, error } = await options.client.auth.getUser();
+
+  if (error || !data.user) {
+    return {
+      isAuthenticated: false,
+      roles: [],
+      permissions: []
+    };
+  }
+
+  const roles = options.mapRoles
+    ? options.mapRoles(data.user)
+    : defaultRolesFromUser(data.user);
+  const permissions = options.mapPermissions
+    ? options.mapPermissions(data.user, roles)
+    : defaultPermissionsFromRoles(roles);
+
+  return {
+    userId: data.user.id,
+    displayName: options.getDisplayName
+      ? options.getDisplayName(data.user)
+      : defaultDisplayName(data.user),
+    isAuthenticated: true,
+    roles,
+    permissions
+  };
+}
+
 export function createSupabaseAdapter(options: SupabaseAdapterOptions) {
   return {
     posts: new SupabasePostRepository(options.client),
     authors: new SupabaseAuthorRepository(options.client),
-    categories: new SupabaseCategoryRepository(options.client)
+    categories: new SupabaseCategoryRepository(options.client),
+    editorial: new SupabaseEditorialRepository(options.client)
   };
 }

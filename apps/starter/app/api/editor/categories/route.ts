@@ -1,29 +1,29 @@
 import type { EditorialCategoryInput } from "blog-kit-core";
 import { NextResponse } from "next/server";
-import { createStarterLocalAdapter } from "../../../../src/editorial/local-editorial";
+import { createStarterEditorialRepository } from "../../../../src/editorial/provider";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  const adapter = createStarterLocalAdapter();
-  const categories = await adapter.editorial.listCategories();
+  const { editorial } = createStarterEditorialRepository();
+  const categories = await editorial.listCategories();
 
   return NextResponse.json(categories);
 }
 
 export async function POST(request: Request) {
   const payload = (await request.json()) as EditorialCategoryInput;
-  const adapter = createStarterLocalAdapter();
+  const { editorial } = createStarterEditorialRepository();
 
-  if (!adapter.editorial.createCategory) {
+  if (!editorial.createCategory) {
     return NextResponse.json(
       { message: "Category creation is not available." },
       { status: 400 }
     );
   }
 
-  const category = await adapter.editorial.createCategory(payload);
+  const category = await editorial.createCategory(payload);
 
   return NextResponse.json(category);
 }

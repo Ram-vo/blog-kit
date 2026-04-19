@@ -10,6 +10,7 @@ Supabase-backed blog.
 Use `blog-kit-supabase` when you need:
 
 - a post repository backed by Supabase
+- an editorial repository backed by Supabase
 - author and category repositories backed by Supabase
 - a typed adapter contract around the injected Supabase client
 - mapping from Supabase rows into `blog-kit-core` domain types
@@ -18,9 +19,11 @@ Use `blog-kit-supabase` when you need:
 
 - `createSupabaseAdapter`
 - `SupabasePostRepository`
+- `SupabaseEditorialRepository`
 - `SupabaseAuthorRepository`
 - `SupabaseCategoryRepository`
 - `SupabaseAdapterError`
+- `resolveSupabaseEditorSession`
 - table row types for the current adapter contract
 
 ## Design Notes
@@ -42,8 +45,20 @@ import { createSupabaseAdapter } from "blog-kit-supabase";
 const adapter = createSupabaseAdapter({ client });
 const posts = await adapter.posts.listAllPublishedPosts();
 const post = await adapter.posts.getPostBySlug("modular-publishing");
+const drafts = await adapter.editorial.listPosts();
 ```
 
 Use this adapter when your content model already lives in Supabase and
 you want repository behavior that maps cleanly into `blog-kit-core`
 types.
+
+## Auth Helper Example
+
+```ts
+import { resolveSupabaseEditorSession } from "blog-kit-supabase";
+
+const session = await resolveSupabaseEditorSession({ client });
+```
+
+This helper is optional. Teams with custom auth stacks can ignore it and
+map their own auth model into `EditorSession`.

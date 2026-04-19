@@ -6,7 +6,10 @@ import type {
 } from "blog-kit-core";
 import { toBlogPost, toBlogPostSummary } from "blog-kit-core";
 import { unstable_noStore as noStore } from "next/cache";
-import { createStarterLocalAdapter } from "./editorial/local-editorial";
+import {
+  createStarterEditorialRepository,
+  getStarterEditorialSource
+} from "./editorial/provider";
 import { samplePosts } from "./sample-posts";
 import { isStaticExportMode, shouldUseSampleContent } from "./runtime-config";
 import { siteConfig } from "./site-config";
@@ -46,10 +49,10 @@ function mapEditorialPostToPost(
 }
 
 async function getLocalPublishedPosts(): Promise<Post[]> {
-  const adapter = createStarterLocalAdapter();
+  const { editorial } = createStarterEditorialRepository();
   const [posts, categories] = await Promise.all([
-    adapter.editorial.listPosts(),
-    adapter.editorial.listCategories()
+    editorial.listPosts(),
+    editorial.listCategories()
   ]);
 
   return posts
@@ -58,10 +61,10 @@ async function getLocalPublishedPosts(): Promise<Post[]> {
 }
 
 async function getLocalPostBySlug(slug: string): Promise<Post | null> {
-  const adapter = createStarterLocalAdapter();
+  const { editorial } = createStarterEditorialRepository();
   const [post, categories] = await Promise.all([
-    adapter.editorial.getPostBySlug(slug),
-    adapter.editorial.listCategories()
+    editorial.getPostBySlug(slug),
+    editorial.listCategories()
   ]);
 
   return post ? mapEditorialPostToPost(post, categories) : null;
@@ -74,7 +77,7 @@ export async function getBlogPostSummaries(): Promise<BlogPostSummary[]> {
     return sampleSummaries();
   }
 
-  if (hasSupabaseConfig()) {
+  if (getStarterEditorialSource() === "supabase" && hasSupabaseConfig()) {
     const adapter = createStarterAdapter();
 
     if (!adapter) {
@@ -104,7 +107,7 @@ export async function getBlogPostBySlug(slug: string): Promise<Post | null> {
     return samplePosts.find((post) => post.slug === slug) ?? null;
   }
 
-  if (hasSupabaseConfig()) {
+  if (getStarterEditorialSource() === "supabase" && hasSupabaseConfig()) {
     const adapter = createStarterAdapter();
 
     if (!adapter) {
@@ -137,7 +140,7 @@ export async function getPublishedPosts(): Promise<Post[]> {
     return samplePosts;
   }
 
-  if (hasSupabaseConfig()) {
+  if (getStarterEditorialSource() === "supabase" && hasSupabaseConfig()) {
     const adapter = createStarterAdapter();
 
     if (!adapter) {

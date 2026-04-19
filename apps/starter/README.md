@@ -12,6 +12,7 @@ Current scope:
 - direct consumption of workspace packages
 - optional Supabase-backed data loading
 - a local editorial demo powered by `blog-kit-editor` and `blog-kit-local`
+- a Supabase-backed editorial path powered by `blog-kit-supabase`
 - RSS and sitemap routes powered by package helpers
 - static export support for a public demo deployment
 
@@ -73,6 +74,13 @@ Routes to verify in this mode:
 The editor routes use local filesystem persistence. They are available
 in runtime mode and are intentionally excluded from the static export.
 
+To force the starter to use local content even when Supabase credentials
+exist, set:
+
+```bash
+STARTER_DATA_BACKEND=local
+```
+
 ## Static Demo Mode
 
 The starter also supports a static export path for GitHub Pages and
@@ -110,6 +118,7 @@ For deployment details and tradeoffs, see
 If these environment variables are set, the starter will use a real
 Supabase client through `blog-kit-supabase`:
 
+- `STARTER_DATA_BACKEND=supabase`
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY`
 
@@ -127,6 +136,31 @@ Then fill in the values and restart:
 ```bash
 pnpm --dir apps/starter dev
 ```
+
+When `STARTER_DATA_BACKEND=supabase` is active:
+
+- `/` reads published posts from Supabase
+- `/blog/[slug]` reads article bodies from Supabase
+- `/editor` reads and writes editorial content through the Supabase
+  adapter
+
+If the backend is left on `auto`, the starter prefers Supabase when the
+credentials exist and falls back to local content otherwise.
+
+## Editorial Auth
+
+The starter currently leaves auth open on purpose. Its job is to prove
+the package boundaries, not to lock down a product workflow.
+
+The intended production model is:
+
+- host app resolves auth
+- host app maps auth into `EditorSession`
+- `blog-kit-editor` stays provider-agnostic
+
+If you use Supabase Auth, `blog-kit-supabase` includes a
+`resolveSupabaseEditorSession` helper that maps Supabase users and
+metadata roles into the generic editor session model.
 
 ## Supabase Schema Expectations
 

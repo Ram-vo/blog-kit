@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { toEditorialPostInput } from "../../../src/editorial/editor-state";
-import { createStarterLocalAdapter } from "../../../src/editorial/local-editorial";
+import { createStarterEditorialRepository } from "../../../src/editorial/provider";
 import { StarterContainer } from "../../components/starter-ui";
 import { StarterEditorClient } from "../components/editor-client";
 
@@ -12,10 +12,10 @@ export default async function EditorDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const adapter = createStarterLocalAdapter();
+  const { source, editorial } = createStarterEditorialRepository();
   const [post, categories] = await Promise.all([
-    adapter.editorial.getPostById(id),
-    adapter.editorial.listCategories()
+    editorial.getPostById(id),
+    editorial.listCategories()
   ]);
 
   if (!post) {
@@ -26,6 +26,7 @@ export default async function EditorDetailPage({
     <StarterContainer>
       <StarterEditorClient
         mode="edit"
+        source={source}
         postId={post.id}
         initialValue={toEditorialPostInput(post)}
         categories={categories}

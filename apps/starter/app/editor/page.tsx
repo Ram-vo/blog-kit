@@ -1,4 +1,7 @@
-import { createStarterLocalAdapter } from "../../src/editorial/local-editorial";
+import {
+  createStarterEditorialRepository,
+  getStarterEditorialSourceLabel
+} from "../../src/editorial/provider";
 import {
   PrimaryLink,
   SectionHeading,
@@ -10,8 +13,8 @@ import {
 export const dynamic = "force-dynamic";
 
 export default async function EditorIndexPage() {
-  const adapter = createStarterLocalAdapter();
-  const posts = await adapter.editorial.listPosts();
+  const { source, editorial } = createStarterEditorialRepository();
+  const posts = await editorial.listPosts();
 
   return (
     <StarterContainer>
@@ -19,7 +22,7 @@ export default async function EditorIndexPage() {
         <div className="flex flex-wrap items-end justify-between gap-4">
           <SectionHeading
             title="Starter editor"
-            meta="Local filesystem mode"
+            meta={getStarterEditorialSourceLabel(source)}
           />
           <PrimaryLink
             href="/editor/new"
@@ -30,16 +33,25 @@ export default async function EditorIndexPage() {
         </div>
         <p className="max-w-[48rem] text-[1rem] leading-[1.7] text-starter-muted">
           This route uses <code>blog-kit-editor</code> with the
-          filesystem-backed <code>blog-kit-local</code> adapter. It is
-          intentionally simple so the example proves editor boundaries
-          before auth and provider wiring are added.
+          {source === "supabase" ? (
+            <>
+              Supabase-backed <code>blog-kit-supabase</code> adapter.
+            </>
+          ) : (
+            <>
+              filesystem-backed <code>blog-kit-local</code> adapter.
+            </>
+          )}{" "}
+          It is intentionally simple so the example proves editor
+          boundaries before auth and provider wiring are added.
         </p>
 
         <div className="grid gap-4">
           {posts.length === 0 ? (
             <SurfaceCard className="px-5 py-5">
               <p className="text-starter-muted">
-                No local posts have been created yet.
+                No posts have been created for the current editorial
+                source yet.
               </p>
             </SurfaceCard>
           ) : null}
