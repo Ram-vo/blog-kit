@@ -1,14 +1,17 @@
 import { describe, expect, it } from "vitest";
-import type { Post } from "blog-kit-core";
+import type { EditorPermission, Post } from "blog-kit-core";
 import {
   type AuthorRow,
   type CategoryRow,
   type PostCategoryRow,
   type PostRow,
+  resolveSupabaseEditorSession,
   SupabaseAdapterError,
   SupabaseAuthorRepository,
   SupabaseCategoryRepository,
+  SupabaseEditorialRepository,
   SupabasePostRepository,
+  type SupabaseAuthClientLike,
   type SupabaseClientLike,
   type SupabaseTableRowMap
 } from "./index";
@@ -468,5 +471,62 @@ describe("SupabaseCategoryRepository", () => {
     const category = await repository.getCategoryBySlug("guides");
 
     expect(category?.name).toBe("Guides");
+  });
+});
+
+describe("SupabaseEditorialRepository", () => {
+  it("lists editorial posts with category ids", async () => {
+    const repository = new SupabaseEditorialRepository(createFakeClient());
+    const posts = await repository.listPosts();
+    const draft = posts.find((post) => post.slug === "draft-post");
+
+    expect(draft?.categoryIds).toContain("category-2");
+    expect(draft?.content).toBe("Draft body");
+  });
+
+  it("creates an editorial category through the categories table", async () => {
+    const repository = new SupabaseEditorialRepository(createFakeClient());
+    const category = await repository.createCategory({
+      name: "Architecture",
+      slug: "architecture"
+    });
+
+    expect(category.slug).toBe("architecture");
+  });
+});
+
+describe("resolveSupabaseEditorSession", () => {
+  it("maps Supabase metadata roles into editor permissions", async () => {
+    const client: SupabaseAuthClientLike = {
+      auth: {
+        async getUser() {
+          return {
+            data: {
+              user: {
+                id: "user-1",
+                email: "editor@example.com",
+                app_metadata: {
+                  roles: ["editor"]
+                }
+              }
+            },
+            error: null
+          };
+        }
+      }
+    };
+
+    const session = await resolveSupabaseEditorSession({ client });
+
+    expect(session.isAuthenticated).toBe(true);
+    expect(session.roles).toEqual(["editor"]);
+    expect(session.permissions).toEqual(
+      expect.arrayContaining<EditorPermission>([
+        "posts:create",
+        "posts:edit:any",
+        "posts:publish",
+        "categories:manage"
+      ])
+    );
   });
 });

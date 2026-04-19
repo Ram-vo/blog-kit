@@ -25,10 +25,18 @@ type EditorialFrontmatter = {
   coverImageUrl?: string;
   isDraft?: boolean;
   authorId?: string;
-  publishedAt?: string;
-  createdAt?: string;
-  updatedAt?: string;
+  publishedAt?: string | Date;
+  createdAt?: string | Date;
+  updatedAt?: string | Date;
 };
+
+function toIsoDateString(value: string | Date | undefined): string | undefined {
+  if (!value) {
+    return undefined;
+  }
+
+  return value instanceof Date ? value.toISOString() : value;
+}
 
 function toPostFilePath(contentDirectory: string, slug: string) {
   return join(contentDirectory, `${slug}.mdx`);
@@ -57,9 +65,9 @@ function mapFrontmatterToPost(
     coverImageUrl: frontmatter.coverImageUrl,
     isDraft: frontmatter.isDraft ?? true,
     authorId: frontmatter.authorId,
-    publishedAt: frontmatter.publishedAt,
-    createdAt: frontmatter.createdAt ?? new Date(0).toISOString(),
-    updatedAt: frontmatter.updatedAt ?? new Date(0).toISOString()
+    publishedAt: toIsoDateString(frontmatter.publishedAt),
+    createdAt: toIsoDateString(frontmatter.createdAt) ?? new Date(0).toISOString(),
+    updatedAt: toIsoDateString(frontmatter.updatedAt) ?? new Date(0).toISOString()
   };
 }
 
@@ -89,8 +97,13 @@ async function ensureDirectory(directory: string) {
 export class LocalEditorialRepository implements EditorialRepository {
   constructor(private readonly options: LocalAdapterOptions) {}
 
+  async listPosts(): Promise<EditorialPost[]> {
+    const posts = await this.readPosts();
+    return posts.sort((left, right) => right.updatedAt.localeCompare(left.updatedAt));
+  }
+
   async getPostById(id: string): Promise<EditorialPost | null> {
-    const posts = await this.listPosts();
+    const posts = await this.readPosts();
     return posts.find((post) => post.id === id) ?? null;
   }
 
@@ -195,7 +208,7 @@ export class LocalEditorialRepository implements EditorialRepository {
     return nextCategory;
   }
 
-  private async listPosts(): Promise<EditorialPost[]> {
+  private async readPosts(): Promise<EditorialPost[]> {
     await ensureDirectory(this.options.contentDirectory);
 
     const files = await readdir(this.options.contentDirectory);

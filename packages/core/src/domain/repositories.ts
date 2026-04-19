@@ -27,6 +27,7 @@ export interface CategoryRepository {
 }
 
 export interface EditorialRepository {
+  listPosts(): Promise<EditorialPost[]>;
   getPostById(id: string): Promise<EditorialPost | null>;
   getPostBySlug(slug: string): Promise<EditorialPost | null>;
   createPost(post: EditorialPostInput): Promise<EditorialPost>;

@@ -1,3 +1,5 @@
+import Link from "next/link";
+import type { Route } from "next";
 import { paginateItems, toBlogPostSummary } from "blog-kit-core";
 import { toArticleMetadata, toBlogStructuredData } from "blog-kit-next";
 import { getBlogPostSummaries, getPublishedPosts } from "../src/blog-data";
@@ -17,32 +19,44 @@ const packageCards = [
   {
     name: "blog-kit-core",
     eyebrow: "Core layer",
-    copy: "Domain types, repository contracts, pagination, and pure content helpers."
+    copy: "Domain types, repository contracts, pagination, and pure content helpers.",
+    href: "/blog/inside-blog-kit-core" as Route,
+    cta: "Read core article"
   },
   {
     name: "blog-kit-next",
     eyebrow: "App integration",
-    copy: "Metadata, RSS, sitemap, and structured data helpers for App Router projects."
+    copy: "Metadata, RSS, sitemap, and structured data helpers for App Router projects.",
+    href: "/blog/nextjs-publishing-helpers" as Route,
+    cta: "Read Next.js article"
   },
   {
     name: "blog-kit-supabase",
     eyebrow: "Provider adapter",
-    copy: "Provider-specific repositories and mapping logic for a Supabase-backed blog."
+    copy: "Provider-specific repositories and mapping logic for a Supabase-backed blog.",
+    href: "/blog/why-adapters-matter" as Route,
+    cta: "Read adapter article"
   }
 ];
 
 const deploymentModes = [
   {
     title: "Local sample mode",
-    copy: "Boot the starter with in-repo content and validate package boundaries without credentials."
+    copy: "Boot the starter with in-repo content and validate package boundaries without credentials.",
+    href: "/blog/choosing-between-local-and-supabase" as Route,
+    cta: "Open local mode article"
   },
   {
     title: "Supabase-backed mode",
-    copy: "Point the app at a compatible schema and validate the adapter path with real published rows."
+    copy: "Point the app at a compatible schema and validate the adapter path with real published rows.",
+    href: "/blog/choosing-between-local-and-supabase" as Route,
+    cta: "Open Supabase article"
   },
   {
     title: "Static demo mode",
-    copy: "Export the starter for GitHub Pages and use it as a public package website and live preview."
+    copy: "Export the starter for GitHub Pages and use it as a public package website and live preview.",
+    href: "/blog/exporting-the-starter-as-a-public-demo" as Route,
+    cta: "Open deployment article"
   }
 ];
 
@@ -152,7 +166,10 @@ pnpm --dir apps/starter build:static`}</code>
             meta="Reusable pieces"
           />
           <div className="grid gap-4">
-            <div className="grid gap-3 rounded-[24px] border border-[var(--surface-border)] bg-[linear-gradient(135deg,rgba(255,250,243,0.95),rgba(248,240,225,0.92))] px-5 py-5">
+            <Link
+              href="/blog/building-a-modular-blog-toolkit"
+              className="group grid gap-3 rounded-[24px] border border-[var(--surface-border)] bg-[linear-gradient(135deg,rgba(255,250,243,0.95),rgba(248,240,225,0.92))] px-5 py-5 transition-transform duration-150 hover:-translate-y-0.5 hover:border-[rgba(19,38,31,0.22)] hover:shadow-[var(--shadow-card)]"
+            >
               <p className="font-sans text-[0.76rem] uppercase tracking-[0.1em] text-starter-soft">
                 System design
               </p>
@@ -164,13 +181,17 @@ pnpm --dir apps/starter build:static`}</code>
                 APIs so teams can replace the shell, theme, and data
                 source without reimplementing the blog domain.
               </p>
-            </div>
+              <span className="starter-link inline-flex items-center gap-2 font-sans text-[0.84rem] text-starter-green">
+                Read system design article
+              </span>
+            </Link>
 
             <div className="grid gap-4 md:grid-cols-3">
             {packageCards.map((pkg) => (
-              <SurfaceCard
+              <Link
                 key={pkg.name}
-                className="grid gap-3 px-5 py-5"
+                href={pkg.href}
+                className="starter-card grid gap-3 rounded-[24px] px-5 py-5 transition-transform duration-150 hover:-translate-y-0.5 hover:border-[rgba(19,38,31,0.22)] hover:shadow-[var(--shadow-soft)]"
               >
                 <p className="font-sans text-[0.72rem] uppercase tracking-[0.1em] text-starter-soft">
                   {pkg.eyebrow}
@@ -181,7 +202,10 @@ pnpm --dir apps/starter build:static`}</code>
                 <p className="text-[0.94rem] leading-[1.65] text-starter-muted">
                   {pkg.copy}
                 </p>
-              </SurfaceCard>
+                <span className="starter-link mt-auto inline-flex items-center gap-2 font-sans text-[0.84rem] text-starter-green">
+                  {pkg.cta}
+                </span>
+              </Link>
             ))}
             </div>
           </div>
@@ -194,9 +218,10 @@ pnpm --dir apps/starter build:static`}</code>
           />
           <div className="grid gap-3">
             {deploymentModes.map((mode, index) => (
-              <div
+              <Link
                 key={mode.title}
-                className="grid gap-2 rounded-[22px] border border-[var(--surface-border)] bg-[rgba(255,255,255,0.52)] px-4 py-4"
+                href={mode.href}
+                className="grid gap-2 rounded-[22px] border border-[var(--surface-border)] bg-[rgba(255,255,255,0.52)] px-4 py-4 transition-transform duration-150 hover:-translate-y-0.5 hover:border-[rgba(19,38,31,0.22)] hover:shadow-[var(--shadow-card)]"
               >
                 <p className="font-sans text-[0.72rem] uppercase tracking-[0.1em] text-starter-soft">
                   0{index + 1}
@@ -207,7 +232,10 @@ pnpm --dir apps/starter build:static`}</code>
                 <p className="max-w-[34ch] text-[0.95rem] leading-[1.65] text-starter-muted">
                   {mode.copy}
                 </p>
-              </div>
+                <span className="starter-link inline-flex items-center gap-2 font-sans text-[0.84rem] text-starter-green">
+                  {mode.cta}
+                </span>
+              </Link>
             ))}
           </div>
         </SurfacePanel>

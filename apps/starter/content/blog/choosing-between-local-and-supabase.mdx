@@ -1,0 +1,57 @@
+---
+id: choosing-between-local-and-supabase
+title: Choosing between local and Supabase
+slug: choosing-between-local-and-supabase
+excerpt: The starter can run against local MDX files or Supabase, and the right choice depends on what you are validating.
+categoryIds:
+  - implementation
+tags:
+  - local
+  - supabase
+  - runtime
+isDraft: false
+authorId: starter-team
+publishedAt: 2026-04-11T10:00:00.000Z
+createdAt: 2026-04-11T10:00:00.000Z
+updatedAt: 2026-04-19T21:40:00.000Z
+---
+
+The starter now supports two runtime editorial backends:
+
+- local filesystem content
+- Supabase-backed content
+
+The point is not to create two different products. The point is to keep
+one editorial flow while letting the host choose the persistence layer.
+
+## When local mode is the right tool
+
+Use local mode when you want to validate:
+
+- content structure
+- the editor experience
+- package boundaries
+- filesystem-backed workflows
+
+This mode is ideal when you want real editable content without external
+credentials.
+
+## When Supabase mode is the right tool
+
+Use Supabase mode when you want to validate:
+
+- provider-backed reads and writes
+- real relational data
+- a future production integration path
+- Supabase Auth session mapping
+
+This mode is where you test the adapter, not just the UI.
+
+## The rule of thumb
+
+If you are proving ergonomics, start local.
+
+If you are proving infrastructure behavior, switch to Supabase.
+
+The important design goal is that the editor surface does not change
+when the backend does.

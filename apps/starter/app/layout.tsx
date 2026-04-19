@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import type { CSSProperties, ReactNode } from "react";
+import { isStaticExportMode } from "../src/runtime-config";
 import { siteConfig } from "../src/site-config";
 import { getStarterThemeStyle } from "../src/starter-theme";
 import { PrimaryLink } from "./components/starter-ui";
+import "@mdxeditor/editor/style.css";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -12,6 +14,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   const themeStyle = getStarterThemeStyle() as CSSProperties;
+  const showEditorLink = !isStaticExportMode();
 
   return (
     <html lang="en">
@@ -54,6 +57,14 @@ export default function RootLayout({ children }: { children: ReactNode }) {
                 >
                   Sitemap
                 </PrimaryLink>
+                {showEditorLink ? (
+                  <PrimaryLink
+                    href="/editor"
+                    className="font-sans text-[0.9rem] text-starter-muted"
+                  >
+                    Editor
+                  </PrimaryLink>
+                ) : null}
                 <a
                   href="https://github.com/Ram-vo/blog-kit"
                   className="starter-link font-sans text-[0.9rem] text-starter-muted"

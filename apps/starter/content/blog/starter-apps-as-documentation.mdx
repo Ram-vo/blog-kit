@@ -1,0 +1,90 @@
+---
+id: starter-apps-as-documentation
+title: Starter apps as documentation
+slug: starter-apps-as-documentation
+excerpt: A runnable app often explains a package better than a long README because users can inspect real flows instead of imagined ones.
+categoryIds:
+  - implementation
+  - publishing
+tags:
+  - starter
+  - docs
+  - editor
+isDraft: false
+authorId: starter-team
+publishedAt: '2026-04-05T10:00:00.000Z'
+createdAt: '2026-04-05T10:00:00.000Z'
+updatedAt: '2026-04-19T21:40:00.000Z'
+---
+
+A reference app is the fastest way to prove that a package is actually
+usable.
+
+It turns architecture into something you can click, edit, save, and
+inspect instead of a diagram that only exists in the README.
+
+## What the starter is proving
+
+The starter is intentionally small, but it already proves several
+important boundaries:
+
+- the public blog can read from either local content or Supabase
+- the editor UI stays provider-agnostic
+- runtime wiring chooses the backend without rewriting the editor
+- the same content can serve as both demo material and product docs
+
+That is more useful than a static example folder because it shows the
+system under real runtime conditions.
+
+## Why the editor belongs here
+
+The editor is not included just to make the starter look more complete.
+
+It exists because an editorial workflow exposes the hardest integration
+questions early:
+
+- where content is stored
+- how categories are managed
+- how draft and publish states work
+- how auth should stay outside the reusable UI package
+
+If those boundaries survive a working editor, they are probably good
+enough for real adoption.
+
+## Why the posts should become documentation
+
+A starter blog already has three things a package website needs:
+
+- routing
+- content rendering
+- a place to explain design decisions
+
+Turning starter posts into living docs gives the project one content
+surface instead of splitting knowledge across:
+
+- README fragments
+- package READMEs
+- a demo app with placeholder content
+
+That is why the roadmap now includes expanding every starter post into a
+real explanation of one `blog-kit` concept.
+
+## What a good starter article should do
+
+Each article should explain one practical idea:
+
+- what the package does
+- where it fits
+- how it connects to the rest of the system
+- when to use it
+- what tradeoffs it introduces
+
+That makes the blog useful both for product exploration and for package
+adoption.
+
+## The rule for the starter
+
+If a feature appears in the starter, it should teach something real
+about the system.
+
+Decorative demo content is not enough anymore.

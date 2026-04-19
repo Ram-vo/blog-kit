@@ -29,6 +29,7 @@ In this mode the app can use:
 
 - sample content
 - Supabase-backed content when the required environment variables exist
+- local editor routes backed by filesystem persistence
 
 ## Static Demo Mode
 
@@ -50,6 +51,16 @@ The static build forces:
 - `STARTER_DATA_MODE=sample`
 
 That means the exported site never depends on Supabase.
+
+The static build also hides:
+
+- `/editor`
+- `/editor/new`
+- `/editor/[id]`
+- `/api/editor/*`
+
+Those routes require a server runtime and are intentionally omitted from
+the exported demo.
 
 ## GitHub Pages
 

@@ -1,0 +1,17 @@
+[
+  {
+    "id": "architecture",
+    "name": "Architecture",
+    "slug": "architecture"
+  },
+  {
+    "id": "implementation",
+    "name": "Implementation",
+    "slug": "implementation"
+  },
+  {
+    "id": "publishing",
+    "name": "Publishing",
+    "slug": "publishing"
+  }
+]

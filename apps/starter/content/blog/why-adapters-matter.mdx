@@ -1,0 +1,86 @@
+---
+id: why-adapters-matter
+title: Why adapters matter
+slug: why-adapters-matter
+excerpt: Adapters keep provider logic isolated so storage and auth choices do not leak into the rest of the system.
+categoryIds:
+  - architecture
+  - implementation
+tags:
+  - adapters
+  - supabase
+  - persistence
+isDraft: false
+authorId: starter-team
+publishedAt: 2026-04-03T10:00:00.000Z
+createdAt: 2026-04-03T10:00:00.000Z
+updatedAt: 2026-04-19T21:40:00.000Z
+---
+
+Adapters are where infrastructure becomes explicit.
+
+They are the layer that translates between your public domain contracts
+and the behavior of a specific backend.
+
+## What an adapter should own
+
+In `blog-kit-supabase`, the adapter is responsible for:
+
+- mapping Supabase rows into `blog-kit-core` types
+- reading and writing related categories
+- translating editor writes into provider-specific payloads
+- turning provider failures into adapter-level errors
+- resolving a generic editor session from Supabase Auth when needed
+
+That is exactly the kind of logic that should not live in route files or
+React components.
+
+## What an adapter should not own
+
+An adapter should not decide:
+
+- how your dashboard looks
+- what your product copy says
+- which navigation model the editor uses
+- how one specific app organizes its layout
+
+If it starts owning those things, it stops being an adapter and becomes
+an app module with a transport wrapper around it.
+
+## Why this matters for editorial tooling
+
+The same editor surface can be used in two different modes:
+
+- local filesystem editing
+- Supabase-backed editing
+
+That only works because the editor package does not talk directly to one
+provider. It only relies on a repository surface that the host app
+wires.
+
+## The Supabase path in this repo
+
+The Supabase package now exposes two complementary surfaces:
+
+- public blog repositories for reads
+- an editorial repository for create, update, delete, and category
+  operations
+
+That lets the starter use the same product flow in two ways:
+
+- edit locally through `blog-kit-local`
+- edit remotely through `blog-kit-supabase`
+
+## What this protects you from
+
+Without adapters, provider decisions spread everywhere:
+
+- page components know table shapes
+- editor flows know database field names
+- auth wiring leaks into view code
+- changing storage means rewriting multiple layers
+
+With adapters, the provider stays behind a boundary and the rest of the
+system talks to stable contracts.
+
+That is the difference between an integration and a dependency.
