@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/Ram-vo/blog-kit/compare/blog-kit-local-v0.2.0...blog-kit-local-v0.3.0) (2026-04-19)
+
+
+### Features
+
+* Add reusable editor, local adapter, and editorial modes for starter ([#21](https://github.com/Ram-vo/blog-kit/issues/21)) ([c761e1d](https://github.com/Ram-vo/blog-kit/commit/c761e1ddfbb6424a9d61561776844ecc4fd3a8a9))
+
 ## [0.2.0](https://github.com/Ram-vo/blog-kit/compare/blog-kit-local-v0.1.0...blog-kit-local-v0.2.0) (2026-04-13)
 
 
