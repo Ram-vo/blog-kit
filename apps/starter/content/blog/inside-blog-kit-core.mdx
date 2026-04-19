@@ -1,0 +1,79 @@
+---
+id: inside-blog-kit-core
+title: Inside blog-kit-core
+slug: inside-blog-kit-core
+excerpt: The core package defines the vocabulary of the system so apps and adapters can evolve without breaking the domain.
+categoryIds:
+  - architecture
+tags:
+  - core
+  - domain
+  - contracts
+isDraft: false
+authorId: starter-team
+publishedAt: 2026-04-07T10:00:00.000Z
+createdAt: 2026-04-07T10:00:00.000Z
+updatedAt: 2026-04-19T21:40:00.000Z
+---
+
+`blog-kit-core` is the package that gives the rest of the system a
+shared language.
+
+It defines:
+
+- posts
+- categories
+- authors
+- repository contracts
+- editorial permissions
+- public-facing transformation helpers
+
+## What belongs in the core
+
+The core package is where you want logic that should survive product and
+provider changes.
+
+Examples:
+
+- `Post` and `Category` types
+- pagination helpers
+- public summary helpers
+- editorial repository contracts
+- permission abstractions like `posts:publish`
+
+These concepts are useful regardless of whether the host app uses local
+files, Supabase, or a future provider.
+
+## What must stay out
+
+The core should not import:
+
+- Next.js runtime helpers
+- provider SDKs
+- React components
+- one app's route structure
+
+That is the only way it remains genuinely reusable.
+
+## Why contracts matter
+
+The repository contracts are one of the most important parts of the
+package because they let the editor and the public blog talk to
+different backends through stable interfaces.
+
+That is what makes the same editing surface work with:
+
+- `blog-kit-local`
+- `blog-kit-supabase`
+
+without rewriting the UI package itself.
+
+## A useful mental model
+
+If a type or helper would still make sense after changing:
+
+- the framework
+- the design system
+- the storage provider
+
+it probably belongs in `blog-kit-core`.

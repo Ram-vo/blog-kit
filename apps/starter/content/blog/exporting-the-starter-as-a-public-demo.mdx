@@ -1,0 +1,58 @@
+---
+id: exporting-the-starter-as-a-public-demo
+title: Exporting the starter as a public demo
+slug: exporting-the-starter-as-a-public-demo
+excerpt: The starter can double as a package website and a live product demo by exporting a static version for GitHub Pages.
+categoryIds:
+  - publishing
+tags:
+  - static
+  - github-pages
+  - deployment
+isDraft: false
+authorId: starter-team
+publishedAt: 2026-04-13T10:00:00.000Z
+createdAt: 2026-04-13T10:00:00.000Z
+updatedAt: 2026-04-19T21:40:00.000Z
+---
+
+One of the most useful things the starter can do is act as the public
+website for the package.
+
+That is why the project supports a static export path for GitHub Pages.
+
+## What the static demo is for
+
+The static build is meant to prove:
+
+- the starter has a stable visual shell
+- the package can be explored without local setup
+- the public content can explain how the system works
+
+It is intentionally not a full editorial environment.
+
+## What is excluded on purpose
+
+Static hosting is a poor fit for runtime editorial features.
+
+So the export path excludes:
+
+- editor routes
+- editor API routes
+
+That keeps the public demo compatible with GitHub Pages while the normal
+runtime app keeps the editable workflow.
+
+## Why this matters
+
+For an open source package, a live public demo is often the fastest way
+to reduce adoption friction.
+
+Users can see:
+
+- the blog index
+- article rendering
+- RSS and sitemap behavior
+- the shape of the starter experience
+
+before deciding whether to clone the repo or install the packages.

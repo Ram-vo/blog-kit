@@ -2,19 +2,106 @@
 id: building-a-modular-blog-toolkit
 title: Building a modular blog toolkit
 slug: building-a-modular-blog-toolkit
-excerpt: Separate your domain, adapters, and app shell so the blog can survive product changes.
+excerpt: Separate domain rules, provider adapters, and app composition so the blog can survive product changes.
 categoryIds:
   - architecture
 tags:
   - architecture
   - modularity
+  - product-design
 isDraft: false
 authorId: starter-team
 publishedAt: 2026-04-01T10:00:00.000Z
 createdAt: 2026-04-01T10:00:00.000Z
-updatedAt: 2026-04-01T10:00:00.000Z
+updatedAt: 2026-04-19T21:40:00.000Z
 ---
 
-This starter uses sample content so teams can validate the package boundaries before wiring a CMS.
+Most internal blog systems start as one app-specific implementation.
 
-The important part is that the app consumes public package APIs rather than copying business logic into the UI layer.
+That usually feels efficient at the beginning, but it creates three
+problems later:
+
+- domain rules get buried inside route files and UI components
+- provider logic leaks into the rest of the app
+- replacing the shell or data source becomes a rewrite instead of an
+  integration task
+
+`blog-kit` exists to avoid that trap.
+
+## The boundary that matters
+
+The project is built around one simple split:
+
+- `blog-kit-core` owns shared types, contracts, and pure helpers
+- provider packages own persistence and external integration details
+- app code owns composition, branding, and runtime decisions
+
+That means the blog can change shape without collapsing into one big
+framework-specific module.
+
+## Why the core cannot know about the app
+
+The moment your domain layer starts importing route helpers, fetching
+auth state directly, or assuming one CMS vendor, it stops being reusable
+in practice.
+
+The core package should only answer questions like:
+
+- what is a post
+- what is a category
+- what are the repository contracts
+- how do we derive summaries, metadata inputs, or pagination state
+
+Those rules should remain stable whether the host app is e-lab, a
+starter demo, or something else entirely.
+
+## Why adapters deserve their own package
+
+Storage providers are not just transport details. They shape:
+
+- query patterns
+- relationship handling
+- error cases
+- auth and permission boundaries
+
+That logic should live in an adapter package where it can change without
+infecting the rest of the system.
+
+In this repo, `blog-kit-supabase` owns that responsibility for the
+Supabase path.
+
+## Why the starter app is not the architecture
+
+The starter app is intentionally opinionated. It has a theme, routes,
+copy, and a concrete UI shell.
+
+But it is still only one possible host.
+
+Its job is to prove that the public package surfaces are actually
+usable:
+
+- a local editorial mode
+- a Supabase-backed mode
+- a public static demo mode
+
+That is very different from letting the starter define the product
+architecture itself.
+
+## What a healthy integration looks like
+
+A good host app should be able to:
+
+1. choose a persistence backend
+2. decide how auth and permissions work
+3. reuse the editor without rewriting it
+4. keep the public blog rendering path aligned with the editorial path
+
+That is the bar `blog-kit` is trying to clear.
+
+## The practical takeaway
+
+If you can swap the shell, theme, or provider without touching the core
+contracts, the package boundaries are doing their job.
+
+If changing one provider forces changes in page components, editor UI,
+and content types at the same time, the boundaries are still too weak.

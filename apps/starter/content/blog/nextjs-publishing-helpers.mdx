@@ -1,0 +1,64 @@
+---
+id: nextjs-publishing-helpers
+title: Next.js publishing helpers
+slug: nextjs-publishing-helpers
+excerpt: The Next.js package keeps metadata, RSS, sitemap, and structured data out of route files so host apps stay smaller.
+categoryIds:
+  - implementation
+  - publishing
+tags:
+  - nextjs
+  - seo
+  - metadata
+isDraft: false
+authorId: starter-team
+publishedAt: 2026-04-09T10:00:00.000Z
+createdAt: 2026-04-09T10:00:00.000Z
+updatedAt: 2026-04-19T21:40:00.000Z
+---
+
+`blog-kit-next` exists because publishing apps repeat the same route
+logic over and over:
+
+- article metadata
+- canonical URLs
+- RSS feed generation
+- sitemap entries
+- structured data for blog pages
+
+None of that belongs in the core package, but none of it should be
+copied into every route either.
+
+## What this package buys you
+
+It gives the host app focused helpers for App Router projects without
+forcing one visual design.
+
+That means route files can stay closer to composition:
+
+- fetch the content
+- map it into metadata or structured data helpers
+- render the article shell
+
+## Why this is separate from the core
+
+The core package should not know about:
+
+- canonical URL shapes
+- RSS XML
+- Next.js metadata objects
+
+Those are framework and publishing concerns, not domain concepts.
+
+Keeping them in `blog-kit-next` makes the split much clearer:
+
+- core for stable blog concepts
+- next for framework-specific publishing integration
+
+## Why the starter uses it heavily
+
+The starter should prove the real package surface.
+
+That is why the home page, article page, RSS route, and sitemap route
+all go through `blog-kit-next` helpers instead of reimplementing those
+details in-place.
