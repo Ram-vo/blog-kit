@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.1](https://github.com/Ram-vo/blog-kit/compare/blog-kit-v0.4.0...blog-kit-v0.4.1) (2026-04-20)
+
+
+### Bug Fixes
+
+* Harden npm publishing and automate editor package tests ([#27](https://github.com/Ram-vo/blog-kit/issues/27)) ([5b87eda](https://github.com/Ram-vo/blog-kit/commit/5b87edae8f94e045c09b99a778d295c64443272b))
+
 ## [0.4.0](https://github.com/Ram-vo/blog-kit/compare/blog-kit-v0.3.0...blog-kit-v0.4.0) (2026-04-20)
 
 
