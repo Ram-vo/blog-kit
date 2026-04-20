@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.0](https://github.com/Ram-vo/blog-kit/compare/blog-kit-next-v0.5.0...blog-kit-next-v0.6.0) (2026-04-20)
+
+
+### Features
+
+* Harden package builds and automate npm publishing for editor ([#24](https://github.com/Ram-vo/blog-kit/issues/24)) ([caf0db1](https://github.com/Ram-vo/blog-kit/commit/caf0db1ef2b1819365a16bd18917ca12d9b062e0))
+
 ## [0.5.0](https://github.com/Ram-vo/blog-kit/compare/blog-kit-next-v0.4.0...blog-kit-next-v0.5.0) (2026-04-11)
 
 
