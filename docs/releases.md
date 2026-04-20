@@ -9,6 +9,8 @@ Release Please currently tracks these packages:
 
 - `blog-kit`
 - `blog-kit-core`
+- `blog-kit-editor`
+- `blog-kit-local`
 - `blog-kit-next`
 - `blog-kit-supabase`
 
@@ -65,17 +67,15 @@ and updates the manifest for the next cycle.
 
 ## Current Limitations
 
-Release Please is configured only for versioning and release PR
-automation.
+Release Please is configured for versioning and release PR automation.
 
-It does not yet:
+Package publication is handled by a separate workflow:
 
-- publish packages to npm
-- build release artifacts
-- validate package contents before publish
+- `.github/workflows/publish-npm.yml`
 
-Package publishing should remain a deliberate manual step until the
-package surfaces are more stable.
+When a GitHub release is published from the Release Please flow, that
+workflow installs the workspace, validates it, and publishes only the
+package versions that do not already exist on npm.
 
 ## Maintainer Checklist
 
@@ -91,12 +91,18 @@ Before merging a Release Please PR:
 - review the proposed version bumps
 - review generated changelog entries
 - confirm only intended packages are included in the release
+- confirm the repository secret `NPM_TOKEN` is configured
+
+Before enabling automated npm publishing:
+
+- create a repository secret named `NPM_TOKEN`
+- ensure the token can publish the `blog-kit*` packages
+- keep GitHub release creation enabled in the Release Please flow
 
 ## Future Work
 
 Likely next improvements:
 
-- npm publishing automation
 - prepublish validation for each package
 - clearer package ownership and release criteria
 - contributor guidance for multi-package changes

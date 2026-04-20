@@ -90,6 +90,7 @@ This scaffold currently includes:
 - structured metadata helpers in the Next.js adapter
 - CI for typecheck, lint, and tests
 - Release Please versioning for publishable packages
+- automated npm publishing from GitHub releases
 - a runtime editorial flow that can switch between local and Supabase
 
 It does not include yet:

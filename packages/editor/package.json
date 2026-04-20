@@ -20,7 +20,7 @@
     "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "echo 'lint not configured yet'",
-    "test": "echo 'editor package tests are not configured yet'"
+    "test": "vitest run --environment happy-dom"
   },
   "dependencies": {
     "@mdxeditor/editor": "^3.12.0",
