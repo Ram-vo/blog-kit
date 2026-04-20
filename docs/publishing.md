@@ -39,14 +39,21 @@ Release Please already handles:
 - release pull requests
 - release tags
 
-The repository does not yet automate:
+The repository now also automates npm publishing through:
 
-- npm publish
-- registry provenance settings
-- publish-time validation
-- release artifact checks
+- `.github/workflows/publish-npm.yml`
 
-That means package publishing is still a deliberate maintainer action.
+That workflow:
+
+- runs on `release.published`
+- installs the workspace with `pnpm`
+- runs `typecheck`, `test`, and `build`
+- publishes only package versions that are not already on npm
+- uses npm provenance during publish
+
+The remaining maintainer action is repository setup:
+
+- add the `NPM_TOKEN` repository secret
 
 ## Package Metadata Expectations
 
@@ -68,7 +75,7 @@ Before the first real publish, maintainers should also decide:
 - homepage and bugs URLs
 - whether additional package exports are required
 
-## Manual Release Checklist
+## Release Checklist
 
 Before merging releasable work into `main`:
 
@@ -85,13 +92,13 @@ Before merging a Release Please PR:
 - confirm the release PR does not include unrelated documentation noise
 - confirm package READMEs match the surfaced APIs
 
-Before publishing to npm manually:
+Before enabling automated publishing:
 
-- run `pnpm install`
-- run `pnpm typecheck`
-- run `pnpm test`
-- run `pnpm build`
-- inspect the package contents that will be published
+- create the repository secret `NPM_TOKEN`
+- confirm the token can publish all `blog-kit*` packages
+- confirm GitHub Actions has permission to read contents and request
+  `id-token`
+- confirm the npm package names are owned by the publishing account
 
 ## Contributor Guidance For Multi-Package Changes
 
@@ -119,7 +126,7 @@ For the first intentional npm release, keep the process conservative:
 1. publish `blog-kit` alongside the three package-specific modules
 2. keep `blog-kit/supabase` as the explicit adapter entrypoint
 3. treat the starter app as documentation and a migration target
-4. prefer a manual publish after validating package contents
+4. publish from the release workflow after validating package contents
 
 This keeps the first release ergonomic without hiding the package
 boundaries from advanced adopters.
@@ -129,6 +136,5 @@ boundaries from advanced adopters.
 Likely next steps after the first manual publish:
 
 - add registry-focused package metadata
-- automate npm publishing from release tags
 - add publish-time validation in CI
 - document rollback and deprecation handling

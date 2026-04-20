@@ -11,9 +11,14 @@
     "build": "pnpm -r build",
     "typecheck": "pnpm -r typecheck",
     "lint": "pnpm -r lint",
-    "test": "pnpm -r test"
+    "test": "pnpm -r test",
+    "publish:npm": "node ./scripts/publish-npm.mjs"
   },
   "devDependencies": {
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
+    "happy-dom": "^20.9.0",
+    "jsdom": "^29.0.2",
     "typescript": "^5.8.3",
     "vite": "^6.4.2",
     "vitest": "^4.1.4"
