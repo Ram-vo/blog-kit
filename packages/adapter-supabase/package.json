@@ -3,6 +3,15 @@
   "version": "0.6.1",
   "private": false,
   "type": "module",
+  "license": "MIT",
+  "keywords": [
+    "blog",
+    "content",
+    "editorial",
+    "publishing",
+    "supabase",
+    "typescript"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/Ram-vo/blog-kit"

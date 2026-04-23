@@ -11,7 +11,7 @@ workflow.
 
 The repository currently treats these packages as publishable targets:
 
-- `blog-kit`
+- `@mrraymondvo/blog-kit`
 - `blog-kit-core`
 - `blog-kit-next`
 - `blog-kit-supabase`
@@ -95,7 +95,8 @@ Before merging a Release Please PR:
 Before enabling automated publishing:
 
 - create the repository secret `NPM_TOKEN`
-- confirm the token can publish all `blog-kit*` packages
+- confirm the token can publish all intended `blog-kit*` packages and
+  `@mrraymondvo/blog-kit`
 - confirm GitHub Actions has permission to read contents and request
   `id-token`
 - confirm the npm package names are owned by the publishing account
@@ -123,8 +124,8 @@ When a change affects one publishable package materially:
 
 For the first intentional npm release, keep the process conservative:
 
-1. publish `blog-kit` alongside the three package-specific modules
-2. keep `blog-kit/supabase` as the explicit adapter entrypoint
+1. publish `@mrraymondvo/blog-kit` alongside the package-specific modules
+2. keep `@mrraymondvo/blog-kit/supabase` as the explicit adapter entrypoint
 3. treat the starter app as documentation and a migration target
 4. publish from the release workflow after validating package contents
 

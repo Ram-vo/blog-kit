@@ -1,4 +1,4 @@
-# blog-kit
+# @mrraymondvo/blog-kit
 
 Convenience metapackage for `blog-kit`.
 
@@ -7,7 +7,7 @@ managing the package split themselves.
 
 ## Scope
 
-Use `blog-kit` when you want:
+Use `@mrraymondvo/blog-kit` when you want:
 
 - core domain helpers from `blog-kit-core`
 - publishing helpers from `blog-kit-next`
@@ -15,17 +15,17 @@ Use `blog-kit` when you want:
 
 ## Entry Points
 
-- `blog-kit`
+- `@mrraymondvo/blog-kit`
   Re-exports `blog-kit-core` and `blog-kit-next`
 
-- `blog-kit/supabase`
+- `@mrraymondvo/blog-kit/supabase`
   Re-exports `blog-kit-supabase`
 
 ## Example
 
 ```ts
-import { paginateItems, toArticleMetadata } from "blog-kit";
-import { createSupabaseAdapter } from "blog-kit/supabase";
+import { paginateItems, toArticleMetadata } from "@mrraymondvo/blog-kit";
+import { createSupabaseAdapter } from "@mrraymondvo/blog-kit/supabase";
 
 const page = paginateItems(posts, { page: 1, pageSize: 6 });
 const metadata = toArticleMetadata(post, siteConfig);

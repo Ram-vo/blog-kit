@@ -7,7 +7,7 @@ release pull requests for the publishable packages in the monorepo.
 
 Release Please currently tracks these packages:
 
-- `blog-kit`
+- `@mrraymondvo/blog-kit`
 - `blog-kit-core`
 - `blog-kit-editor`
 - `blog-kit-local`
@@ -96,7 +96,8 @@ Before merging a Release Please PR:
 Before enabling automated npm publishing:
 
 - create a repository secret named `NPM_TOKEN`
-- ensure the token can publish the `blog-kit*` packages
+- ensure the token can publish the `blog-kit*` packages and
+  `@mrraymondvo/blog-kit`
 - keep GitHub release creation enabled in the Release Please flow
 
 ## Future Work

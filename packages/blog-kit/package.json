@@ -1,8 +1,18 @@
 {
-  "name": "blog-kit",
+  "name": "@mrraymondvo/blog-kit",
   "version": "0.4.1",
   "private": false,
   "type": "module",
+  "license": "MIT",
+  "keywords": [
+    "blog",
+    "mdx",
+    "nextjs",
+    "supabase",
+    "editorial",
+    "publishing",
+    "react"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/Ram-vo/blog-kit"
