@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0](https://github.com/Ram-vo/blog-kit/compare/blog-kit-editor-v0.4.1...blog-kit-editor-v0.5.0) (2026-04-23)
+
+
+### Features
+
+* **meta:** scope the metapackage and add npm release metadata ([#29](https://github.com/Ram-vo/blog-kit/issues/29)) ([1bc973d](https://github.com/Ram-vo/blog-kit/commit/1bc973d76b983c7ae00fe30b630aa1850d304a2e))
+
 ## [0.4.1](https://github.com/Ram-vo/blog-kit/compare/blog-kit-editor-v0.4.0...blog-kit-editor-v0.4.1) (2026-04-20)
 
 
