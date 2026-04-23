@@ -10,7 +10,7 @@ Use the metapackage when you want the simplest install surface.
 Install:
 
 ```bash
-pnpm add blog-kit
+pnpm add @mrraymondvo/blog-kit
 ```
 
 Use it for:
@@ -27,7 +27,7 @@ import {
   toBlogPostSummary,
   toArticleMetadata,
   toRssFeedFromSummaries
-} from "blog-kit";
+} from "@mrraymondvo/blog-kit";
 
 const summaries = posts.map((post) => toBlogPostSummary(post, siteConfig));
 const page = paginateItems(summaries, { page: 1, pageSize: 6 });
@@ -43,14 +43,14 @@ Supabase.
 Install:
 
 ```bash
-pnpm add blog-kit @supabase/supabase-js
+pnpm add @mrraymondvo/blog-kit @supabase/supabase-js
 ```
 
 Example:
 
 ```ts
 import { createClient } from "@supabase/supabase-js";
-import { createSupabaseAdapter } from "blog-kit/supabase";
+import { createSupabaseAdapter } from "@mrraymondvo/blog-kit/supabase";
 
 const client = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_KEY!);
 const adapter = createSupabaseAdapter({ client });
@@ -106,7 +106,7 @@ For starter deployment details, see
 
 ## Choosing Between The Metapackage And Explicit Packages
 
-Use `blog-kit` when:
+Use `@mrraymondvo/blog-kit` when:
 
 - you want the fastest onboarding path
 - you are fine with the default convenience surface

@@ -3,6 +3,15 @@
   "version": "0.6.1",
   "private": false,
   "type": "module",
+  "license": "MIT",
+  "keywords": [
+    "blog",
+    "metadata",
+    "nextjs",
+    "rss",
+    "sitemap",
+    "structured-data"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/Ram-vo/blog-kit"

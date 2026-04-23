@@ -2,8 +2,8 @@
   "packages": {
     "packages/blog-kit": {
       "release-type": "node",
-      "package-name": "blog-kit",
-      "component": "blog-kit"
+      "package-name": "@mrraymondvo/blog-kit",
+      "component": "mrraymondvo-blog-kit"
     },
     "packages/editor": {
       "release-type": "node",

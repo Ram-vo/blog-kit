@@ -3,6 +3,15 @@
   "version": "0.4.1",
   "private": false,
   "type": "module",
+  "license": "MIT",
+  "keywords": [
+    "blog",
+    "filesystem",
+    "frontmatter",
+    "local",
+    "mdx",
+    "publishing"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/Ram-vo/blog-kit"

@@ -18,7 +18,8 @@ Other reasonable alternatives if we ever want a different brand:
 
 Split the current blog into three layers:
 
-- `blog-kit`: convenience metapackage for the default public surface.
+- `@mrraymondvo/blog-kit`: convenience metapackage for the default public
+  surface.
 - `blog-kit-core`: domain, contracts, and pure utilities.
 - `blog-kit-editor`: reusable editor UI and post editing flows.
 - `blog-kit-local`: filesystem-backed editorial persistence for MDX.
@@ -28,7 +29,8 @@ Split the current blog into three layers:
 
 ## Packages
 
-- `blog-kit`: convenience entrypoint for core helpers, publishing helpers, and the `blog-kit/supabase` subpath
+- `@mrraymondvo/blog-kit`: convenience entrypoint for core helpers,
+  publishing helpers, and the `@mrraymondvo/blog-kit/supabase` subpath
 - `blog-kit-core`: domain types, repository contracts, and pure helpers
 - `blog-kit-editor`: provider-agnostic editor UI built on `mdxeditor`
 - `blog-kit-local`: local editorial persistence for `.mdx` files
@@ -83,7 +85,7 @@ This scaffold currently includes:
 - a local filesystem adapter for editable MDX content
 - a Tailwind CSS v4 styling baseline in the starter app
 - a static export path for a public starter demo
-- a publishable `blog-kit` metapackage
+- a publishable `@mrraymondvo/blog-kit` metapackage
 - a publishable `blog-kit-editor` package
 - RSS and sitemap helpers in the Next.js adapter
 - RSS and sitemap routes in the starter app
@@ -98,7 +100,6 @@ It does not include yet:
 - a dashboard shell
 - media uploads
 - production auth enforcement in the starter
-- automated npm publishing
 
 ## Installation
 
@@ -135,7 +136,7 @@ automation.
 
 Current scope:
 
-- `blog-kit`
+- `@mrraymondvo/blog-kit`
 - `blog-kit-core`
 - `blog-kit-editor`
 - `blog-kit-local`
@@ -161,8 +162,8 @@ For install and adoption examples by scenario, see
 
 Choose the package surface based on how much control you want:
 
-- `blog-kit` for the default convenience entrypoint
-- `blog-kit/supabase` for the adapter path
+- `@mrraymondvo/blog-kit` for the default convenience entrypoint
+- `@mrraymondvo/blog-kit/supabase` for the adapter path
 - package-specific modules for stricter dependency control
 - `apps/starter` for a runnable reference implementation
 
