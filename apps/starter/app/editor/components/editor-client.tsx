@@ -91,6 +91,23 @@ export function StarterEditorClient({
     }
   }
 
+  async function uploadImage(file: File) {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const response = await fetch("/api/editor/media", {
+      method: "POST",
+      body: formData
+    });
+
+    if (!response.ok) {
+      throw new Error(await readErrorMessage(response));
+    }
+
+    const asset = (await response.json()) as { url: string };
+    return asset.url;
+  }
+
   return (
     <div className="grid gap-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -130,6 +147,7 @@ export function StarterEditorClient({
           await save(nextValue);
         }}
         onDelete={mode === "edit" ? remove : undefined}
+        imageUploadHandler={uploadImage}
       />
     </div>
   );

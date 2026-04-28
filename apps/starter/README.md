@@ -13,6 +13,7 @@ Current scope:
 - optional Supabase-backed data loading
 - a local editorial demo powered by `blog-kit-editor` and `blog-kit-local`
 - a Supabase-backed editorial path powered by `blog-kit-supabase`
+- editor image uploads through the active local or Supabase backend
 - RSS and sitemap routes powered by package helpers
 - static export support for a public demo deployment
 
@@ -78,6 +79,8 @@ Routes to verify in this mode:
 The editor routes use local filesystem persistence. They are available
 in runtime mode and are intentionally excluded from the static export.
 
+Local image uploads are written to `apps/starter/public/blog-media` and
+returned as `/blog-media/...` URLs.
 The sample posts are intentionally written as package documentation.
 Each post explains one piece of the system while also exercising the
 same rendering and editing path a consumer would integrate.
@@ -129,6 +132,7 @@ Supabase client through `blog-kit-supabase`:
 - `STARTER_DATA_BACKEND=supabase`
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY`
+- `NEXT_PUBLIC_SUPABASE_MEDIA_BUCKET`
 
 Create `apps/starter/.env.local` from `.env.example` and restart the
 dev server after editing it.
@@ -151,6 +155,8 @@ When `STARTER_DATA_BACKEND=supabase` is active:
 - `/blog/[slug]` reads article bodies from Supabase
 - `/editor` reads and writes editorial content through the Supabase
   adapter
+- editor image uploads are written to the configured Supabase Storage
+  bucket
 
 If the backend is left on `auto`, the starter prefers Supabase when the
 credentials exist and falls back to local content otherwise.

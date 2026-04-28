@@ -14,6 +14,12 @@ pnpm add blog-kit-supabase blog-kit-core @supabase/supabase-js
 
 ## Use It For
 
+- a post repository backed by Supabase
+- an editorial repository backed by Supabase
+- author and category repositories backed by Supabase
+- a typed adapter contract around the injected Supabase client
+- mapping from Supabase rows into `blog-kit-core` domain types
+- media uploads through Supabase Storage
 - Public post reads backed by Supabase
 - Editorial create, update, publish, and delete operations
 - Author and category repositories
@@ -27,6 +33,7 @@ pnpm add blog-kit-supabase blog-kit-core @supabase/supabase-js
 - `SupabaseEditorialRepository`
 - `SupabaseAuthorRepository`
 - `SupabaseCategoryRepository`
+- `SupabaseMediaRepository`
 - `SupabaseAdapterError`
 - `resolveSupabaseEditorSession`
 - Table row types for the current adapter contract
@@ -52,6 +59,28 @@ import { resolveSupabaseEditorSession } from "blog-kit-supabase";
 
 const session = await resolveSupabaseEditorSession({ client });
 ```
+
+This helper is optional. Teams with custom auth stacks can ignore it and
+map their own auth model into `EditorSession`.
+
+## Media Upload Example
+
+```ts
+const adapter = createSupabaseAdapter({
+  client,
+  mediaBucket: "blog-media"
+});
+
+const asset = await adapter.media.uploadMedia({
+  fileName: "hero.png",
+  contentType: "image/png",
+  data: new Uint8Array(await file.arrayBuffer())
+});
+```
+
+The adapter uploads to Supabase Storage and returns the public URL from
+the configured bucket. If you use private buckets, proxy assets or
+return signed URLs from your host app instead.
 
 This helper is optional. Apps with custom auth can ignore it and map
 their own user model into the generic `EditorSession` contract.

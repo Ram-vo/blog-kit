@@ -7,6 +7,8 @@ function getContentDirectory() {
 
 export function createStarterLocalAdapter() {
   return createLocalAdapter({
-    contentDirectory: getContentDirectory()
+    contentDirectory: getContentDirectory(),
+    mediaDirectory: join(process.cwd(), "public", "blog-media"),
+    mediaBasePath: "/blog-media"
   });
 }

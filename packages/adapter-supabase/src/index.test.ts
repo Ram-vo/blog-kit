@@ -10,9 +10,11 @@ import {
   SupabaseAuthorRepository,
   SupabaseCategoryRepository,
   SupabaseEditorialRepository,
+  SupabaseMediaRepository,
   SupabasePostRepository,
   type SupabaseAuthClientLike,
   type SupabaseClientLike,
+  type SupabaseStorageLike,
   type SupabaseTableRowMap
 } from "./index";
 
@@ -352,6 +354,43 @@ function createFakeClient(initialStore?: Store): SupabaseClientLike {
   };
 }
 
+function createFakeStorage() {
+  const uploads: Array<{
+    bucket: string;
+    path: string;
+    body: Uint8Array;
+    contentType?: string;
+  }> = [];
+  const storage: SupabaseStorageLike = {
+    from(bucket: string) {
+      return {
+        async upload(path, body, options) {
+          uploads.push({
+            bucket,
+            path,
+            body,
+            contentType: options?.contentType
+          });
+
+          return {
+            data: { path },
+            error: null
+          };
+        },
+        getPublicUrl(path) {
+          return {
+            data: {
+              publicUrl: `https://cdn.example.com/${bucket}/${path}`
+            }
+          };
+        }
+      };
+    }
+  };
+
+  return { storage, uploads };
+}
+
 function createErrorClient(message: string): SupabaseClientLike {
   return {
     from<T extends TableName>(_table: T) {
@@ -492,6 +531,49 @@ describe("SupabaseEditorialRepository", () => {
     });
 
     expect(category.slug).toBe("architecture");
+  });
+});
+
+describe("SupabaseMediaRepository", () => {
+  it("uploads media to Supabase Storage and returns a public URL", async () => {
+    const { storage, uploads } = createFakeStorage();
+    const client: SupabaseClientLike = {
+      ...createFakeClient(),
+      storage
+    };
+    const repository = new SupabaseMediaRepository(
+      client,
+      "blog-media",
+      "editor"
+    );
+
+    const asset = await repository.uploadMedia({
+      fileName: "Hero Image.png",
+      contentType: "image/png",
+      data: new Uint8Array([1, 2, 3])
+    });
+
+    expect(uploads[0]).toMatchObject({
+      bucket: "blog-media",
+      contentType: "image/png"
+    });
+    expect(uploads[0]?.path).toMatch(/^editor\/hero-image-/);
+    expect(asset.url).toMatch(/^https:\/\/cdn\.example\.com\/blog-media\/editor\/hero-image-/);
+    expect(asset.size).toBe(3);
+  });
+
+  it("classifies missing storage clients with a typed adapter error", async () => {
+    const repository = new SupabaseMediaRepository(createFakeClient());
+
+    await expect(
+      repository.uploadMedia({
+        fileName: "image.png",
+        contentType: "image/png",
+        data: new Uint8Array([1])
+      })
+    ).rejects.toMatchObject({
+      code: "STORAGE_UNAVAILABLE"
+    } satisfies Partial<SupabaseAdapterError>);
   });
 });
 

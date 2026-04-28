@@ -58,6 +58,19 @@ const adapter = createSupabaseAdapter({ client });
 const posts = await adapter.posts.listAllPublishedPosts();
 ```
 
+The Supabase adapter also exposes `adapter.media.uploadMedia(...)` when
+the injected client includes Supabase Storage. Configure a Storage
+bucket, then pass `mediaBucket` if you do not use the default
+`blog-media` bucket:
+
+```ts
+const adapter = createSupabaseAdapter({
+  client,
+  mediaBucket: "blog-media"
+});
+```
+
+## Option 3: Use Package-Specific Modules
 ## Option 3: Add The Editor
 
 Use the editor package when you want a reusable MDX editing surface but
@@ -123,6 +136,7 @@ Use the starter when you want:
 - a runnable reference implementation
 - a GitHub Pages demo
 - a base to integrate with an existing design system
+- local and Supabase-backed editor image uploads
 - working examples of local and Supabase-backed editing
 
 Local runtime:

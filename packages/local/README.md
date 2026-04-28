@@ -6,6 +6,9 @@ Use this package when you want editable MDX files without running a CMS
 or database. It is useful for starter apps, documentation sites, demos,
 and local editorial workflows.
 
+It can also store uploaded editor media in a local directory and return
+public URLs for the host app to persist in MDX content.
+
 ## Install
 
 ```bash
@@ -40,7 +43,9 @@ Common frontmatter fields:
 import { createLocalAdapter } from "blog-kit-local";
 
 const adapter = createLocalAdapter({
-  contentDirectory: "/absolute/path/to/content/blog"
+  contentDirectory: "/absolute/path/to/content/blog",
+  mediaDirectory: "/absolute/path/to/public/blog-media",
+  mediaBasePath: "/blog-media"
 });
 
 const draft = await adapter.editorial.createPost({
@@ -54,6 +59,18 @@ const draft = await adapter.editorial.createPost({
 });
 ```
 
+## Media Uploads
+
+```ts
+const asset = await adapter.media.uploadMedia({
+  fileName: "hero.png",
+  contentType: "image/png",
+  data: new Uint8Array(await file.arrayBuffer())
+});
+```
+
+The returned `asset.url` can be inserted into MDX content or stored as a
+cover image URL.
 ## When To Use It
 
 Use `blog-kit-local` when you want the editor to write real files during

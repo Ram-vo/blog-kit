@@ -62,4 +62,26 @@ describe("blog-kit-local editorial adapter", () => {
       }
     ]);
   });
+
+  it("stores uploaded media in the configured media directory", async () => {
+    const contentDirectory = await createTempDirectory();
+    const mediaDirectory = await createTempDirectory();
+    const adapter = createLocalAdapter({
+      contentDirectory,
+      mediaDirectory,
+      mediaBasePath: "/assets/blog"
+    });
+
+    const asset = await adapter.media.uploadMedia({
+      fileName: "Hero Image.png",
+      contentType: "image/png",
+      data: new Uint8Array([1, 2, 3])
+    });
+
+    expect(asset.url).toMatch(/^\/assets\/blog\/hero-image-/);
+    expect(asset.url).toMatch(/\.png$/);
+    expect(asset.contentType).toBe("image/png");
+    expect(asset.size).toBe(3);
+    await expect(readFile(asset.path!, "binary")).resolves.toHaveLength(3);
+  });
 });

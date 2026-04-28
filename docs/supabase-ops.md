@@ -35,6 +35,29 @@ boring:
 That gives the starter app enough access to render public content while
 keeping write paths closed.
 
+## Storage Bucket For Editor Uploads
+
+The starter editor can upload images through `blog-kit-supabase`.
+
+Create a Supabase Storage bucket for blog media and expose its name to
+the starter:
+
+```bash
+NEXT_PUBLIC_SUPABASE_MEDIA_BUCKET=blog-media
+```
+
+The default bucket name is `blog-media`.
+
+For a public blog, the simplest setup is a public bucket with writes
+restricted by your application auth or Supabase policies. If the bucket
+is private, the host app must return signed URLs or proxy assets through
+its own route because the adapter returns the public URL from Supabase
+Storage.
+
+The starter keeps the route open while it remains a reference app. A
+production app should protect `/api/editor/media` with the same auth and
+permission checks used for post editing.
+
 ## Example Policy Direction
 
 The exact SQL will differ by project, but the access model should look
@@ -44,6 +67,8 @@ like this:
 - public users can read `AUTHORS`
 - public users can read `CATEGORIES`
 - public users can read `POST_CATEGORIES`
+- public users can read uploaded blog media, or the app can serve
+  signed URLs
 - only trusted roles can write
 
 ## Existing Schema Migration

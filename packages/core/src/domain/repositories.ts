@@ -2,6 +2,8 @@ import type { Category, PaginatedPosts, Post, PostFilters, Author } from "./enti
 import type {
   EditorialCategoryInput,
   EditorialCategoryOption,
+  EditorialMediaAsset,
+  EditorialMediaUpload,
   EditorialPost,
   EditorialPostInput
 } from "./editorial.js";
@@ -35,4 +37,8 @@ export interface EditorialRepository {
   deletePost(id: string): Promise<void>;
   listCategories(): Promise<EditorialCategoryOption[]>;
   createCategory?(category: EditorialCategoryInput): Promise<EditorialCategoryOption>;
+}
+
+export interface EditorialMediaRepository {
+  uploadMedia(upload: EditorialMediaUpload): Promise<EditorialMediaAsset>;
 }
