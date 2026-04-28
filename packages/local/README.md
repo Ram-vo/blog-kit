@@ -5,6 +5,9 @@ Filesystem-backed local content adapter for `blog-kit`.
 This package stores posts as `.mdx` files with frontmatter and stores
 categories in a companion JSON file.
 
+It can also store uploaded editor media in a local directory and return
+public URLs for the host app to persist in MDX content.
+
 ## Conventions
 
 - posts are stored in a content directory as `slug.mdx`
@@ -19,7 +22,9 @@ categories in a companion JSON file.
 import { createLocalAdapter } from "blog-kit-local";
 
 const adapter = createLocalAdapter({
-  contentDirectory: "/absolute/path/to/content/blog"
+  contentDirectory: "/absolute/path/to/content/blog",
+  mediaDirectory: "/absolute/path/to/public/blog-media",
+  mediaBasePath: "/blog-media"
 });
 
 const draft = await adapter.editorial.createPost({
@@ -32,3 +37,16 @@ const draft = await adapter.editorial.createPost({
   isDraft: true
 });
 ```
+
+## Media Uploads
+
+```ts
+const asset = await adapter.media.uploadMedia({
+  fileName: "hero.png",
+  contentType: "image/png",
+  data: new Uint8Array(await file.arrayBuffer())
+});
+```
+
+The returned `asset.url` can be inserted into MDX content or stored as a
+cover image URL.

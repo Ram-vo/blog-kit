@@ -7,6 +7,8 @@ import type {
   EditorSession,
   EditorialCategoryInput,
   EditorialCategoryOption,
+  EditorialMediaRepository,
+  EditorialMediaUpload,
   EditorialPost,
   EditorialPostInput,
   EditorialRepository,
@@ -122,10 +124,31 @@ export interface SupabaseQueryBuilderLike<T> {
 
 export interface SupabaseClientLike {
   from<T extends TableName>(table: T): SupabaseQueryBuilderLike<SupabaseTableRowMap[T]>;
+  storage?: SupabaseStorageLike;
+}
+
+export interface SupabaseStorageBucketLike {
+  upload(
+    path: string,
+    body: Uint8Array,
+    options?: { contentType?: string; upsert?: boolean }
+  ): Promise<{
+    data: { path: string } | null;
+    error: SupabaseError;
+  }>;
+  getPublicUrl(path: string): {
+    data: { publicUrl: string };
+  };
+}
+
+export interface SupabaseStorageLike {
+  from(bucket: string): SupabaseStorageBucketLike;
 }
 
 export interface SupabaseAdapterOptions {
   client: SupabaseClientLike;
+  mediaBucket?: string;
+  mediaPathPrefix?: string;
 }
 
 export interface SupabaseAuthUserLike {
@@ -159,7 +182,8 @@ export type SupabaseAdapterErrorCode =
   | "NOT_FOUND"
   | "READ_FAILED"
   | "WRITE_FAILED"
-  | "RELATION_WRITE_FAILED";
+  | "RELATION_WRITE_FAILED"
+  | "STORAGE_UNAVAILABLE";
 
 export class SupabaseAdapterError extends Error {
   constructor(
@@ -186,6 +210,25 @@ function createAdapterError(
     message,
     toErrorMessage(error, message)
   );
+}
+
+function createUploadId() {
+  return globalThis.crypto?.randomUUID?.() ?? Math.random().toString(36).slice(2);
+}
+
+function sanitizeStorageFileName(fileName: string) {
+  const extension = fileName.includes(".")
+    ? `.${fileName.split(".").pop()?.toLowerCase() ?? "bin"}`
+    : "";
+  const baseName = fileName
+    .slice(0, fileName.length - extension.length)
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
+  return `${baseName || "upload"}-${createUploadId()}${extension}`;
 }
 
 function mapAuthor(row: AuthorRow): Author {
@@ -750,6 +793,45 @@ export class SupabaseEditorialRepository implements EditorialRepository {
   }
 }
 
+export class SupabaseMediaRepository implements EditorialMediaRepository {
+  constructor(
+    private readonly client: SupabaseClientLike,
+    private readonly bucket = "blog-media",
+    private readonly pathPrefix = "uploads"
+  ) {}
+
+  async uploadMedia(upload: EditorialMediaUpload) {
+    if (!this.client.storage) {
+      throw createAdapterError(
+        "STORAGE_UNAVAILABLE",
+        "Supabase storage is not available on the injected client"
+      );
+    }
+
+    const fileName = sanitizeStorageFileName(upload.fileName);
+    const pathPrefix = this.pathPrefix.replace(/^\/+|\/+$/g, "");
+    const storagePath = pathPrefix ? `${pathPrefix}/${fileName}` : fileName;
+    const bucket = this.client.storage.from(this.bucket);
+    const { data, error } = await bucket.upload(storagePath, upload.data, {
+      contentType: upload.contentType,
+      upsert: false
+    });
+
+    if (error || !data) {
+      throw createAdapterError("WRITE_FAILED", "Failed to upload media", error);
+    }
+
+    const publicUrl = bucket.getPublicUrl(data.path).data.publicUrl;
+
+    return {
+      url: publicUrl,
+      path: data.path,
+      contentType: upload.contentType,
+      size: upload.data.byteLength
+    };
+  }
+}
+
 export async function resolveSupabaseEditorSession(
   options: SupabaseEditorSessionResolverOptions
 ): Promise<EditorSession> {
@@ -786,6 +868,11 @@ export function createSupabaseAdapter(options: SupabaseAdapterOptions) {
     posts: new SupabasePostRepository(options.client),
     authors: new SupabaseAuthorRepository(options.client),
     categories: new SupabaseCategoryRepository(options.client),
-    editorial: new SupabaseEditorialRepository(options.client)
+    editorial: new SupabaseEditorialRepository(options.client),
+    media: new SupabaseMediaRepository(
+      options.client,
+      options.mediaBucket,
+      options.mediaPathPrefix
+    )
   };
 }

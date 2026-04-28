@@ -1,10 +1,12 @@
-import { mkdir, readFile, readdir, rename, rm, writeFile } from "node:fs/promises";
-import { dirname, join } from "node:path";
+import { mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
+import { dirname, extname, join } from "node:path";
 import { randomUUID } from "node:crypto";
 import matter from "gray-matter";
 import type {
   EditorialCategoryInput,
   EditorialCategoryOption,
+  EditorialMediaRepository,
+  EditorialMediaUpload,
   EditorialPost,
   EditorialPostInput,
   EditorialRepository
@@ -13,6 +15,8 @@ import type {
 export interface LocalAdapterOptions {
   contentDirectory: string;
   categoriesFilePath?: string;
+  mediaDirectory?: string;
+  mediaBasePath?: string;
 }
 
 type EditorialFrontmatter = {
@@ -44,6 +48,27 @@ function toPostFilePath(contentDirectory: string, slug: string) {
 
 function toCategoriesFilePath(options: LocalAdapterOptions) {
   return options.categoriesFilePath ?? join(options.contentDirectory, "_categories.json");
+}
+
+function toMediaDirectory(options: LocalAdapterOptions) {
+  return options.mediaDirectory ?? join(process.cwd(), "public", "blog-media");
+}
+
+function toMediaBasePath(options: LocalAdapterOptions) {
+  return options.mediaBasePath ?? "/blog-media";
+}
+
+function sanitizeFileName(fileName: string) {
+  const extension = extname(fileName).toLowerCase();
+  const baseName = fileName
+    .slice(0, fileName.length - extension.length)
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
+  return `${baseName || "upload"}-${randomUUID()}${extension}`;
 }
 
 function mapFrontmatterToPost(
@@ -229,8 +254,29 @@ export class LocalEditorialRepository implements EditorialRepository {
   }
 }
 
+export class LocalMediaRepository implements EditorialMediaRepository {
+  constructor(private readonly options: LocalAdapterOptions) {}
+
+  async uploadMedia(upload: EditorialMediaUpload) {
+    const mediaDirectory = toMediaDirectory(this.options);
+    const fileName = sanitizeFileName(upload.fileName);
+    const filePath = join(mediaDirectory, fileName);
+
+    await ensureDirectory(mediaDirectory);
+    await writeFile(filePath, upload.data);
+
+    return {
+      url: `${toMediaBasePath(this.options)}/${fileName}`,
+      path: filePath,
+      contentType: upload.contentType,
+      size: upload.data.byteLength
+    };
+  }
+}
+
 export function createLocalAdapter(options: LocalAdapterOptions) {
   return {
-    editorial: new LocalEditorialRepository(options)
+    editorial: new LocalEditorialRepository(options),
+    media: new LocalMediaRepository(options)
   };
 }

@@ -1,4 +1,4 @@
-import type { EditorialRepository } from "blog-kit-core";
+import type { EditorialMediaRepository, EditorialRepository } from "blog-kit-core";
 import { createStarterLocalAdapter } from "./local-editorial";
 import { getStarterDataBackend } from "../runtime-config";
 import { createStarterAdapter, hasSupabaseConfig } from "../supabase";
@@ -30,13 +30,17 @@ export function getStarterEditorialSourceLabel(
 export function createStarterEditorialRepository(): {
   source: StarterEditorialSource;
   editorial: EditorialRepository;
+  media: EditorialMediaRepository;
 } {
   const source = getStarterEditorialSource();
 
   if (source === "local") {
+    const adapter = createStarterLocalAdapter();
+
     return {
       source,
-      editorial: createStarterLocalAdapter().editorial
+      editorial: adapter.editorial,
+      media: adapter.media
     };
   }
 
@@ -50,6 +54,7 @@ export function createStarterEditorialRepository(): {
 
   return {
     source,
-    editorial: adapter.editorial
+    editorial: adapter.editorial,
+    media: adapter.media
   };
 }

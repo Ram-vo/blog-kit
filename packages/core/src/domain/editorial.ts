@@ -44,6 +44,19 @@ export interface EditorialCategoryInput {
 
 export interface EditorialCategoryOption extends Pick<Category, "id" | "name" | "slug"> {}
 
+export interface EditorialMediaUpload {
+  fileName: string;
+  contentType: string;
+  data: Uint8Array;
+}
+
+export interface EditorialMediaAsset {
+  url: string;
+  path?: string;
+  contentType?: string;
+  size?: number;
+}
+
 export function hasEditorPermission(
   session: EditorSession | null | undefined,
   permission: EditorPermission

@@ -29,5 +29,10 @@ export function createSupabaseClient(): SupabaseClientLike | null {
 
 export function createStarterAdapter() {
   const client = createSupabaseClient();
-  return client ? createSupabaseAdapter({ client }) : null;
+  return client
+    ? createSupabaseAdapter({
+        client,
+        mediaBucket: getEnv("NEXT_PUBLIC_SUPABASE_MEDIA_BUCKET") ?? "blog-media"
+      })
+    : null;
 }
