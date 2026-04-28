@@ -1,8 +1,8 @@
 {
   "packages/blog-kit": "0.5.1",
   "packages/editor": "0.5.1",
-  "packages/local": "0.5.1",
-  "packages/core": "0.7.1",
+  "packages/local": "0.6.0",
+  "packages/core": "0.8.0",
   "packages/adapter-next": "0.7.1",
-  "packages/adapter-supabase": "0.7.1"
+  "packages/adapter-supabase": "0.8.0"
 }

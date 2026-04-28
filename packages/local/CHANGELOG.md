@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.0](https://github.com/Ram-vo/blog-kit/compare/blog-kit-local-v0.5.1...blog-kit-local-v0.6.0) (2026-04-28)
+
+
+### Features
+
+* **editor:** add media upload support ([#34](https://github.com/Ram-vo/blog-kit/issues/34)) ([c14dd53](https://github.com/Ram-vo/blog-kit/commit/c14dd5325ac6596756d8c0b504323d4a95e52a02))
+
 ## [0.5.1](https://github.com/Ram-vo/blog-kit/compare/blog-kit-local-v0.5.0...blog-kit-local-v0.5.1) (2026-04-28)
 
 
