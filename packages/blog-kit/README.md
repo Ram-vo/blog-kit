@@ -1,40 +1,65 @@
 # @mrraymondvo/blog-kit
 
-Convenience metapackage for `blog-kit`.
+Scoped convenience entrypoint for `blog-kit`.
 
-This package is for teams that want a simpler install surface without
-managing the package split themselves.
+Use this package when you want the default public surface without
+installing each package one by one.
 
-## Scope
+## Install
 
-Use `@mrraymondvo/blog-kit` when you want:
+```bash
+pnpm add @mrraymondvo/blog-kit
+```
 
-- core domain helpers from `blog-kit-core`
-- publishing helpers from `blog-kit-next`
-- an optional Supabase subpath when you need adapter access
+Add optional peer/provider dependencies based on the surfaces you use:
+
+```bash
+pnpm add react react-dom
+pnpm add @supabase/supabase-js
+```
 
 ## Entry Points
 
-- `@mrraymondvo/blog-kit`
-  Re-exports `blog-kit-core` and `blog-kit-next`
-
-- `@mrraymondvo/blog-kit/supabase`
-  Re-exports `blog-kit-supabase`
+| Entry point | Re-exports |
+| --- | --- |
+| `@mrraymondvo/blog-kit` | `blog-kit-core`, `blog-kit-next` |
+| `@mrraymondvo/blog-kit/editor` | `blog-kit-editor` |
+| `@mrraymondvo/blog-kit/local` | `blog-kit-local` |
+| `@mrraymondvo/blog-kit/supabase` | `blog-kit-supabase` |
 
 ## Example
 
 ```ts
-import { paginateItems, toArticleMetadata } from "@mrraymondvo/blog-kit";
-import { createSupabaseAdapter } from "@mrraymondvo/blog-kit/supabase";
+import {
+  paginateItems,
+  toArticleMetadata,
+  toBlogPostSummary
+} from "@mrraymondvo/blog-kit";
 
-const page = paginateItems(posts, { page: 1, pageSize: 6 });
+const summaries = posts.map((post) => toBlogPostSummary(post, siteConfig));
+const page = paginateItems(summaries, { page: 1, pageSize: 6 });
 const metadata = toArticleMetadata(post, siteConfig);
-const adapter = createSupabaseAdapter({ client });
 ```
 
-Use the metapackage when you want a more ergonomic default entrypoint.
-Use the package-specific modules when you want explicit control over
-dependencies and import boundaries.
+Supabase adapter access stays opt-in:
 
-For install paths and adoption examples, see
+```ts
+import { createSupabaseAdapter } from "@mrraymondvo/blog-kit/supabase";
+
+const adapter = createSupabaseAdapter({ client });
+const posts = await adapter.posts.listAllPublishedPosts();
+```
+
+## When To Use Explicit Packages
+
+Use package-specific modules instead when you want stricter dependency
+control:
+
+- `blog-kit-core`
+- `blog-kit-next`
+- `blog-kit-editor`
+- `blog-kit-local`
+- `blog-kit-supabase`
+
+See the full adoption guide in
 [`../../docs/getting-started.md`](../../docs/getting-started.md).

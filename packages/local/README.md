@@ -2,16 +2,37 @@
 
 Filesystem-backed local content adapter for `blog-kit`.
 
-This package stores posts as `.mdx` files with frontmatter and stores
-categories in a companion JSON file.
+Use this package when you want editable MDX files without running a CMS
+or database. It is useful for starter apps, documentation sites, demos,
+and local editorial workflows.
 
-## Conventions
+## Install
 
-- posts are stored in a content directory as `slug.mdx`
-- frontmatter includes editorial metadata such as `id`, `title`, `slug`,
-  `excerpt`, `categoryIds`, `tags`, `coverImageUrl`, `isDraft`,
-  `authorId`, `publishedAt`, `createdAt`, and `updatedAt`
-- categories are stored in `_categories.json` by default
+```bash
+pnpm add blog-kit-local blog-kit-core
+```
+
+## Content Conventions
+
+- Posts are stored as `slug.mdx` files in a content directory.
+- Post metadata is stored in frontmatter.
+- Categories are stored in `_categories.json` by default.
+- Draft state is represented through the `isDraft` frontmatter field.
+
+Common frontmatter fields:
+
+- `id`
+- `title`
+- `slug`
+- `excerpt`
+- `categoryIds`
+- `tags`
+- `coverImageUrl`
+- `isDraft`
+- `authorId`
+- `publishedAt`
+- `createdAt`
+- `updatedAt`
 
 ## Example
 
@@ -32,3 +53,9 @@ const draft = await adapter.editorial.createPost({
   isDraft: true
 });
 ```
+
+## When To Use It
+
+Use `blog-kit-local` when you want the editor to write real files during
+local development. Use `blog-kit-supabase` when you need a shared remote
+backend, auth integration, and relational content storage.
