@@ -1,4 +1,4 @@
-import type { Post } from "../domain/entities";
+import type { Post } from "../domain/entities.js";
 
 export function filterPostsByCategory(posts: Post[], categorySlug: string): Post[] {
   return posts.filter((post) => post.categories.some((category) => category.slug === categorySlug));

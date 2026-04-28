@@ -1,4 +1,4 @@
-import type { Post } from "../domain/entities";
+import type { Post } from "../domain/entities.js";
 
 export function listRelatedPosts(posts: Post[], currentPost: Post, limit = 3): Post[] {
   return posts

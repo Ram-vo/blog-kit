@@ -1,4 +1,4 @@
-import type { Category, UserRole } from "./entities";
+import type { Category, UserRole } from "./entities.js";
 
 export type EditorPermission =
   | "posts:create"
