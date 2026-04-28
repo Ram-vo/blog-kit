@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.1](https://github.com/Ram-vo/blog-kit/compare/blog-kit-local-v0.5.0...blog-kit-local-v0.5.1) (2026-04-28)
+
+
+### Bug Fixes
+
+* **release:** emit Node-compatible ESM package imports ([#31](https://github.com/Ram-vo/blog-kit/issues/31)) ([ce8df8e](https://github.com/Ram-vo/blog-kit/commit/ce8df8e684ba761eaf6a04ace9f4b4f2c33b326c))
+
 ## [0.5.0](https://github.com/Ram-vo/blog-kit/compare/blog-kit-local-v0.4.1...blog-kit-local-v0.5.0) (2026-04-23)
 
 
