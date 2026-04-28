@@ -10,7 +10,15 @@ const nextConfig = {
   images: {
     unoptimized: isStaticExport
   },
-  typedRoutes: !isStaticExport
+  typedRoutes: !isStaticExport,
+  webpack(config) {
+    config.resolve.extensionAlias = {
+      ...config.resolve.extensionAlias,
+      ".js": [".ts", ".tsx", ".js"]
+    };
+
+    return config;
+  }
 };
 
 export default nextConfig;

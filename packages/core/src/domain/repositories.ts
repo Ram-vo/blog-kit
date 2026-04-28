@@ -1,10 +1,10 @@
-import type { Category, PaginatedPosts, Post, PostFilters, Author } from "./entities";
+import type { Category, PaginatedPosts, Post, PostFilters, Author } from "./entities.js";
 import type {
   EditorialCategoryInput,
   EditorialCategoryOption,
   EditorialPost,
   EditorialPostInput
-} from "./editorial";
+} from "./editorial.js";
 
 export interface PostRepository {
   getPostBySlug(slug: string): Promise<Post | null>;

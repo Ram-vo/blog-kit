@@ -2,7 +2,7 @@ import type {
   PaginatedResult,
   PaginationInput,
   PaginationMeta
-} from "../domain/pagination";
+} from "../domain/pagination.js";
 
 function normalizePositiveInteger(value: number | undefined, fallback: number) {
   if (!value || !Number.isFinite(value)) {

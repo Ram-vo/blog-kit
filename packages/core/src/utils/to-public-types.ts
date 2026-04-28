@@ -1,7 +1,7 @@
-import type { Author, Category, Post } from "../domain/entities";
-import type { AuthorProfile, BlogPost, BlogPostSummary, CategoryProfile } from "../domain/public-types";
-import type { SiteConfig } from "../domain/site-config";
-import { estimateReadingTime } from "./estimate-reading-time";
+import type { Author, Category, Post } from "../domain/entities.js";
+import type { AuthorProfile, BlogPost, BlogPostSummary, CategoryProfile } from "../domain/public-types.js";
+import type { SiteConfig } from "../domain/site-config.js";
+import { estimateReadingTime } from "./estimate-reading-time.js";
 
 function toCategoryProfile(category: Category): CategoryProfile {
   return {
