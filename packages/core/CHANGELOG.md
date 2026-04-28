@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.0](https://github.com/Ram-vo/blog-kit/compare/blog-kit-core-v0.7.1...blog-kit-core-v0.8.0) (2026-04-28)
+
+
+### Features
+
+* **editor:** add media upload support ([#34](https://github.com/Ram-vo/blog-kit/issues/34)) ([c14dd53](https://github.com/Ram-vo/blog-kit/commit/c14dd5325ac6596756d8c0b504323d4a95e52a02))
+
 ## [0.7.1](https://github.com/Ram-vo/blog-kit/compare/blog-kit-core-v0.7.0...blog-kit-core-v0.7.1) (2026-04-28)
 
 
