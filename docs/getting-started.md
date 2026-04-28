@@ -18,6 +18,7 @@ Use it for:
 - blog-facing domain helpers
 - pagination and transformations
 - metadata and publishing helpers for Next.js apps
+- optional editor, local, and Supabase subpaths
 
 Example:
 
@@ -70,6 +71,42 @@ const adapter = createSupabaseAdapter({
 ```
 
 ## Option 3: Use Package-Specific Modules
+## Option 3: Add The Editor
+
+Use the editor package when you want a reusable MDX editing surface but
+you want your app to own auth, routing, and persistence.
+
+Install:
+
+```bash
+pnpm add @mrraymondvo/blog-kit react react-dom
+```
+
+Example:
+
+```tsx
+"use client";
+
+import "@mdxeditor/editor/style.css";
+import { BlogPostEditor } from "@mrraymondvo/blog-kit/editor";
+
+export function PostEditor({ post, categories, onChange, onSaveDraft }) {
+  return (
+    <BlogPostEditor
+      value={post}
+      categories={categories}
+      onChange={onChange}
+      onSaveDraft={onSaveDraft}
+    />
+  );
+}
+```
+
+Persistence remains a host-app concern. Use
+`@mrraymondvo/blog-kit/local` for local MDX files or
+`@mrraymondvo/blog-kit/supabase` for Supabase-backed writes.
+
+## Option 4: Use Package-Specific Modules
 
 Use the package-specific modules when you want more explicit dependency
 control.
@@ -92,7 +129,7 @@ Use the package-specific modules when:
 - you want explicit imports in a larger monorepo
 - you want tighter control over the package boundary in your app layer
 
-## Option 4: Start From The Reference App
+## Option 5: Start From The Reference App
 
 Use the starter when you want:
 
@@ -100,6 +137,7 @@ Use the starter when you want:
 - a GitHub Pages demo
 - a base to integrate with an existing design system
 - local and Supabase-backed editor image uploads
+- working examples of local and Supabase-backed editing
 
 Local runtime:
 

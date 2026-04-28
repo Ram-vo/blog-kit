@@ -1,41 +1,38 @@
 # blog-kit-next
 
-Next.js-focused helpers for `blog-kit`.
+Next.js publishing helpers for `blog-kit`.
 
-This package provides publishing utilities that are commonly needed in a
-blog application built on top of `blog-kit-core`.
+Use this package when your app needs reusable metadata, RSS, sitemap,
+canonical URL, and structured data helpers without copying publishing
+logic into route files.
 
-## Scope
+## Install
 
-Use `blog-kit-next` when you need:
+```bash
+pnpm add blog-kit-next blog-kit-core
+```
 
-- article metadata helpers
-- canonical URL helpers
-- sitemap helpers
+## Use It For
+
+- Article metadata for App Router routes
+- Canonical post URLs
 - RSS feed generation
-- structured data helpers for blog pages
+- Sitemap entries
+- Blog and article JSON-LD structured data
+- Breadcrumb structured data
+
+This package is helper-focused. It does not ship React components.
 
 ## Main Exports
 
 - `createPostUrl`
 - `toArticleMetadata`
-- `toSitemapEntry`
-- `toBlogSitemap`
-- `toRssItem`
-- `toRssFeed`
-- `toRssFeedFromSummaries`
+- `toSitemapEntry`, `toBlogSitemap`
+- `toRssItem`, `toRssFeed`, `toRssFeedFromSummaries`
 - `toPublisherStructuredData`
 - `toBlogStructuredData`
 - `toBlogPostingStructuredData`
 - `toBreadcrumbStructuredData`
-
-## Notes
-
-This package is helper-focused. It does not currently ship React
-components.
-
-It is designed to reduce app-level duplication around metadata,
-structured data, and publishing outputs.
 
 ## Example
 
@@ -51,5 +48,7 @@ const structuredData = toBlogPostingStructuredData(post, siteConfig);
 const rss = toRssFeedFromSummaries(postSummaries, siteConfig);
 ```
 
-Use this package when your Next.js app needs a reusable publishing layer
-for metadata, feeds, sitemaps, and structured data.
+## Design Boundary
+
+Keep domain logic in `blog-kit-core`. Use `blog-kit-next` only for
+framework and publishing concerns that are specific to Next.js apps.

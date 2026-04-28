@@ -3,16 +3,7 @@
 Reusable React editor primitives for `blog-kit`.
 
 This package wraps `@mdxeditor/editor` behind a publishing-oriented API
-that stays independent from any specific auth provider or persistence
-layer.
-
-Use this package when you want:
-
-- a generic MDX post editor UI
-- controlled post state owned by the host app
-- pluggable save, publish, delete, and image upload handlers
-- compatibility with custom auth, local content, or Supabase-backed
-  editorial flows
+that stays independent from auth, routing, and persistence.
 
 ## Install
 
@@ -20,11 +11,23 @@ Use this package when you want:
 pnpm add blog-kit-editor react react-dom
 ```
 
-Import the upstream editor stylesheet in your app shell:
+Import the upstream MDXEditor stylesheet in your app shell:
 
 ```tsx
 import "@mdxeditor/editor/style.css";
 ```
+
+## Use It For
+
+- Editing MDX post content
+- Updating post metadata
+- Saving drafts
+- Publishing posts
+- Deleting posts
+- Plugging in custom image upload behavior
+
+The host app owns the current post state and passes handlers into the
+editor.
 
 ## Example
 
@@ -50,7 +53,9 @@ export function EditorExample() {
   return (
     <BlogPostEditor
       value={post}
-      categories={[{ id: "architecture", name: "Architecture", slug: "architecture" }]}
+      categories={[
+        { id: "architecture", name: "Architecture", slug: "architecture" }
+      ]}
       onChange={setPost}
       onSaveDraft={async (nextPost) => {
         console.log("save draft", nextPost);
@@ -63,20 +68,16 @@ export function EditorExample() {
 }
 ```
 
-## Integration Model
+## Auth And Persistence
 
-`blog-kit-editor` does not own auth or persistence.
+`blog-kit-editor` does not own auth or storage.
 
 The host app is responsible for:
 
-- resolving the current session and permissions
-- selecting a persistence adapter such as `blog-kit-local` or
-  `blog-kit-supabase`
-- passing save and publish handlers into the editor
-- optionally providing an image upload handler
+- resolving the current user and permissions
+- deciding whether the route is protected
+- choosing `blog-kit-local`, `blog-kit-supabase`, or another backend
+- passing save, publish, delete, and upload handlers into the editor
 
-This keeps the editor reusable across:
-
-- local filesystem-backed blogs
-- Supabase-backed blogs
-- apps with custom authentication stacks
+This makes the same editor usable with custom auth, Supabase Auth, local
+MDX files, or another future adapter.

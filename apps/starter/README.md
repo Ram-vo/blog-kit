@@ -67,8 +67,12 @@ Routes to verify in this mode:
 - `/editor`
 - `/editor/new`
 - `/blog/building-a-modular-blog-toolkit`
+- `/blog/inside-blog-kit-core`
 - `/blog/why-adapters-matter`
+- `/blog/nextjs-publishing-helpers`
+- `/blog/choosing-between-local-and-supabase`
 - `/blog/starter-apps-as-documentation`
+- `/blog/exporting-the-starter-as-a-public-demo`
 - `/blog/rss.xml`
 - `/sitemap.xml`
 
@@ -77,6 +81,9 @@ in runtime mode and are intentionally excluded from the static export.
 
 Local image uploads are written to `apps/starter/public/blog-media` and
 returned as `/blog-media/...` URLs.
+The sample posts are intentionally written as package documentation.
+Each post explains one piece of the system while also exercising the
+same rendering and editing path a consumer would integrate.
 
 To force the starter to use local content even when Supabase credentials
 exist, set:

@@ -1,88 +1,40 @@
 # blog-kit-core
 
-Core package for `blog-kit`.
+Framework-agnostic domain package for `blog-kit`.
 
-This package contains the framework-agnostic building blocks of the
-project:
+`blog-kit-core` contains the shared vocabulary of the system: posts,
+authors, categories, repository contracts, editorial types, pagination,
+and pure transformation helpers.
 
-- domain entities
-- public blog-facing types
-- repository contracts
-- site configuration types
-- pagination types
-- pure use cases
-- pure utility helpers
+## Install
 
-## Scope
+```bash
+pnpm add blog-kit-core
+```
 
-Use `blog-kit-core` when you want:
+## Use It For
 
-- shared blog domain types
-- reusable repository interfaces
-- pure helpers with no runtime dependency on Next.js or Supabase
+- Shared blog domain types
+- Public blog-facing types
+- Repository and editorial contracts
+- Pagination helpers
+- Pure filtering and relationship helpers
+- Transforming domain posts into public summaries
 
-This package should remain free of provider and framework logic.
+This package does not depend on React, Next.js, Supabase, or any
+provider SDK.
 
 ## Main Exports
 
-- domain entities and repository contracts
+- `Post`, `Author`, `Category`
 - `SiteConfig`
-- public blog-facing types
-- `filterPostsByCategory`
-- `filterPostsByTag`
+- `PostRepository`, `EditorialRepository`
+- `EditorSession`, `EditorPermission`
+- `filterPostsByCategory`, `filterPostsByTag`
 - `listRelatedPosts`
-- `createPaginationMeta`
-- `paginateItems`
+- `createPaginationMeta`, `paginateItems`
 - `estimateReadingTime`
-- `toBlogPostSummary`
-- `toBlogPost`
-
-## Pagination Helpers
-
-The core package exposes pagination primitives for apps and adapters
-that need a stable, framework-agnostic pagination model.
-
-Relevant exports:
-
-- `PaginationInput`
-- `PaginationMeta`
-- `PaginatedResult`
-- `createPaginationMeta`
-- `paginateItems`
-
-Use `createPaginationMeta` when you already have a data slice from an
-external source and only need consistent metadata.
-
-Use `paginateItems` when you are paginating an in-memory collection in
-the app or adapter layer.
-
-Example:
-
-```ts
-import { paginateItems } from "blog-kit-core";
-
-const paginatedPosts = paginateItems(allPosts, {
-  page: 2,
-  pageSize: 6
-});
-```
-
-The returned object always includes:
-
-- `items`
-- `meta.page`
-- `meta.pageSize`
-- `meta.totalItems`
-- `meta.totalPages`
-- `meta.hasPreviousPage`
-- `meta.hasNextPage`
-- `meta.startIndex`
-- `meta.endIndex`
-
-## Intended Usage
-
-This package is meant to be consumed by adapters and apps. It should be
-the lowest-level dependency in the `blog-kit` package graph.
+- `toBlogPostSummary`, `toBlogPost`
 
 ## Example
 
@@ -95,8 +47,13 @@ import {
 
 const summaries = posts.map((post) => toBlogPostSummary(post, siteConfig));
 const taggedPosts = filterPostsByTag(posts, "nextjs");
-const pageOne = paginateItems(summaries, { page: 1, pageSize: 6 });
+const page = paginateItems(summaries, { page: 1, pageSize: 6 });
 ```
 
-Use the core package when you want stable domain modeling and pure
-helpers without taking a dependency on Next.js or Supabase.
+## Design Boundary
+
+Use this package as the lowest-level dependency in your blog stack.
+
+Keep app routes, provider clients, framework helpers, and visual
+components outside the core. Those belong in host apps or adapter
+packages.
