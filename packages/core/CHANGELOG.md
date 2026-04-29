@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.0](https://github.com/Ram-vo/blog-kit/compare/blog-kit-core-v0.8.0...blog-kit-core-v0.9.0) (2026-04-29)
+
+
+### Features
+
+* **editor:** add validation and save-state feedback ([#37](https://github.com/Ram-vo/blog-kit/issues/37)) ([58cf524](https://github.com/Ram-vo/blog-kit/commit/58cf524f1d58a75e3369f7cde1db2c35bf3f3df7))
+
 ## [0.8.0](https://github.com/Ram-vo/blog-kit/compare/blog-kit-core-v0.7.1...blog-kit-core-v0.8.0) (2026-04-28)
 
 
