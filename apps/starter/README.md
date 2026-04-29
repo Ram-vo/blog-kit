@@ -81,6 +81,20 @@ in runtime mode and are intentionally excluded from the static export.
 
 Local image uploads are written to `apps/starter/public/blog-media` and
 returned as `/blog-media/...` URLs.
+
+By default the editor is open because this app is a reference starter.
+To enable the built-in token guard, set:
+
+```bash
+STARTER_EDITOR_AUTH_MODE=token
+STARTER_EDITOR_ACCESS_TOKEN=replace-with-a-secret-token
+```
+
+When token mode is enabled:
+
+- `/editor/*` redirects to `/editor/login` until the token is accepted
+- `/api/editor/*` returns `401` without a valid cookie or bearer token
+- `POST /api/editor/session` exchanges the token for a HttpOnly cookie
 The sample posts are intentionally written as package documentation.
 Each post explains one piece of the system while also exercising the
 same rendering and editing path a consumer would integrate.
@@ -175,6 +189,10 @@ The intended production model is:
 If you use Supabase Auth, `blog-kit-supabase` includes a
 `resolveSupabaseEditorSession` helper that maps Supabase users and
 metadata roles into the generic editor session model.
+
+The built-in token guard is intentionally minimal. Treat it as a starter
+default for demos or private previews, not as a complete role-based
+authorization model.
 
 ## Supabase Schema Expectations
 
