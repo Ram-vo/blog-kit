@@ -95,6 +95,11 @@ When token mode is enabled:
 - `/editor/*` redirects to `/editor/login` until the token is accepted
 - `/api/editor/*` returns `401` without a valid cookie or bearer token
 - `POST /api/editor/session` exchanges the token for a HttpOnly cookie
+
+The starter editor validates required draft and publish fields before
+writing content. The UI shows the current save state and blocks publish
+actions until required issues are resolved.
+
 The sample posts are intentionally written as package documentation.
 Each post explains one piece of the system while also exercising the
 same rendering and editing path a consumer would integrate.

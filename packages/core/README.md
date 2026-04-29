@@ -30,6 +30,7 @@ provider SDK.
 - `SiteConfig`
 - `PostRepository`, `EditorialRepository`
 - `EditorSession`, `EditorPermission`
+- `EditorialValidationIssue`, `validateEditorialPostInput`
 - `filterPostsByCategory`, `filterPostsByTag`
 - `listRelatedPosts`
 - `createPaginationMeta`, `paginateItems`
@@ -49,6 +50,22 @@ const summaries = posts.map((post) => toBlogPostSummary(post, siteConfig));
 const taggedPosts = filterPostsByTag(posts, "nextjs");
 const page = paginateItems(summaries, { page: 1, pageSize: 6 });
 ```
+
+## Editorial Validation
+
+Use `validateEditorialPostInput` before persisting drafts or publishing
+posts from a host app:
+
+```ts
+import { validateEditorialPostInput } from "blog-kit-core";
+
+const issues = validateEditorialPostInput(post, "publish");
+const blockingIssues = issues.filter((issue) => issue.severity === "error");
+```
+
+Draft validation checks the fields required for safe persistence.
+Publish validation adds stricter content checks for excerpts, body
+content, and categories.
 
 ## Design Boundary
 

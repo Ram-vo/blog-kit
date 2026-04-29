@@ -25,6 +25,7 @@ import "@mdxeditor/editor/style.css";
 - Publishing posts
 - Deleting posts
 - Plugging in custom image upload behavior
+- Showing validation issues and save-state feedback
 
 The host app owns the current post state and passes handlers into the
 editor.
@@ -56,6 +57,8 @@ export function EditorExample() {
       categories={[
         { id: "architecture", name: "Architecture", slug: "architecture" }
       ]}
+      saveStatus="idle"
+      validationIssues={[]}
       onChange={setPost}
       onSaveDraft={async (nextPost) => {
         console.log("save draft", nextPost);
@@ -67,6 +70,29 @@ export function EditorExample() {
   );
 }
 ```
+
+## Validation And Save State
+
+`blog-kit-editor` does not validate content by itself. Pass validation
+issues from your host app or from `validateEditorialPostInput` in
+`blog-kit-core`:
+
+```tsx
+<BlogPostEditor
+  value={post}
+  categories={categories}
+  saveStatus={saveStatus}
+  validationIssues={validationIssues}
+  onChange={setPost}
+/>
+```
+
+Supported save states are:
+
+- `idle`
+- `saving`
+- `saved`
+- `error`
 
 ## Auth And Persistence
 
