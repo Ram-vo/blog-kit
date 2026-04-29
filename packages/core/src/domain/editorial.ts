@@ -57,6 +57,99 @@ export interface EditorialMediaAsset {
   size?: number;
 }
 
+export type EditorialValidationMode = "draft" | "publish";
+
+export type EditorialValidationField =
+  | "title"
+  | "slug"
+  | "excerpt"
+  | "content"
+  | "categoryIds"
+  | "coverImageUrl";
+
+export interface EditorialValidationIssue {
+  field: EditorialValidationField;
+  message: string;
+  severity: "error" | "warning";
+}
+
+function isValidSlug(slug: string) {
+  return /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug);
+}
+
+function isValidUrlLike(value: string) {
+  return (
+    value.startsWith("/") ||
+    value.startsWith("http://") ||
+    value.startsWith("https://")
+  );
+}
+
+export function validateEditorialPostInput(
+  post: EditorialPostInput,
+  mode: EditorialValidationMode = "draft"
+): EditorialValidationIssue[] {
+  const issues: EditorialValidationIssue[] = [];
+
+  if (!post.title.trim()) {
+    issues.push({
+      field: "title",
+      message: "Add a title before saving.",
+      severity: "error"
+    });
+  }
+
+  if (!post.slug.trim()) {
+    issues.push({
+      field: "slug",
+      message: "Add a slug before saving.",
+      severity: "error"
+    });
+  } else if (!isValidSlug(post.slug)) {
+    issues.push({
+      field: "slug",
+      message: "Use a lowercase slug with words separated by hyphens.",
+      severity: "error"
+    });
+  }
+
+  if (post.coverImageUrl && !isValidUrlLike(post.coverImageUrl)) {
+    issues.push({
+      field: "coverImageUrl",
+      message: "Use an absolute URL or a root-relative image path.",
+      severity: "error"
+    });
+  }
+
+  if (mode === "publish") {
+    if (!post.excerpt?.trim()) {
+      issues.push({
+        field: "excerpt",
+        message: "Add an excerpt before publishing.",
+        severity: "error"
+      });
+    }
+
+    if (!post.content.trim()) {
+      issues.push({
+        field: "content",
+        message: "Add post content before publishing.",
+        severity: "error"
+      });
+    }
+
+    if (post.categoryIds.length === 0) {
+      issues.push({
+        field: "categoryIds",
+        message: "Select at least one category before publishing.",
+        severity: "warning"
+      });
+    }
+  }
+
+  return issues;
+}
+
 export function hasEditorPermission(
   session: EditorSession | null | undefined,
   permission: EditorPermission

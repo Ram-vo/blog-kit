@@ -10,7 +10,8 @@ import {
   hasEditorPermission,
   listRelatedPosts,
   paginateItems,
-  toBlogPostSummary
+  toBlogPostSummary,
+  validateEditorialPostInput
 } from "./index";
 
 const site = {
@@ -145,5 +146,32 @@ describe("blog-kit-core public helpers", () => {
     expect(canEditPost(editorSession, { authorId: "author-2" })).toBe(false);
     expect(canPublishPost(editorSession)).toBe(true);
     expect(canDeletePost(editorSession, { authorId: "author-1" })).toBe(false);
+  });
+
+  it("validates draft and publish editorial input consistently", () => {
+    expect(
+      validateEditorialPostInput(
+        {
+          title: "",
+          slug: "Invalid Slug",
+          excerpt: "",
+          content: "",
+          categoryIds: [],
+          tags: [],
+          coverImageUrl: "not-a-url",
+          isDraft: true
+        },
+        "publish"
+      )
+    ).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ field: "title", severity: "error" }),
+        expect.objectContaining({ field: "slug", severity: "error" }),
+        expect.objectContaining({ field: "coverImageUrl", severity: "error" }),
+        expect.objectContaining({ field: "excerpt", severity: "error" }),
+        expect.objectContaining({ field: "content", severity: "error" }),
+        expect.objectContaining({ field: "categoryIds", severity: "warning" })
+      ])
+    );
   });
 });

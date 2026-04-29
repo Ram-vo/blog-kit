@@ -1,6 +1,12 @@
 "use client";
 
-import type { EditorialCategoryOption, EditorialPost, EditorialPostInput } from "blog-kit-core";
+import {
+  type EditorialCategoryOption,
+  type EditorialPost,
+  type EditorialPostInput,
+  type EditorialValidationIssue,
+  validateEditorialPostInput
+} from "blog-kit-core";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { PrimaryLink, SurfacePanel } from "../../components/starter-ui";
@@ -33,11 +39,37 @@ export function StarterEditorClient({
   const router = useRouter();
   const [value, setValue] = useState(initialValue);
   const [saving, setSaving] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
+  const [validationIssues, setValidationIssues] = useState<EditorialValidationIssue[]>([]);
 
-  async function save(nextValue: EditorialPostInput) {
+  function changeValue(nextValue: EditorialPostInput) {
+    setValue(nextValue);
+    setSaveStatus("idle");
+    setValidationIssues([]);
+  }
+
+  async function save(nextValue: EditorialPostInput, validationMode: "draft" | "publish") {
+    const nextIssues = validateEditorialPostInput(nextValue, validationMode);
+
+    if (nextIssues.some((issue) => issue.severity === "error")) {
+      setValidationIssues(nextIssues);
+      setSaveStatus("error");
+      setError("Resolve the highlighted validation issues before saving.");
+      return;
+    }
+
+    if (validationMode === "publish" && nextIssues.length > 0) {
+      setValidationIssues(nextIssues);
+      setSaveStatus("error");
+      setError("Resolve the highlighted validation issues before publishing.");
+      return;
+    }
+
     setSaving(true);
+    setSaveStatus("saving");
     setError(null);
+    setValidationIssues([]);
 
     try {
       const response = await fetch(
@@ -56,9 +88,11 @@ export function StarterEditorClient({
       }
 
       const savedPost = (await response.json()) as EditorialPost;
+      setSaveStatus("saved");
       router.push(`/editor/${savedPost.id}`);
       router.refresh();
     } catch (nextError) {
+      setSaveStatus("error");
       setError(nextError instanceof Error ? nextError.message : "Unknown editor error");
     } finally {
       setSaving(false);
@@ -71,6 +105,7 @@ export function StarterEditorClient({
     }
 
     setSaving(true);
+    setSaveStatus("saving");
     setError(null);
 
     try {
@@ -85,6 +120,7 @@ export function StarterEditorClient({
       router.push("/editor");
       router.refresh();
     } catch (nextError) {
+      setSaveStatus("error");
       setError(nextError instanceof Error ? nextError.message : "Unknown editor error");
     } finally {
       setSaving(false);
@@ -136,15 +172,17 @@ export function StarterEditorClient({
         value={value}
         categories={categories}
         saving={saving}
+        saveStatus={saveStatus}
+        validationIssues={validationIssues}
         canDelete={mode === "edit"}
-        onChange={setValue}
+        onChange={changeValue}
         onSaveDraft={async (nextValue) => {
-          setValue(nextValue);
-          await save(nextValue);
+          changeValue(nextValue);
+          await save(nextValue, "draft");
         }}
         onPublish={async (nextValue) => {
-          setValue(nextValue);
-          await save(nextValue);
+          changeValue(nextValue);
+          await save(nextValue, "publish");
         }}
         onDelete={mode === "edit" ? remove : undefined}
         imageUploadHandler={uploadImage}

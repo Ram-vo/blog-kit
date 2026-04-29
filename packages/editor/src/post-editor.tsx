@@ -1,6 +1,10 @@
 "use client";
 
-import type { Category, EditorialPostInput } from "blog-kit-core";
+import type {
+  Category,
+  EditorialPostInput,
+  EditorialValidationIssue
+} from "blog-kit-core";
 import {
   MDXEditor,
   headingsPlugin,
@@ -40,6 +44,8 @@ export interface BlogPostEditorProps {
   saving?: boolean;
   canPublish?: boolean;
   canDelete?: boolean;
+  saveStatus?: "idle" | "saving" | "saved" | "error";
+  validationIssues?: readonly EditorialValidationIssue[];
   titlePlaceholder?: string;
   excerptPlaceholder?: string;
   onChange: (value: EditorialPostInput) => void;
@@ -98,6 +104,8 @@ export function BlogPostEditor({
   saving = false,
   canPublish = true,
   canDelete = false,
+  saveStatus = saving ? "saving" : "idle",
+  validationIssues = [],
   titlePlaceholder = "Write the title...",
   excerptPlaceholder = "Add a short excerpt...",
   onChange,
@@ -107,6 +115,16 @@ export function BlogPostEditor({
   imageUploadHandler,
   footer
 }: BlogPostEditorProps) {
+  const validationErrors = validationIssues.filter((issue) => issue.severity === "error");
+  const validationWarnings = validationIssues.filter((issue) => issue.severity === "warning");
+  const statusLabel = saveStatus === "saved"
+    ? "Saved"
+    : saveStatus === "error"
+      ? "Needs attention"
+      : saveStatus === "saving"
+        ? "Saving"
+        : "Idle";
+
   if (loading) {
     return (
       <div className="rounded-3xl border border-zinc-200 bg-white p-10 text-sm text-zinc-500 shadow-sm">
@@ -203,18 +221,37 @@ export function BlogPostEditor({
               <span
                 className={[
                   "rounded-full px-2.5 py-1 font-sans text-[0.72rem] font-semibold uppercase tracking-[0.08em]",
-                  value.isDraft
-                    ? "bg-amber-100 text-amber-800"
-                    : "bg-emerald-100 text-emerald-800"
+                  saveStatus === "error"
+                    ? "bg-red-100 text-red-800"
+                    : value.isDraft
+                      ? "bg-amber-100 text-amber-800"
+                      : "bg-emerald-100 text-emerald-800"
                 ].join(" ")}
               >
-                {value.isDraft ? "Draft" : "Published"}
+                {saveStatus === "error" ? "Invalid" : value.isDraft ? "Draft" : "Published"}
               </span>
             </div>
           </div>
+          <p className="mb-3 font-sans text-[0.78rem] font-semibold uppercase tracking-[0.1em] text-zinc-500">
+            Save state · {statusLabel}
+          </p>
           <p className="mb-4 text-[0.92rem] leading-[1.6] text-zinc-600">
             Save incremental changes, publish the current post, or remove it from the local content store.
           </p>
+          {validationIssues.length > 0 ? (
+            <div className="mb-4 rounded-2xl border border-amber-200 bg-amber-50/70 p-3">
+              <p className="mb-2 font-sans text-[0.72rem] font-semibold uppercase tracking-[0.12em] text-amber-900">
+                Before saving
+              </p>
+              <ul className="grid gap-1.5 text-[0.84rem] leading-[1.45] text-amber-950">
+                {validationIssues.map((issue) => (
+                  <li key={`${issue.field}-${issue.message}`}>
+                    {issue.message}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
           <div className="grid gap-2.5">
             <button
               type="button"
@@ -226,7 +263,14 @@ export function BlogPostEditor({
             </button>
             <button
               type="button"
-              disabled={disabled || saving || !onPublish || !canPublish}
+              disabled={
+                disabled ||
+                saving ||
+                !onPublish ||
+                !canPublish ||
+                validationErrors.length > 0 ||
+                validationWarnings.length > 0
+              }
               onClick={() =>
                 onPublish?.(
                   updateValue(value, {

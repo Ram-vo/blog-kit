@@ -95,12 +95,16 @@ function EditorHarness({
   onSaveDraft,
   onPublish,
   onDelete,
+  saveStatus,
+  validationIssues,
   categories = []
 }: {
   initialValue?: EditorialPostInput;
   onSaveDraft?: (value: EditorialPostInput) => void;
   onPublish?: (value: EditorialPostInput) => void;
   onDelete?: () => void;
+  saveStatus?: Parameters<typeof BlogPostEditor>[0]["saveStatus"];
+  validationIssues?: Parameters<typeof BlogPostEditor>[0]["validationIssues"];
   categories?: { id: string; name: string; slug: string }[];
 }) {
   const [value, setValue] = useState<EditorialPostInput>(initialValue);
@@ -110,6 +114,8 @@ function EditorHarness({
       value={value}
       categories={categories}
       canDelete={Boolean(onDelete)}
+      saveStatus={saveStatus}
+      validationIssues={validationIssues}
       onChange={(nextValue) => setValue(nextValue)}
       onSaveDraft={onSaveDraft}
       onPublish={onPublish}
@@ -198,5 +204,26 @@ describe("BlogPostEditor", () => {
 
     await user.click(screen.getByRole("button", { name: "Delete post" }));
     expect(onDelete).toHaveBeenCalledTimes(1);
+  });
+
+  it("shows save status and validation issues in the publishing panel", () => {
+    render(
+      <EditorHarness
+        initialValue={createValue()}
+        saveStatus="error"
+        validationIssues={[
+          {
+            field: "excerpt",
+            message: "Add an excerpt before publishing.",
+            severity: "error"
+          }
+        ]}
+        onPublish={() => undefined}
+      />
+    );
+
+    expect(screen.getByText("Save state · Needs attention")).toBeTruthy();
+    expect(screen.getByText("Add an excerpt before publishing.")).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Publish" })).toHaveProperty("disabled", true);
   });
 });
