@@ -70,7 +70,6 @@ const adapter = createSupabaseAdapter({
 });
 ```
 
-## Option 3: Use Package-Specific Modules
 ## Option 3: Add The Editor
 
 Use the editor package when you want a reusable MDX editing surface but
@@ -154,6 +153,27 @@ pnpm --dir apps/starter build:static
 
 For starter deployment details, see
 [`docs/starter-deploy.md`](./starter-deploy.md).
+
+### Protecting The Starter Editor
+
+The starter editor is open by default so local demos are easy to run.
+Enable the built-in token guard when you want a private preview:
+
+```bash
+STARTER_EDITOR_AUTH_MODE=token
+STARTER_EDITOR_ACCESS_TOKEN=replace-with-a-secret-token
+```
+
+Token mode protects `/editor/*` and `/api/editor/*`. Browser users log
+in at `/editor/login`; API clients can send:
+
+```bash
+Authorization: Bearer replace-with-a-secret-token
+```
+
+For production apps, replace the starter guard with your own auth or map
+Supabase Auth into the `EditorSession` contract exposed by
+`blog-kit-core`.
 
 ## Choosing Between The Metapackage And Explicit Packages
 
