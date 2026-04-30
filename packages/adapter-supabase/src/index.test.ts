@@ -523,6 +523,52 @@ describe("SupabaseEditorialRepository", () => {
     expect(draft?.content).toBe("Draft body");
   });
 
+  it("creates editorial posts through the post repository mapping", async () => {
+    const store = createPostStore();
+    const repository = new SupabaseEditorialRepository(createFakeClient(store));
+    const created = await repository.createPost({
+      title: "Editorial draft",
+      slug: "editorial-draft",
+      excerpt: "Created from the editorial surface.",
+      content: "Draft body",
+      categoryIds: ["category-1"],
+      tags: ["editorial"],
+      isDraft: true
+    });
+
+    expect(created.slug).toBe("editorial-draft");
+    expect(created.isDraft).toBe(true);
+    expect(store.post_categories).toContainEqual({
+      post_id: created.id,
+      category_id: "category-1"
+    });
+  });
+
+  it("updates editorial posts and category relations", async () => {
+    const store = createPostStore();
+    const repository = new SupabaseEditorialRepository(createFakeClient(store));
+    const updated = await repository.updatePost("post-1", {
+      title: "Updated editorial post",
+      categoryIds: ["category-2"],
+      isDraft: true
+    });
+
+    expect(updated.title).toBe("Updated editorial post");
+    expect(updated.isDraft).toBe(true);
+    expect(store.post_categories).toContainEqual({
+      post_id: "post-1",
+      category_id: "category-2"
+    });
+  });
+
+  it("deletes editorial posts", async () => {
+    const repository = new SupabaseEditorialRepository(createFakeClient());
+
+    await repository.deletePost("post-1");
+
+    await expect(repository.getPostById("post-1")).resolves.toBeNull();
+  });
+
   it("creates an editorial category through the categories table", async () => {
     const repository = new SupabaseEditorialRepository(createFakeClient());
     const category = await repository.createCategory({
