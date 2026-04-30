@@ -10,7 +10,7 @@
     "start": "next start",
     "typecheck": "next typegen && tsc -p tsconfig.json --noEmit",
     "lint": "echo 'lint not configured yet'",
-    "test": "echo 'starter app not scaffolded yet'"
+    "test": "vitest run"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.49.8",

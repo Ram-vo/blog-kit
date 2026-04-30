@@ -1,43 +1,29 @@
 import { NextResponse, type NextRequest } from "next/server";
 import {
-  getStarterEditorAuthMode,
-  isValidStarterEditorToken,
-  readBearerToken,
-  STARTER_EDITOR_TOKEN_COOKIE
+  getStarterEditorAuthMode
 } from "./src/editorial/auth";
-
-function isEditorLoginPath(pathname: string) {
-  return pathname === "/editor/login" || pathname === "/api/editor/session";
-}
-
-function isApiPath(pathname: string) {
-  return pathname.startsWith("/api/");
-}
-
-function readRequestToken(request: NextRequest) {
-  return (
-    readBearerToken(request.headers.get("authorization")) ??
-    request.cookies.get(STARTER_EDITOR_TOKEN_COOKIE)?.value ??
-    null
-  );
-}
+import {
+  readStarterEditorRequestToken,
+  resolveStarterEditorAuthAction
+} from "./src/editorial/auth-middleware";
 
 export function middleware(request: NextRequest) {
-  if (getStarterEditorAuthMode() === "open" || isEditorLoginPath(request.nextUrl.pathname)) {
+  const action = resolveStarterEditorAuthAction(getStarterEditorAuthMode(), {
+    pathname: request.nextUrl.pathname,
+    cookieToken: readStarterEditorRequestToken(request)
+  });
+
+  if (action.type === "allow") {
     return NextResponse.next();
   }
 
-  if (isValidStarterEditorToken(readRequestToken(request))) {
-    return NextResponse.next();
-  }
-
-  if (isApiPath(request.nextUrl.pathname)) {
+  if (action.type === "deny-api") {
     return NextResponse.json({ message: "Editor access denied." }, { status: 401 });
   }
 
   const loginUrl = request.nextUrl.clone();
   loginUrl.pathname = "/editor/login";
-  loginUrl.searchParams.set("next", request.nextUrl.pathname);
+  loginUrl.searchParams.set("next", action.nextPath);
 
   return NextResponse.redirect(loginUrl);
 }

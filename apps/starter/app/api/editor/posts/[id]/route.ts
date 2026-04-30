@@ -1,5 +1,8 @@
-import type { EditorialPostInput } from "blog-kit-core";
-import { NextResponse } from "next/server";
+import {
+  deletePostResponse,
+  getPostResponse,
+  updatePostResponse
+} from "../../../../../src/editorial/api-handlers";
 import { createStarterEditorialRepository } from "../../../../../src/editorial/provider";
 
 export const runtime = "nodejs";
@@ -10,14 +13,7 @@ export async function GET(
   context: { params: Promise<{ id: string }> }
 ) {
   const { id } = await context.params;
-  const { editorial } = createStarterEditorialRepository();
-  const post = await editorial.getPostById(id);
-
-  if (!post) {
-    return NextResponse.json({ message: "Post not found" }, { status: 404 });
-  }
-
-  return NextResponse.json(post);
+  return getPostResponse(id, createStarterEditorialRepository());
 }
 
 export async function PUT(
@@ -25,11 +21,7 @@ export async function PUT(
   context: { params: Promise<{ id: string }> }
 ) {
   const { id } = await context.params;
-  const payload = (await request.json()) as Partial<EditorialPostInput>;
-  const { editorial } = createStarterEditorialRepository();
-  const post = await editorial.updatePost(id, payload);
-
-  return NextResponse.json(post);
+  return updatePostResponse(id, request, createStarterEditorialRepository());
 }
 
 export async function DELETE(
@@ -37,9 +29,5 @@ export async function DELETE(
   context: { params: Promise<{ id: string }> }
 ) {
   const { id } = await context.params;
-  const { editorial } = createStarterEditorialRepository();
-
-  await editorial.deletePost(id);
-
-  return NextResponse.json({ success: true });
+  return deletePostResponse(id, createStarterEditorialRepository());
 }
