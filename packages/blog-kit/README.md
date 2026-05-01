@@ -11,7 +11,8 @@ installing each package one by one.
 pnpm add @mrraymondvo/blog-kit
 ```
 
-Add optional peer/provider dependencies based on the surfaces you use:
+Add optional peer/provider dependencies based on the surfaces you use.
+The base import only re-exports domain and Next.js publishing helpers:
 
 ```bash
 pnpm add react react-dom
@@ -26,6 +27,9 @@ pnpm add @supabase/supabase-js
 | `@mrraymondvo/blog-kit/editor` | `blog-kit-editor` |
 | `@mrraymondvo/blog-kit/local` | `blog-kit-local` |
 | `@mrraymondvo/blog-kit/supabase` | `blog-kit-supabase` |
+
+Use subpaths when you want one public package name while keeping editor,
+local, and Supabase code opt-in at the import level.
 
 ## Example
 
@@ -48,6 +52,19 @@ import { createSupabaseAdapter } from "@mrraymondvo/blog-kit/supabase";
 
 const adapter = createSupabaseAdapter({ client });
 const posts = await adapter.posts.listAllPublishedPosts();
+```
+
+Editor access also stays opt-in and host-controlled:
+
+```tsx
+import { BlogPostEditor } from "@mrraymondvo/blog-kit/editor";
+
+<BlogPostEditor
+  value={post}
+  categories={categories}
+  onChange={setPost}
+  onSaveDraft={saveDraft}
+/>
 ```
 
 ## When To Use Explicit Packages

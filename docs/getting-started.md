@@ -53,7 +53,11 @@ Example:
 import { createClient } from "@supabase/supabase-js";
 import { createSupabaseAdapter } from "@mrraymondvo/blog-kit/supabase";
 
-const client = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_KEY!);
+const client = createClient(
+  process.env.SUPABASE_URL!,
+  process.env.SUPABASE_KEY!
+);
+
 const adapter = createSupabaseAdapter({ client });
 const posts = await adapter.posts.listAllPublishedPosts();
 ```
@@ -104,6 +108,22 @@ export function PostEditor({ post, categories, onChange, onSaveDraft }) {
 Persistence remains a host-app concern. Use
 `@mrraymondvo/blog-kit/local` for local MDX files or
 `@mrraymondvo/blog-kit/supabase` for Supabase-backed writes.
+
+Pass validation issues and save state from the host app so the same
+editor can work with local files, Supabase, or another backend:
+
+```tsx
+<BlogPostEditor
+  value={post}
+  categories={categories}
+  saveStatus={saveStatus}
+  validationIssues={validationIssues}
+  onChange={setPost}
+  onSaveDraft={saveDraft}
+  onPublish={publishPost}
+  onUploadImage={uploadImage}
+/>
+```
 
 ## Option 4: Use Package-Specific Modules
 
@@ -174,6 +194,17 @@ Authorization: Bearer replace-with-a-secret-token
 For production apps, replace the starter guard with your own auth or map
 Supabase Auth into the `EditorSession` contract exposed by
 `blog-kit-core`.
+
+### Editorial Media
+
+The editor accepts an `onUploadImage` handler. The starter wires that
+handler to:
+
+- `blog-kit-local` for filesystem-backed media in local mode
+- `blog-kit-supabase` for Supabase Storage uploads in Supabase mode
+
+Public URLs are stored in post content or metadata. Private asset
+workflows should proxy media or return signed URLs from the host app.
 
 ## Choosing Between The Metapackage And Explicit Packages
 

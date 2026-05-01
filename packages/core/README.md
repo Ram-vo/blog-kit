@@ -17,6 +17,7 @@ pnpm add blog-kit-core
 - Shared blog domain types
 - Public blog-facing types
 - Repository and editorial contracts
+- Media repository contracts
 - Pagination helpers
 - Pure filtering and relationship helpers
 - Transforming domain posts into public summaries
@@ -29,6 +30,7 @@ provider SDK.
 - `Post`, `Author`, `Category`
 - `SiteConfig`
 - `PostRepository`, `EditorialRepository`
+- `EditorialMediaRepository`, `EditorialMediaUpload`
 - `EditorSession`, `EditorPermission`
 - `EditorialValidationIssue`, `validateEditorialPostInput`
 - `filterPostsByCategory`, `filterPostsByTag`
