@@ -92,6 +92,7 @@ Before merging a Release Please PR:
 - review generated changelog entries
 - confirm only intended packages are included in the release
 - confirm the repository secret `NPM_TOKEN` is configured
+- confirm package metadata still supports npm provenance
 
 Before enabling automated npm publishing:
 
@@ -99,6 +100,9 @@ Before enabling automated npm publishing:
 - ensure the token can publish the `blog-kit*` packages and
   `@mrraymondvo/blog-kit`
 - keep GitHub release creation enabled in the Release Please flow
+
+For npm publish setup, troubleshooting, and clean consumer checks, see
+[`docs/publishing.md`](./publishing.md).
 
 ## Future Work
 
