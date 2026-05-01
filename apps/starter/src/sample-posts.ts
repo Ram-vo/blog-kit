@@ -205,6 +205,49 @@ Use Supabase mode when you want to validate provider-backed reads and writes, re
     publishedAt: "2026-04-11T10:00:00.000Z"
   },
   {
+    id: "editorial-workflows-with-blog-kit",
+    slug: "editorial-workflows-with-blog-kit",
+    title: "Editorial workflows with blog-kit",
+    excerpt:
+      "The editor is reusable because the app owns auth, persistence, validation, and media uploads.",
+    categories: [{ id: "implementation", name: "Implementation", slug: "implementation" }],
+    tags: ["editor", "auth", "media"],
+    content: `\`blog-kit-editor\` is intentionally not a CMS.
+
+It is a reusable editing surface that the host app wires into its own runtime decisions.
+
+## What the editor owns
+
+The editor package owns broadly reusable pieces:
+
+- MDX content editing
+- post metadata fields
+- category selection
+- draft, publish, and delete actions
+- validation display
+- save-state feedback
+- image upload entry points
+
+## What the host app owns
+
+The host app owns product-specific decisions:
+
+- who can open the editor
+- which backend persists content
+- how auth sessions map to editorial permissions
+- where uploaded media is stored
+- what dashboard shell wraps the editor
+
+## Why this matters
+
+If you can change persistence, auth, and layout without rewriting the editing component, the package boundary is strong enough for real adoption.`,
+    isDraft: false,
+    authorId: "starter-team",
+    createdAt: "2026-04-15T10:00:00.000Z",
+    updatedAt: "2026-05-01T10:00:00.000Z",
+    publishedAt: "2026-04-15T10:00:00.000Z"
+  },
+  {
     id: "exporting-the-starter-as-a-public-demo",
     slug: "exporting-the-starter-as-a-public-demo",
     title: "Exporting the starter as a public demo",

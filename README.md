@@ -55,10 +55,24 @@ Supabase remains opt-in through a subpath:
 import { createClient } from "@supabase/supabase-js";
 import { createSupabaseAdapter } from "@mrraymondvo/blog-kit/supabase";
 
-const client = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_KEY!);
+const client = createClient(
+  process.env.SUPABASE_URL!,
+  process.env.SUPABASE_KEY!
+);
+
 const adapter = createSupabaseAdapter({ client });
 const posts = await adapter.posts.listAllPublishedPosts();
 ```
+
+## Choose An Adoption Path
+
+| Goal | Start with |
+| --- | --- |
+| Add reusable blog helpers to an app | `@mrraymondvo/blog-kit` |
+| Keep every dependency explicit | `blog-kit-core` and `blog-kit-next` |
+| Edit MDX content locally | `blog-kit-editor` and `blog-kit-local` |
+| Back content with Supabase | `blog-kit-supabase` |
+| Evaluate the whole stack first | `apps/starter` |
 
 ## Packages
 
@@ -142,6 +156,7 @@ Useful starter routes:
 - `/blog/nextjs-publishing-helpers`
 - `/blog/choosing-between-local-and-supabase`
 - `/blog/starter-apps-as-documentation`
+- `/blog/editorial-workflows-with-blog-kit`
 - `/blog/exporting-the-starter-as-a-public-demo`
 - `/blog/rss.xml`
 - `/sitemap.xml`
@@ -165,6 +180,21 @@ NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY=...
 When Supabase mode is active, public routes and editor routes use the
 Supabase adapter. When credentials are missing and the backend is left
 on `auto`, the starter falls back to local content.
+
+## Editor And Auth
+
+`blog-kit-editor` does not own auth, persistence, or routing. The host
+app passes handlers for save, publish, delete, and image upload.
+
+The starter demonstrates two persistence paths:
+
+- `blog-kit-local` writes editable MDX and local media files.
+- `blog-kit-supabase` writes posts to Supabase and media to Storage.
+
+The starter editor is open by default for local demos. Set
+`STARTER_EDITOR_AUTH_MODE=token` and `STARTER_EDITOR_ACCESS_TOKEN` to
+enable the sample token guard, or replace it with your own application
+auth.
 
 ## Documentation
 

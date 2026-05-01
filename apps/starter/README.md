@@ -72,6 +72,7 @@ Routes to verify in this mode:
 - `/blog/nextjs-publishing-helpers`
 - `/blog/choosing-between-local-and-supabase`
 - `/blog/starter-apps-as-documentation`
+- `/blog/editorial-workflows-with-blog-kit`
 - `/blog/exporting-the-starter-as-a-public-demo`
 - `/blog/rss.xml`
 - `/sitemap.xml`

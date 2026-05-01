@@ -1,0 +1,97 @@
+---
+id: editorial-workflows-with-blog-kit
+title: Editorial workflows with blog-kit
+slug: editorial-workflows-with-blog-kit
+excerpt: The editor is reusable because the app owns auth, persistence, validation, and media uploads.
+categoryIds:
+  - implementation
+tags:
+  - editor
+  - auth
+  - media
+isDraft: false
+authorId: starter-team
+publishedAt: 2026-04-15T10:00:00.000Z
+createdAt: 2026-04-15T10:00:00.000Z
+updatedAt: 2026-05-01T10:00:00.000Z
+---
+
+`blog-kit-editor` is intentionally not a CMS.
+
+It is a reusable editing surface that the host app wires into its own
+runtime decisions.
+
+That split is what makes the same editor work in the starter, in a
+Supabase-backed app, or inside a product dashboard with its own auth
+and design system.
+
+## What the editor owns
+
+The editor package owns the parts that are broadly reusable:
+
+- MDX content editing
+- post metadata fields
+- category selection
+- draft, publish, and delete actions
+- validation display
+- save-state feedback
+- image upload entry points
+
+Those pieces are useful across many publishing products.
+
+## What the host app owns
+
+The host app still owns the decisions that are usually product-specific:
+
+- who can open the editor
+- which backend persists content
+- how auth sessions map to editorial permissions
+- where uploaded media is stored
+- what dashboard shell wraps the editor
+
+This is the reason the editor accepts handlers instead of importing a
+database client directly.
+
+## Local mode
+
+In local mode, the starter wires the editor to `blog-kit-local`.
+
+That means posts are stored as `.mdx` files with frontmatter, categories
+come from `_categories.json`, and uploaded images can be written to a
+local public media directory.
+
+This mode is useful when you want to validate the writing flow without
+creating a Supabase project.
+
+## Supabase mode
+
+In Supabase mode, the same editor can write through
+`blog-kit-supabase`.
+
+The adapter maps post changes into Supabase tables and uploads media
+through Supabase Storage when configured.
+
+The UI does not need to know table names, bucket names, or how
+relationships are persisted. It only calls the handlers provided by the
+host app.
+
+## Auth stays outside the package
+
+The starter includes a small token guard so the demo can be protected
+without bringing in a full auth product.
+
+Production apps should usually replace that guard with their own auth
+layer or map Supabase Auth into the `EditorSession` contract from
+`blog-kit-core`.
+
+Keeping auth outside `blog-kit-editor` prevents the package from making
+assumptions about roles, teams, or dashboard access rules.
+
+## Why this matters
+
+The editor is useful because it proves the package boundary under real
+pressure.
+
+If you can change persistence, auth, and layout without rewriting the
+editing component, the architecture is flexible enough to adopt in a
+real app.

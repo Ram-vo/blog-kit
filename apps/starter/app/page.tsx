@@ -36,6 +36,13 @@ const packageCards = [
     copy: "Provider-specific repositories and mapping logic for a Supabase-backed blog.",
     href: "/blog/why-adapters-matter" as Route,
     cta: "Read adapter article"
+  },
+  {
+    name: "blog-kit-editor",
+    eyebrow: "Editor layer",
+    copy: "Reusable MDX editing UI with host-controlled auth, persistence, and media uploads.",
+    href: "/blog/editorial-workflows-with-blog-kit" as Route,
+    cta: "Read editor article"
   }
 ];
 
@@ -186,7 +193,7 @@ pnpm --dir apps/starter build:static`}</code>
               </span>
             </Link>
 
-            <div className="grid gap-4 md:grid-cols-3">
+            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             {packageCards.map((pkg) => (
               <Link
                 key={pkg.name}

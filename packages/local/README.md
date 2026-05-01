@@ -71,6 +71,7 @@ const asset = await adapter.media.uploadMedia({
 
 The returned `asset.url` can be inserted into MDX content or stored as a
 cover image URL.
+
 ## When To Use It
 
 Use `blog-kit-local` when you want the editor to write real files during
