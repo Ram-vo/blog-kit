@@ -202,6 +202,7 @@ auth.
 - [Starter theming](./docs/starter-theming.md)
 - [Starter deployment](./docs/starter-deploy.md)
 - [Supabase schema](./docs/supabase-schema.md)
+- [Supabase production guidance](./docs/supabase-production.md)
 - [Publishing and npm releases](./docs/publishing.md)
 - [Release workflow](./docs/releases.md)
 

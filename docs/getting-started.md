@@ -232,6 +232,3 @@ The unscoped `blog-kit` package is not part of the supported public
 install path. npm rejected that name as too similar to an existing
 package, so consumers should use the scoped metapackage or the explicit
 package-specific modules.
-
-For maintainers, publish troubleshooting lives in
-[`docs/publishing.md`](./publishing.md).
