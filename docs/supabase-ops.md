@@ -123,3 +123,6 @@ For existing projects:
 
 - prefer compatibility layers over destructive schema rewrites
 - use the current adapter contract as the integration target
+
+For production auth, RLS, media, and migration order, see
+[`supabase-production.md`](./supabase-production.md).

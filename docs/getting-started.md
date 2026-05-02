@@ -219,3 +219,16 @@ Use explicit packages when:
 - you want strict dependency boundaries
 - you do not want Next.js helpers in the default import surface
 - you want to make adapter usage opt-in at install time
+
+## Published Package Notes
+
+The scoped package is the public metapackage:
+
+```bash
+pnpm add @mrraymondvo/blog-kit
+```
+
+The unscoped `blog-kit` package is not part of the supported public
+install path. npm rejected that name as too similar to an existing
+package, so consumers should use the scoped metapackage or the explicit
+package-specific modules.
