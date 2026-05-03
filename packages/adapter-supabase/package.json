@@ -40,7 +40,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "blog-kit-core": "workspace:*"
+    "blog-kit-core": "workspace:^"
   },
   "publishConfig": {
     "access": "public"

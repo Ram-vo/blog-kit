@@ -40,7 +40,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "blog-kit-core": "workspace:*",
+    "blog-kit-core": "workspace:^",
     "gray-matter": "^4.0.3"
   },
   "devDependencies": {
