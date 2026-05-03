@@ -53,11 +53,11 @@
     "test": "echo 'metapackage exports are validated by workspace builds'"
   },
   "dependencies": {
-    "blog-kit-core": "workspace:*",
-    "blog-kit-editor": "workspace:*",
-    "blog-kit-local": "workspace:*",
-    "blog-kit-next": "workspace:*",
-    "blog-kit-supabase": "workspace:*"
+    "blog-kit-core": "workspace:^",
+    "blog-kit-editor": "workspace:^",
+    "blog-kit-local": "workspace:^",
+    "blog-kit-next": "workspace:^",
+    "blog-kit-supabase": "workspace:^"
   },
   "publishConfig": {
     "access": "public"
