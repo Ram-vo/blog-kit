@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.1](https://github.com/Ram-vo/blog-kit/compare/blog-kit-local-v0.6.0...blog-kit-local-v0.6.1) (2026-05-03)
+
+
+### Bug Fixes
+
+* **packages:** align published workspace dependency ranges ([#43](https://github.com/Ram-vo/blog-kit/issues/43)) ([63cf993](https://github.com/Ram-vo/blog-kit/commit/63cf9933058cf7678ccad6d74b1bf81f07310305))
+
 ## [0.6.0](https://github.com/Ram-vo/blog-kit/compare/blog-kit-local-v0.5.1...blog-kit-local-v0.6.0) (2026-04-28)
 
 
