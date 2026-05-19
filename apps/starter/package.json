@@ -19,7 +19,7 @@
     "blog-kit-local": "workspace:*",
     "blog-kit-next": "workspace:*",
     "blog-kit-supabase": "workspace:*",
-    "next": "^15.5.15",
+    "next": "^15.5.18",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-markdown": "^10.1.0",
