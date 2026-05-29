@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.0](https://github.com/Ram-vo/blog-kit/compare/blog-kit-editor-v0.6.1...blog-kit-editor-v0.7.0) (2026-05-29)
+
+
+### Features
+
+* **editor:** add save state primitives ([#54](https://github.com/Ram-vo/blog-kit/issues/54)) ([#75](https://github.com/Ram-vo/blog-kit/issues/75)) ([1279c71](https://github.com/Ram-vo/blog-kit/commit/1279c71a46ce4f3afd3067bfa50038daa611cd40))
+
 ## [0.6.1](https://github.com/Ram-vo/blog-kit/compare/blog-kit-editor-v0.6.0...blog-kit-editor-v0.6.1) (2026-05-03)
 
 

@@ -1,6 +1,6 @@
 {
   "packages/blog-kit": "0.5.2",
-  "packages/editor": "0.6.1",
+  "packages/editor": "0.7.0",
   "packages/local": "0.6.1",
   "packages/core": "0.9.0",
   "packages/adapter-next": "0.7.2",
