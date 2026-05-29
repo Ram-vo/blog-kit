@@ -36,7 +36,11 @@ editor.
 "use client";
 
 import { useState } from "react";
-import { BlogPostEditor, type EditorialPostInput } from "blog-kit-editor";
+import {
+  BlogPostEditor,
+  useBlogPostSaveState,
+  type EditorialPostInput
+} from "blog-kit-editor";
 
 const initialPost: EditorialPostInput = {
   title: "",
@@ -50,6 +54,12 @@ const initialPost: EditorialPostInput = {
 
 export function EditorExample() {
   const [post, setPost] = useState(initialPost);
+  const saveState = useBlogPostSaveState({
+    value: post,
+    onSave: async (nextPost) => {
+      console.log("save draft", nextPost);
+    }
+  });
 
   return (
     <BlogPostEditor
@@ -57,12 +67,10 @@ export function EditorExample() {
       categories={[
         { id: "architecture", name: "Architecture", slug: "architecture" }
       ]}
-      saveStatus="idle"
+      saveStatus={saveState.status}
       validationIssues={[]}
       onChange={setPost}
-      onSaveDraft={async (nextPost) => {
-        console.log("save draft", nextPost);
-      }}
+      onSaveDraft={saveState.save}
       onPublish={async (nextPost) => {
         console.log("publish", nextPost);
       }}
@@ -93,6 +101,29 @@ Supported save states are:
 - `saving`
 - `saved`
 - `error`
+
+For reusable dirty-state tracking, use `useBlogPostSaveState` in the
+host app:
+
+```tsx
+const saveState = useBlogPostSaveState({
+  value: post,
+  onSave: async (nextPost) => {
+    await saveDraft(nextPost);
+  }
+});
+
+saveState.isDirty;
+saveState.status;
+saveState.lastSavedAt;
+saveState.error;
+```
+
+The hook compares the current editor payload with the last saved
+payload, updates `lastSavedAt` after successful saves, exposes
+recoverable save errors, and ignores stale async responses from older
+save attempts. Storage, auth, routing, and retries still belong to the
+host app.
 
 ## Auth And Persistence
 
