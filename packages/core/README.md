@@ -32,7 +32,8 @@ provider SDK.
 - `PostRepository`, `EditorialRepository`
 - `EditorialMediaRepository`, `EditorialMediaUpload`
 - `EditorSession`, `EditorPermission`
-- `EditorialValidationIssue`, `validateEditorialPostInput`
+- `EditorialValidationMode`, `EditorialValidationIssue`,
+  `EditorialValidationOptions`, `validateEditorialPostInput`
 - `filterPostsByCategory`, `filterPostsByTag`
 - `listRelatedPosts`
 - `createPaginationMeta`, `paginateItems`
@@ -55,8 +56,8 @@ const page = paginateItems(summaries, { page: 1, pageSize: 6 });
 
 ## Editorial Validation
 
-Use `validateEditorialPostInput` before persisting drafts or publishing
-posts from a host app:
+Use `validateEditorialPostInput` before persisting drafts, publishing
+posts, or scheduling future publication from a host app:
 
 ```ts
 import { validateEditorialPostInput } from "blog-kit-core";
@@ -65,9 +66,27 @@ const issues = validateEditorialPostInput(post, "publish");
 const blockingIssues = issues.filter((issue) => issue.severity === "error");
 ```
 
-Draft validation checks the fields required for safe persistence.
-Publish validation adds stricter content checks for excerpts, body
-content, and categories.
+Supported modes are:
+
+- `draft`: checks the title and slug fields needed for safe editorial
+  persistence.
+- `publish`: adds public-readiness checks for excerpt, content, and
+  categories.
+- `schedule`: applies publish checks and requires `publishedAt` to be a
+  valid future timestamp.
+
+Host apps can pass a deterministic clock when validating scheduled
+posts:
+
+```ts
+const issues = validateEditorialPostInput(post, "schedule", {
+  now: new Date("2026-05-29T10:00:00.000Z")
+});
+```
+
+Validation issues are structured with `field`, `severity`, and
+`message`, so editor UIs can map issues to controls without parsing
+message text.
 
 ## Design Boundary
 

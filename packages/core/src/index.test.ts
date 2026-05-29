@@ -11,6 +11,7 @@ import {
   listRelatedPosts,
   paginateItems,
   toBlogPostSummary,
+  type EditorialPostInput,
   validateEditorialPostInput
 } from "./index";
 
@@ -101,6 +102,23 @@ const posts = [
   }
 ];
 
+function createEditorialInput(
+  overrides: Partial<EditorialPostInput> = {}
+): EditorialPostInput {
+  return {
+    title: "Release notes",
+    slug: "release-notes",
+    excerpt: "What changed in this release.",
+    content: "A focused release note for the project.",
+    categoryIds: ["updates"],
+    tags: [],
+    coverImageUrl: undefined,
+    isDraft: true,
+    publishedAt: undefined,
+    ...overrides
+  };
+}
+
 describe("blog-kit-core public helpers", () => {
   it("builds pagination metadata and slices items consistently", () => {
     const result = paginateItems(posts, { page: 2, pageSize: 2 });
@@ -170,8 +188,54 @@ describe("blog-kit-core public helpers", () => {
         expect.objectContaining({ field: "coverImageUrl", severity: "error" }),
         expect.objectContaining({ field: "excerpt", severity: "error" }),
         expect.objectContaining({ field: "content", severity: "error" }),
-        expect.objectContaining({ field: "categoryIds", severity: "warning" })
+        expect.objectContaining({ field: "categoryIds", severity: "error" })
       ])
     );
+  });
+
+  it("allows draft saves without publish-only content requirements", () => {
+    expect(
+      validateEditorialPostInput(
+        createEditorialInput({
+          excerpt: "",
+          content: "",
+          categoryIds: [],
+          isDraft: true
+        }),
+        "draft"
+      )
+    ).toEqual([]);
+  });
+
+  it("validates scheduled posts with publish requirements and a future publish date", () => {
+    const now = new Date("2026-05-29T10:00:00.000Z");
+
+    expect(
+      validateEditorialPostInput(
+        createEditorialInput({
+          content: "",
+          categoryIds: [],
+          publishedAt: "2026-05-29T09:59:59.000Z"
+        }),
+        "schedule",
+        { now }
+      )
+    ).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ field: "content", severity: "error" }),
+        expect.objectContaining({ field: "categoryIds", severity: "error" }),
+        expect.objectContaining({ field: "publishedAt", severity: "error" })
+      ])
+    );
+
+    expect(
+      validateEditorialPostInput(
+        createEditorialInput({
+          publishedAt: "2026-05-29T10:00:01.000Z"
+        }),
+        "schedule",
+        { now }
+      )
+    ).toEqual([]);
   });
 });
