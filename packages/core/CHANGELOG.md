@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.10.0](https://github.com/Ram-vo/blog-kit/compare/blog-kit-core-v0.9.0...blog-kit-core-v0.10.0) (2026-06-01)
+
+
+### Features
+
+* **core:** expand editorial validation modes ([#55](https://github.com/Ram-vo/blog-kit/issues/55)) ([#78](https://github.com/Ram-vo/blog-kit/issues/78)) ([3a3d170](https://github.com/Ram-vo/blog-kit/commit/3a3d17090d57b9728d04e66a5b234f546c7a3331))
+
 ## [0.9.0](https://github.com/Ram-vo/blog-kit/compare/blog-kit-core-v0.8.0...blog-kit-core-v0.9.0) (2026-04-29)
 
 
