@@ -94,6 +94,7 @@ function EditorHarness({
   initialValue = createValue(),
   onSaveDraft,
   onPublish,
+  onPreview,
   onDelete,
   saveStatus,
   validationIssues,
@@ -102,6 +103,7 @@ function EditorHarness({
   initialValue?: EditorialPostInput;
   onSaveDraft?: (value: EditorialPostInput) => void;
   onPublish?: (value: EditorialPostInput) => void;
+  onPreview?: (value: EditorialPostInput) => Promise<void> | void;
   onDelete?: () => void;
   saveStatus?: Parameters<typeof BlogPostEditor>[0]["saveStatus"];
   validationIssues?: Parameters<typeof BlogPostEditor>[0]["validationIssues"];
@@ -119,6 +121,7 @@ function EditorHarness({
       onChange={(nextValue) => setValue(nextValue)}
       onSaveDraft={onSaveDraft}
       onPublish={onPublish}
+      onPreview={onPreview}
       onDelete={onDelete}
     />
   );
@@ -204,6 +207,53 @@ describe("BlogPostEditor", () => {
 
     await user.click(screen.getByRole("button", { name: "Delete post" }));
     expect(onDelete).toHaveBeenCalledTimes(1);
+  });
+
+  it("routes preview through the supplied callback with the current unsaved payload", async () => {
+    const user = userEvent.setup();
+    const onPreview = vi.fn();
+
+    render(
+      <EditorHarness
+        initialValue={createValue({ slug: "starter-apps", content: "Initial content" })}
+        onPreview={onPreview}
+      />
+    );
+
+    fireEvent.change(screen.getByLabelText("Markdown editor"), {
+      target: { value: "Unsaved preview content" }
+    });
+    fireEvent.change(screen.getByRole("textbox", { name: "Tags" }), {
+      target: { value: "starter, preview" }
+    });
+
+    await user.click(screen.getByRole("button", { name: "Preview" }));
+
+    expect(onPreview).toHaveBeenCalledWith(
+      expect.objectContaining({
+        content: "Unsaved preview content",
+        tags: ["starter", "preview"],
+        isDraft: true,
+        slug: "starter-apps"
+      })
+    );
+  });
+
+  it("shows recoverable preview errors without disabling editing", async () => {
+    const user = userEvent.setup();
+    const onPreview = vi.fn().mockRejectedValue(new Error("Preview route failed"));
+
+    render(
+      <EditorHarness
+        initialValue={createValue({ slug: "starter-apps" })}
+        onPreview={onPreview}
+      />
+    );
+
+    await user.click(screen.getByRole("button", { name: "Preview" }));
+
+    expect(await screen.findByText("Preview route failed")).toBeTruthy();
+    expect(screen.getByPlaceholderText("Write the title...")).toHaveProperty("disabled", false);
   });
 
   it("shows save status and validation issues in the publishing panel", () => {
