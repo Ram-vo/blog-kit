@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.0](https://github.com/Ram-vo/blog-kit/compare/blog-kit-editor-v0.7.0...blog-kit-editor-v0.8.0) (2026-06-01)
+
+
+### Features
+
+* **editor:** add preview payload contract ([#56](https://github.com/Ram-vo/blog-kit/issues/56)) ([#80](https://github.com/Ram-vo/blog-kit/issues/80)) ([f803430](https://github.com/Ram-vo/blog-kit/commit/f803430220e27bf5f8cc42e7b9419a1b9a6ca5b8))
+
 ## [0.7.0](https://github.com/Ram-vo/blog-kit/compare/blog-kit-editor-v0.6.1...blog-kit-editor-v0.7.0) (2026-05-29)
 
 
