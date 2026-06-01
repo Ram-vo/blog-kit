@@ -42,6 +42,7 @@ export function StarterEditorClient({
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
   const [validationIssues, setValidationIssues] = useState<EditorialValidationIssue[]>([]);
+  const [previewValue, setPreviewValue] = useState<EditorialPostInput | null>(null);
 
   function changeValue(nextValue: EditorialPostInput) {
     setValue(nextValue);
@@ -168,25 +169,63 @@ export function StarterEditorClient({
         </SurfacePanel>
       ) : null}
 
-      <EditorShell
-        value={value}
-        categories={categories}
-        saving={saving}
-        saveStatus={saveStatus}
-        validationIssues={validationIssues}
-        canDelete={mode === "edit"}
-        onChange={changeValue}
-        onSaveDraft={async (nextValue) => {
-          changeValue(nextValue);
-          await save(nextValue, "draft");
-        }}
-        onPublish={async (nextValue) => {
-          changeValue(nextValue);
-          await save(nextValue, "publish");
-        }}
-        onDelete={mode === "edit" ? remove : undefined}
-        imageUploadHandler={uploadImage}
-      />
+      <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_360px]">
+        <EditorShell
+          value={value}
+          categories={categories}
+          saving={saving}
+          saveStatus={saveStatus}
+          validationIssues={validationIssues}
+          canDelete={mode === "edit"}
+          onChange={changeValue}
+          onPreview={async (nextValue) => {
+            setPreviewValue(nextValue);
+          }}
+          onSaveDraft={async (nextValue) => {
+            changeValue(nextValue);
+            await save(nextValue, "draft");
+          }}
+          onPublish={async (nextValue) => {
+            changeValue(nextValue);
+            await save(nextValue, "publish");
+          }}
+          onDelete={mode === "edit" ? remove : undefined}
+          imageUploadHandler={uploadImage}
+        />
+
+        {previewValue ? (
+          <SurfacePanel className="grid gap-4 self-start px-5 py-5 xl:sticky xl:top-24">
+            <div className="grid gap-1 border-b border-[var(--surface-border)] pb-4">
+              <span className="font-sans text-[0.72rem] font-semibold uppercase tracking-[0.12em] text-starter-soft">
+                Preview
+              </span>
+              <h2 className="text-xl font-semibold tracking-[-0.04em]">
+                {previewValue.title || "Untitled draft"}
+              </h2>
+            </div>
+            {previewValue.excerpt ? (
+              <p className="text-sm leading-[1.6] text-starter-muted">
+                {previewValue.excerpt}
+              </p>
+            ) : null}
+            {previewValue.tags.length > 0 ? (
+              <div className="flex flex-wrap gap-2">
+                {previewValue.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="rounded-full border border-[var(--surface-border)] px-2.5 py-1 text-xs text-starter-muted"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            ) : null}
+            <pre className="max-h-[420px] overflow-auto whitespace-pre-wrap rounded-2xl bg-[var(--background)] p-4 text-xs leading-[1.7] text-starter-muted">
+              {previewValue.content || "No content yet."}
+            </pre>
+          </SurfacePanel>
+        ) : null}
+      </div>
     </div>
   );
 }

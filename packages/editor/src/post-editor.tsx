@@ -34,7 +34,9 @@ import {
   InsertFrontmatter,
   DiffSourceToggleWrapper
 } from "@mdxeditor/editor";
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
+
+export type BlogPostPreviewStatus = "idle" | "previewing" | "error";
 
 export interface BlogPostEditorProps {
   value: EditorialPostInput;
@@ -51,6 +53,7 @@ export interface BlogPostEditorProps {
   onChange: (value: EditorialPostInput) => void;
   onSaveDraft?: (value: EditorialPostInput) => Promise<void> | void;
   onPublish?: (value: EditorialPostInput) => Promise<void> | void;
+  onPreview?: (value: EditorialPostInput) => Promise<void> | void;
   onDelete?: () => Promise<void> | void;
   imageUploadHandler?: (image: File) => Promise<string>;
   footer?: ReactNode;
@@ -111,12 +114,16 @@ export function BlogPostEditor({
   onChange,
   onSaveDraft,
   onPublish,
+  onPreview,
   onDelete,
   imageUploadHandler,
   footer
 }: BlogPostEditorProps) {
+  const [previewStatus, setPreviewStatus] = useState<BlogPostPreviewStatus>("idle");
+  const [previewError, setPreviewError] = useState<string | null>(null);
   const validationErrors = validationIssues.filter((issue) => issue.severity === "error");
   const validationWarnings = validationIssues.filter((issue) => issue.severity === "warning");
+  const previewing = previewStatus === "previewing";
   const statusLabel = saveStatus === "saved"
     ? "Saved"
     : saveStatus === "error"
@@ -124,6 +131,25 @@ export function BlogPostEditor({
       : saveStatus === "saving"
         ? "Saving"
         : "Idle";
+
+  async function previewCurrentValue() {
+    if (!onPreview) {
+      return;
+    }
+
+    setPreviewStatus("previewing");
+    setPreviewError(null);
+
+    try {
+      await onPreview(value);
+      setPreviewStatus("idle");
+    } catch (error) {
+      setPreviewStatus("error");
+      setPreviewError(
+        error instanceof Error ? error.message : "Preview failed."
+      );
+    }
+  }
 
   if (loading) {
     return (
@@ -236,8 +262,13 @@ export function BlogPostEditor({
             Save state · {statusLabel}
           </p>
           <p className="mb-4 text-[0.92rem] leading-[1.6] text-zinc-600">
-            Save incremental changes, publish the current post, or remove it from the local content store.
+            Save incremental changes, preview the current post, publish it, or remove it from the local content store.
           </p>
+          {previewError ? (
+            <div className="mb-4 rounded-2xl border border-red-200 bg-red-50/70 p-3 text-[0.84rem] leading-[1.45] text-red-800">
+              {previewError}
+            </div>
+          ) : null}
           {validationIssues.length > 0 ? (
             <div className="mb-4 rounded-2xl border border-amber-200 bg-amber-50/70 p-3">
               <p className="mb-2 font-sans text-[0.72rem] font-semibold uppercase tracking-[0.12em] text-amber-900">
@@ -253,6 +284,16 @@ export function BlogPostEditor({
             </div>
           ) : null}
           <div className="grid gap-2.5">
+            {onPreview ? (
+              <button
+                type="button"
+                disabled={disabled || saving || previewing}
+                onClick={() => void previewCurrentValue()}
+                className="inline-flex min-h-11 w-full items-center justify-center rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm font-semibold text-zinc-900 transition hover:border-zinc-400 hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {previewing ? "Previewing..." : "Preview"}
+              </button>
+            ) : null}
             <button
               type="button"
               disabled={disabled || saving || !onSaveDraft}

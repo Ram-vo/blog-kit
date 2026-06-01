@@ -22,6 +22,7 @@ import "@mdxeditor/editor/style.css";
 - Editing MDX post content
 - Updating post metadata
 - Saving drafts
+- Previewing unsaved drafts through host-owned callbacks
 - Publishing posts
 - Deleting posts
 - Plugging in custom image upload behavior
@@ -71,6 +72,9 @@ export function EditorExample() {
       validationIssues={[]}
       onChange={setPost}
       onSaveDraft={saveState.save}
+      onPreview={async (nextPost) => {
+        console.log("preview", nextPost);
+      }}
       onPublish={async (nextPost) => {
         console.log("publish", nextPost);
       }}
@@ -124,6 +128,32 @@ payload, updates `lastSavedAt` after successful saves, exposes
 recoverable save errors, and ignores stale async responses from older
 save attempts. Storage, auth, routing, and retries still belong to the
 host app.
+
+## Preview
+
+Use `onPreview` when a host app needs to render the current editor
+payload without saving or publishing it:
+
+```tsx
+<BlogPostEditor
+  value={post}
+  categories={categories}
+  onChange={setPost}
+  onPreview={async (nextPost) => {
+    setPreviewPost(nextPost);
+  }}
+/>
+```
+
+The callback receives the current unsaved `EditorialPostInput`,
+including title, slug, excerpt, content, category IDs, tags, cover image
+URL, draft status, author, and publish timestamp fields. The package
+does not own the preview surface. Host apps can render that payload in a
+modal, split view, or route-based preview and keep routing, auth, and
+draft storage decisions outside `blog-kit-editor`.
+
+If the preview callback rejects, the editor keeps the draft editable and
+shows the error as a recoverable preview failure.
 
 ## Auth And Persistence
 
